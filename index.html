@@ -126,10 +126,33 @@
             text-shadow: 0 0 5px var(--primary);
         }
 
+        .ide-link {
+            color: var(--primary);
+            text-decoration: none;
+            border: 1px solid var(--primary);
+            padding: 2px 10px;
+            font-family: var(--mono);
+            font-size: 14px;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+
+        .header-links {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+        }
+
+        .ide-link:hover {
+            background: var(--primary);
+            color: var(--terminal-bg);
+            text-shadow: none;
+            border-bottom-style: solid;
+        }
+
         .terminal-buttons {
             display: flex;
             gap: 8px;
-            margin-left: auto;
         }
 
         .terminal-button {
@@ -482,6 +505,10 @@
                     <div class="terminal-button"></div>
                     <div class="terminal-button"></div>
                     <div class="terminal-button"></div>
+                </div>
+                <div class="header-links">
+                    <a href="https://wallybrain.icu" class="ide-link">[wallybrain]</a>
+                    <a href="https://code.wallyblanchard.com" class="ide-link">[IDE]</a>
                 </div>
             </div>
             <div class="terminal-content">
