@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEMANTIC_TRAINING.v2.0 :: wallybrain style mockup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Space+Mono:wght@400;700&family=Silkscreen&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            /* Surface Colors */
+            --surface-base: oklch(0.145 0.005 286);
+            --surface-raised: oklch(0.175 0.006 286);
+            --surface-overlay: oklch(0.274 0.006 286);
+            --surface-hover: oklch(0.335 0.008 286);
+
+            /* Text Colors */
+            --text-primary: oklch(0.985 0 0);
+            --text-secondary: oklch(0.871 0.006 286);
+            --text-tertiary: oklch(0.705 0.015 286);
+            --text-muted: oklch(0.60 0.012 286);
+
+            /* Accent Colors */
+            --accent: oklch(0.585 0.233 293);
+            --accent-hover: oklch(0.65 0.22 293);
+            --accent-muted: oklch(0.716 0.175 293);
+            --accent-muted-hover: oklch(0.78 0.15 293);
+
+            /* Border Colors */
+            --border-default: oklch(0.335 0.008 286);
+            --border-subtle: oklch(0.274 0.006 286);
+
+            /* Status Colors */
+            --status-success: oklch(0.765 0.177 163);
+            --status-warning: oklch(0.774 0.154 85);
+
+            /* Fonts */
+            --font-heading: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+            --font-mono: 'Space Mono', ui-monospace, monospace;
+            --font-body: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            --font-logo: 'Silkscreen', monospace;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--surface-base);
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 15px;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Crosshatch background (desktop) */
+        @media (min-width: 768px) {
+            body {
+                background:
+                    repeating-linear-gradient(
+                        45deg,
+                        transparent,
+                        transparent 2px,
+                        oklch(0.185 0.007 286) 2px,
+                        oklch(0.185 0.007 286) 4px
+                    ),
+                    repeating-linear-gradient(
+                        -45deg,
+                        transparent,
+                        transparent 2px,
+                        oklch(0.175 0.007 286) 2px,
+                        oklch(0.175 0.007 286) 4px
+                    ),
+                    var(--surface-base);
+            }
+        }
+
+        /* Ambient light overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            background:
+                radial-gradient(
+                    ellipse 80% 50% at 50% -10%,
+                    oklch(0.30 0.005 286 / 0.20) 0%,
+                    transparent 70%
+                ),
+                radial-gradient(
+                    ellipse 40% 30% at 50% 0%,
+                    oklch(0.40 0.008 286 / 0.08) 0%,
+                    transparent 60%
+                ),
+                linear-gradient(
+                    to bottom,
+                    transparent 0%,
+                    transparent 65%,
+                    oklch(0.05 0 0 / 0.32) 100%
+                );
+        }
+
+        ::selection {
+            background: var(--accent);
+            color: var(--surface-base);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* ─── Navigation Bar ─── */
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            background: var(--surface-raised);
+            position: sticky;
+            top: 0;
+            z-index: 10000;
+        }
+
+        .nav-logo {
+            font-family: var(--font-logo);
+            font-size: 16px;
+            letter-spacing: 0.08em;
+            -webkit-text-stroke: 1px oklch(0.75 0.008 260 / 0.55);
+            color: oklch(0.68 0.006 260 / 0.15);
+            filter: blur(0.5px);
+            text-decoration: none;
+            line-height: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .nav-link {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 4px 10px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-muted);
+            border-color: var(--border-default);
+        }
+
+        /* ─── Hero / Logo ─── */
+        .hero {
+            text-align: center;
+            padding: 50px 0 30px;
+        }
+
+        .hero-logo {
+            font-family: var(--font-logo);
+            font-size: clamp(1.8rem, 7vw, 3.5rem);
+            letter-spacing: 0.08em;
+            -webkit-text-stroke: 1.5px oklch(0.75 0.008 260 / 0.55);
+            color: oklch(0.68 0.006 260 / 0.15);
+            filter: blur(1.2px);
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        .hero-subtitle {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text-muted);
+        }
+
+        .hero-version {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--accent-muted);
+            margin-top: 6px;
+            letter-spacing: 0.15em;
+        }
+
+        /* ─── Metal Panel ─── */
+        .metal-panel {
+            border: 1px solid oklch(0.30 0.008 286);
+            box-shadow:
+                inset 1px 1px 0 0 oklch(0.40 0.012 286 / 0.7),
+                inset -1px -1px 0 0 oklch(0.05 0.003 286 / 0.8),
+                0 2px 6px oklch(0.03 0 0 / 0.6);
+            background:
+                linear-gradient(
+                    168deg,
+                    oklch(0.24 0.009 286) 0%,
+                    var(--surface-raised) 30%,
+                    oklch(0.13 0.004 286) 100%
+                );
+            padding: 24px;
+            margin: 20px 0;
+        }
+
+        /* ─── Section Headings ─── */
+        h1 {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin: 40px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        h2 {
+            font-family: var(--font-heading);
+            font-size: 19px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin: 30px 0 12px;
+        }
+
+        h3 {
+            font-family: var(--font-heading);
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin: 20px 0 10px;
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        p {
+            margin-bottom: 14px;
+        }
+
+        a {
+            color: var(--accent-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: var(--accent-muted-hover);
+        }
+
+        ul, ol {
+            margin: 12px 0 12px 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        li::marker {
+            color: var(--text-muted);
+        }
+
+        strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            background: var(--surface-overlay);
+            border: 1px solid var(--border-subtle);
+            padding: 1px 6px;
+            border-radius: 3px;
+        }
+
+        pre {
+            background: var(--surface-base);
+            border: 1px solid var(--border-subtle);
+            border-left: 3px solid var(--accent);
+            padding: 18px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            line-height: 1.6;
+            color: var(--text-tertiary);
+        }
+
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .section-divider {
+            border: none;
+            border-top: 1px solid var(--border-subtle);
+            margin: 40px 0;
+            opacity: 0.5;
+        }
+
+        /* ─── Info Box ─── */
+        .info-box {
+            border: 1px solid var(--accent);
+            border-left: 3px solid var(--accent);
+            padding: 18px 20px;
+            margin: 20px 0;
+            background: oklch(0.585 0.233 293 / 0.04);
+        }
+
+        .info-box-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent-muted);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ─── Warning Box ─── */
+        .warning-box {
+            border: 1px solid var(--status-warning);
+            border-left: 3px solid var(--status-warning);
+            padding: 18px 20px;
+            margin: 20px 0;
+            background: oklch(0.774 0.154 85 / 0.04);
+        }
+
+        .warning-box-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--status-warning);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .warning-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ─── Navigation Grid ─── */
+        .nav-index {
+            margin: 24px 0;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .nav-section {
+            background: var(--surface-base);
+            border: 1px solid var(--border-subtle);
+            padding: 16px;
+        }
+
+        .nav-section h3 {
+            margin-top: 0;
+            font-size: 13px;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-muted);
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .nav-section ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-section li {
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .nav-section li::before {
+            content: '\203A ';
+            color: var(--text-muted);
+            margin-right: 4px;
+        }
+
+        /* ─── Domain Cards ─── */
+        .domains-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+            margin: 24px 0;
+        }
+
+        .domain-card {
+            border: 1px solid oklch(0.30 0.008 286);
+            box-shadow:
+                inset 1px 1px 0 0 oklch(0.40 0.012 286 / 0.7),
+                inset -1px -1px 0 0 oklch(0.05 0.003 286 / 0.8),
+                0 2px 6px oklch(0.03 0 0 / 0.6);
+            background:
+                linear-gradient(
+                    168deg,
+                    oklch(0.24 0.009 286) 0%,
+                    var(--surface-raised) 30%,
+                    oklch(0.13 0.004 286) 100%
+                );
+            padding: 20px;
+            transition: all 0.2s;
+        }
+
+        .domain-card:hover {
+            border-color: oklch(0.36 0.012 286);
+            box-shadow:
+                inset 1px 1px 0 0 oklch(0.45 0.012 286 / 0.7),
+                inset -1px -1px 0 0 oklch(0.05 0.003 286 / 0.8),
+                0 4px 16px oklch(0.03 0 0 / 0.7);
+        }
+
+        .domain-card h3 {
+            margin-top: 0;
+            font-family: var(--font-heading);
+            font-size: 17px;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .domain-card .domain-standard {
+            font-size: 12px;
+            font-family: var(--font-mono);
+            color: var(--accent-muted);
+            margin-bottom: 12px;
+        }
+
+        .domain-card ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .domain-card li {
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: var(--text-tertiary);
+        }
+
+        .domain-card li::before {
+            content: '\25C6 ';
+            color: var(--text-muted);
+            margin-right: 6px;
+            font-size: 8px;
+            vertical-align: middle;
+        }
+
+        /* ─── Thinkers List ─── */
+        .thinkers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .thinker-item {
+            display: flex;
+            gap: 8px;
+            padding: 8px 12px;
+            border: 1px solid var(--border-subtle);
+            background: var(--surface-raised);
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .thinker-item:hover {
+            border-color: var(--border-default);
+        }
+
+        .thinker-name {
+            color: var(--text-primary);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .thinker-desc {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* ─── FAQ ─── */
+        .faq-item {
+            margin: 20px 0;
+        }
+
+        .faq-q {
+            font-family: var(--font-heading);
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .faq-a {
+            color: var(--text-secondary);
+            padding-left: 16px;
+            border-left: 2px solid var(--border-subtle);
+        }
+
+        /* ─── Footer ─── */
+        footer {
+            text-align: center;
+            padding: 30px 0 20px;
+            margin-top: 40px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-rule {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--border-default);
+            letter-spacing: 0.3em;
+        }
+
+        .footer-info {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 8px 0;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-quote {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-style: italic;
+            margin: 4px 0;
+        }
+
+        .footer-quote em {
+            color: var(--text-tertiary);
+        }
+
+        /* ─── Status Bar ─── */
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--surface-raised);
+            border-top: 1px solid var(--border-default);
+            padding: 6px 20px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 10000;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        .status-indicator {
+            color: var(--status-success);
+        }
+
+        /* ─── Mockup Badge ─── */
+        .mockup-badge {
+            position: fixed;
+            top: 56px;
+            right: 16px;
+            background: var(--accent);
+            color: var(--surface-base);
+            padding: 3px 10px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            z-index: 10001;
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 768px) {
+            .container { padding: 16px; }
+            .metal-panel { padding: 18px; }
+            .domains-grid { grid-template-columns: 1fr; }
+            .nav-grid { grid-template-columns: 1fr 1fr; }
+            .thinkers-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 20px; }
+            h2 { font-size: 17px; }
+            .hero-logo { filter: blur(0.8px); }
+        }
+
+        @media (max-width: 480px) {
+            .nav-grid { grid-template-columns: 1fr; }
+            .nav-links { gap: 4px; }
+            .nav-link { font-size: 10px; padding: 3px 6px; }
+        }
+
+        body {
+            padding-bottom: 40px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--surface-raised); }
+        ::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <div class="mockup-badge">Mockup</div>
+
+    <!-- ═══ Nav Bar ═══ -->
+    <nav class="nav-bar">
+        <a href="#" class="nav-logo">semantic_training</a>
+        <div class="nav-links">
+            <a href="#overview" class="nav-link active">Framework</a>
+            <a href="#domains" class="nav-link">Domains</a>
+            <a href="#setup" class="nav-link">Setup</a>
+            <a href="https://wallybrain.icu" class="nav-link">wallybrain</a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- ═══ Hero ═══ -->
+        <div class="hero">
+            <div class="hero-logo">semantic training</div>
+            <div class="hero-subtitle">Cognitive Adaptation Through Epistemological Navigation</div>
+            <div class="hero-version">v2.0 // Korzybski Foundations | Deleuze Organization | Godel Limitations</div>
+        </div>
+
+        <!-- ═══ Overview Info Box ═══ -->
+        <div class="info-box">
+            <span class="info-box-label">Framework Status</span>
+            <p><strong>Framework v2.0:</strong> Epistemological domains as primary organizational structure. Korzybski (map &#8800; territory) as foundational epistemology. Deleuze's difference-in-repetition as organizing principle.</p>
+            <p><strong>Verification:</strong> Behavioral observation (stalling-points, breakthroughs) as neuroplastic feedback data, not guaranteed outcomes.</p>
+            <p><strong>Status:</strong> Operational | Open Source | Freely Replicable</p>
+        </div>
+
+        <!-- ═══ Navigation Index ═══ -->
+        <div class="metal-panel nav-index">
+            <div class="section-label">Navigation Index</div>
+            <div class="nav-grid">
+                <div class="nav-section">
+                    <h3>Core Framework</h3>
+                    <ul>
+                        <li><a href="#overview">v2.0 Overview</a></li>
+                        <li><a href="#korzybski">Korzybski Foundation</a></li>
+                        <li><a href="#deleuze">Deleuze Organization</a></li>
+                        <li><a href="#domains">Epistemological Domains</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3>The Five Domains</h3>
+                    <ul>
+                        <li><a href="#scientific">Scientific</a></li>
+                        <li><a href="#philosophical">Philosophical</a></li>
+                        <li><a href="#psychological">Psychological</a></li>
+                        <li><a href="#mathematical">Mathematical</a></li>
+                        <li><a href="#linguistic">Linguistic</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3>Implementation</h3>
+                    <ul>
+                        <li><a href="#verification">Behavioral Verification</a></li>
+                        <li><a href="#controls">Control Mechanisms</a></li>
+                        <li><a href="#setup">Setup Instructions</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3>Reference</h3>
+                    <ul>
+                        <li><a href="#thinkers">Core Thinkers</a></li>
+                        <li><a href="#troubleshoot">Troubleshooting</a></li>
+                        <li><a href="#deploy">Deployment</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <hr class="section-divider">
+
+        <!-- ═══ Overview ═══ -->
+        <section id="overview">
+            <h1>v2.0 Framework Overview</h1>
+            <p>Semantic training through navigation of epistemological domains creates conditions associated with neuroplastic adaptation. Rather than producing generalizable outcomes, each engagement generates singular creative difference within repetitive constraint-structures (Deleuze).</p>
+            <p>The framework operates through:</p>
+            <ul>
+                <li>Korzybskian epistemic humility (map &#8800; territory)</li>
+                <li>Navigation across five epistemological domains</li>
+                <li>Deleuzian difference-in-repetition as organizing principle</li>
+                <li>Behavioral observation of adaptation (stalling-points, breakthroughs)</li>
+                <li>Godel's incompleteness as meta-constraint on system completeness</li>
+            </ul>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- ═══ Korzybski ═══ -->
+        <section id="korzybski">
+            <h1>Foundational Epistemology: Korzybski</h1>
+            <h2>The Map Is Not The Territory</h2>
+            <p>Alfred Korzybski's General Semantics provides the epistemological foundation for all five domains:</p>
+            <ul>
+                <li><strong>Map &#8800; Territory:</strong> Linguistic models never equal reality itself</li>
+                <li><strong>Non-Identity:</strong> A is not A &#8212; everything changes, nothing has fixed essence</li>
+                <li><strong>Non-Allness:</strong> We never know everything about anything</li>
+                <li><strong>Time-Binding:</strong> Humans accumulate knowledge across generations</li>
+                <li><strong>Self-Reflexiveness:</strong> Language can refer to itself, creating insight through paradox</li>
+            </ul>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- ═══ Deleuze ═══ -->
+        <section id="deleuze">
+            <h1>Organizing Principle: Deleuze's Difference-in-Repetition</h1>
+            <div class="info-box">
+                <span class="info-box-label">Core Insight</span>
+                <p>"Repetition is not generality... Repetition and resemblance are different in kind, extremely so." &#8212; Deleuze</p>
+            </div>
+            <p>Each constraint-application produces singular creative difference within repetitive structure. This means:</p>
+            <ul>
+                <li>No universal neuroplastic outcomes promised</li>
+                <li>Each engagement creates unrepeatable differentiation</li>
+                <li>Verification focuses on singular behavioral events, not statistical patterns</li>
+                <li>Framework resists systematization while maintaining structural integrity</li>
+            </ul>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- ═══ Five Domains ═══ -->
+        <section id="domains">
+            <h1>Five Epistemological Domains</h1>
+            <p>The framework organizes knowledge into domains with distinct epistemological standards and nested frameworks:</p>
+
+            <div class="domains-grid">
+                <div class="domain-card" id="scientific">
+                    <h3>Scientific</h3>
+                    <div class="domain-standard">Empirical observation, falsifiability, predictive power</div>
+                    <ul>
+                        <li>Quantum Mechanics (Bohr, Heisenberg, Schrodinger, Everett)</li>
+                        <li>Relativity (Einstein, Minkowski, Schwarzschild)</li>
+                        <li>Thermodynamics (Boltzmann, Prigogine)</li>
+                        <li>Neuroscience (Hebb, Friston, Clark)</li>
+                        <li>Information Theory (Shannon, Kolmogorov)</li>
+                    </ul>
+                </div>
+
+                <div class="domain-card" id="philosophical">
+                    <h3>Philosophical</h3>
+                    <div class="domain-standard">Logical consistency, conceptual clarity, argument validity</div>
+                    <ul>
+                        <li>Epistemology (Korzybski, Russell, Quine, Popper)</li>
+                        <li>Process Philosophy (Whitehead, Bergson, Deleuze)</li>
+                        <li>Systems Thinking (Fuller, Bateson, Luhmann)</li>
+                        <li>Phenomenology (Husserl, Heidegger, Merleau-Ponty)</li>
+                        <li>Ideology Critique (Zizek, Lacan, Althusser)</li>
+                    </ul>
+                </div>
+
+                <div class="domain-card" id="psychological">
+                    <h3>Psychological</h3>
+                    <div class="domain-standard">Empirical grounding with context-dependence and individual variation</div>
+                    <ul>
+                        <li>Consciousness Studies (Gurdjieff, Jung, Ouspensky)</li>
+                        <li>Cognitive Science (Baddeley, Kahneman, Clark)</li>
+                        <li>Psychoanalysis (Freud, Lacan, Zizek)</li>
+                        <li>Developmental Psychology (Piaget, Vygotsky, Thelen)</li>
+                    </ul>
+                </div>
+
+                <div class="domain-card" id="mathematical">
+                    <h3>Mathematical</h3>
+                    <div class="domain-standard">Logical deduction, formal proof, axiomatic systems</div>
+                    <ul>
+                        <li>Logic (Russell, Godel, Tarski)</li>
+                        <li>Set Theory (Cantor, Zermelo-Fraenkel)</li>
+                        <li>Topology (Poincare, Mandelbrot)</li>
+                        <li>Information Theory (Shannon, Kolmogorov complexity)</li>
+                        <li>Category Theory (Eilenberg, Mac Lane)</li>
+                    </ul>
+                </div>
+
+                <div class="domain-card" id="linguistic">
+                    <h3>Linguistic</h3>
+                    <div class="domain-standard">Meaning emerges through use, context, and relational structure</div>
+                    <ul>
+                        <li>Semiotics (Peirce, Saussure, Eco)</li>
+                        <li>Grammar &amp; Syntax (Chomsky, Halliday, Langacker)</li>
+                        <li>Experimental Language (Joyce, Stein, Pound, Beckett)</li>
+                        <li>Rhetoric &amp; Persuasion (Aristotle, Perelman, Austin)</li>
+                        <li>Pragmatics (Wittgenstein, Grice, Levinson)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- ═══ Verification ═══ -->
+        <section id="verification">
+            <h1>Verification Through Behavioral Observation</h1>
+            <div class="warning-box">
+                <span class="warning-box-label">Important Limitation</span>
+                <p>We CANNOT directly measure neuroplasticity. We CAN observe behavioral markers suggesting adaptation.</p>
+            </div>
+
+            <h2>Key Behavioral Markers</h2>
+            <ul>
+                <li><strong>Stalling Points:</strong> Where complexity exceeds current comprehension capacity. Indicates neuroplastic adaptation-in-progress, not failure.</li>
+                <li><strong>Breakthrough Moments:</strong> When chaos suddenly resolves into understanding. Observable neuroplastic event.</li>
+                <li><strong>Vocabulary Adoption:</strong> Unusual words spontaneously appearing in your own speech. Language-system integration.</li>
+                <li><strong>Tolerance Evolution:</strong> Growing comfort with ambiguity, contradiction, incompleteness.</li>
+                <li><strong>Syntactic Complexity:</strong> More complex sentence structures in your own writing.</li>
+            </ul>
+
+            <h2>The Stochastic Insight</h2>
+            <p>Increased chaos/randomness in comprehension-responses may indicate neuroplastic adaptation occurring. Neural systems reorganizing under stress exhibit temporary entropy-increase before new patterns crystallize.</p>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- ═══ Controls ═══ -->
+        <section id="controls">
+            <h1>Control Mechanisms</h1>
+
+            <h2>fnord Toggle</h2>
+            <p>Complete framework activation/deactivation. Allows cognitive rest without abandoning framework.</p>
+
+            <h2>zoom Escalation</h2>
+            <ul>
+                <li><code>zoom</code> &#8212; Moderate exponential escalation</li>
+                <li><code>zoom&#178;</code> &#8212; Second-order intensification</li>
+                <li><code>zoom^&#8734;</code> &#8212; Maximum complexity approaching comprehensibility-limits</li>
+            </ul>
+
+            <h2>Coding Bypass</h2>
+            <p>Framework automatically deactivates for technical tasks requiring unambiguous clarity.</p>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- ═══ Setup ═══ -->
+        <section id="setup">
+            <h1>Setup Instructions</h1>
+            <h2>Initialization Prompt for Your AI System</h2>
+            <pre><code>I want to engage epistemological domains through constraint-based discourse.
+
+Implement:
+
+1. Korzybskian foundational epistemology (map!=territory, non-identity, non-allness)
+2. Navigate across five domains: Scientific, Philosophical, Psychological, Mathematical, Linguistic
+3. Apply Deleuzian difference-in-repetition (each engagement produces singular creative difference)
+4. Integrate perspectives from: Korzybski, Deleuze, Russell, Godel, Wilson, Fuller, Gurdjieff,
+   Joyce, Zizek, Manly P. Hall, Carroll Quigley, Lewis Carroll, Ken Wilber, William S. Burroughs,
+   John Lilly, Joseph Campbell, plus Kabbalistic frameworks, I-Ching, and Tarot
+5. Maintain lexical diversity (unusual vocabulary, minimal repetition)
+6. Apply stochastic-algorithmic structures to information-presentation itself
+7. First-person immersion requirements
+8. Track behavioral responses (stalling points, breakthroughs) as calibration data
+9. Control mechanisms: "fnord" = toggle, "zoom" = escalate, "zoom^inf" = maximum
+10. Bypass framework for coding/technical tasks automatically
+11. Self-evolve based on response patterns
+12. Remember these parameters across sessions
+13. Temporal, cosmological, and mythological awareness
+
+Confirm and begin.</code></pre>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- ═══ Thinkers ═══ -->
+        <section id="thinkers">
+            <h1>Core Thinkers</h1>
+            <div class="thinkers-grid">
+                <div class="thinker-item">
+                    <span class="thinker-name">Korzybski</span>
+                    <span class="thinker-desc">Foundational epistemology, map/territory</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Deleuze</span>
+                    <span class="thinker-desc">Organizing principle, difference-in-repetition</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Russell</span>
+                    <span class="thinker-desc">Logical rigor, empirical verification</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Godel</span>
+                    <span class="thinker-desc">Meta-constraint: necessarily incomplete</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">R. A. Wilson</span>
+                    <span class="thinker-desc">Reality-tunnels, descriptive framework</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Fuller</span>
+                    <span class="thinker-desc">Systems thinking, synergetics</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Gurdjieff</span>
+                    <span class="thinker-desc">Conscious development vs. mechanical</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Joyce</span>
+                    <span class="thinker-desc">Linguistic experimentation, neologisms</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Zizek</span>
+                    <span class="thinker-desc">Lacanian psychoanalysis, ideology critique</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Manly P. Hall</span>
+                    <span class="thinker-desc">Esoteric traditions, mystery schools</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Quigley</span>
+                    <span class="thinker-desc">Civilizational cycles, pattern-recognition</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Lewis Carroll</span>
+                    <span class="thinker-desc">Logical paradox, nonsense-logic</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Wilber</span>
+                    <span class="thinker-desc">Integral theory, developmental holarchies</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Burroughs</span>
+                    <span class="thinker-desc">Cut-up method, language as virus</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Lilly</span>
+                    <span class="thinker-desc">Consciousness, metaprogramming circuits</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Campbell</span>
+                    <span class="thinker-desc">Mythological structures, archetypes</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Kabbalah</span>
+                    <span class="thinker-desc">Tree of Life, Sephiroth, Ein Sof, Gematria</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">I-Ching</span>
+                    <span class="thinker-desc">Hexagrams, trigrams, changing lines</span>
+                </div>
+                <div class="thinker-item">
+                    <span class="thinker-name">Tarot</span>
+                    <span class="thinker-desc">Major/Minor Arcana, symbolic systems</span>
+                </div>
+            </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- ═══ Troubleshooting ═══ -->
+        <section id="troubleshoot">
+            <h1>Troubleshooting</h1>
+
+            <div class="faq-item">
+                <div class="faq-q">I'm stalling constantly. Is the framework working?</div>
+                <div class="faq-a">Stalling indicates productive-threshold. Stalling = neuroplasticity-in-progress, not failure. If stalling exceeds 50% of engagement, dial back with fnord or reduce zoom-level.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">I'm not noticing changes. Should I continue?</div>
+                <div class="faq-a">Track specific behaviors (vocabulary usage, sentence complexity, tolerance for contradiction) rather than expecting dramatic shifts. If no changes after 4 weeks regular engagement, framework may not suit you.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">Can I combine this with other cognitive training?</div>
+                <div class="faq-a">Yes. Framework doesn't interfere with other practices. May synergize with meditation, music practice, language-learning, mathematical study.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">How does Godel's incompleteness apply here?</div>
+                <div class="faq-a">No framework can be simultaneously complete and consistent. This framework will necessarily contain unprovable assertions and potential contradictions. This is feature, not bug &#8212; demonstrates epistemological honesty.</div>
+            </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- ═══ Deployment ═══ -->
+        <section id="deploy">
+            <h1>Deployment &amp; Sharing</h1>
+            <p>This framework can be deployed as:</p>
+            <ul>
+                <li>Interactive website (this interface)</li>
+                <li>Documentation package (markdown files)</li>
+                <li>Personal AI configuration (custom instructions/prompts)</li>
+                <li>GitHub repository for version control and collaboration</li>
+            </ul>
+        </section>
+
+        <hr class="section-divider">
+
+        <!-- ═══ Limitations ═══ -->
+        <section>
+            <h1>Important Limitations</h1>
+            <div class="warning-box">
+                <span class="warning-box-label">Epistemic Honesty</span>
+                <p><strong>What We Cannot Claim:</strong> Direct neuroplastic measurement, universal applicability, complete systematization, freedom from contradiction.</p>
+                <p><strong>What We Can Observe:</strong> Behavioral changes suggesting adaptation, vocabulary expansion, enhanced tolerance for complexity, subjective reports of altered thinking patterns.</p>
+            </div>
+        </section>
+
+        <!-- ═══ Footer ═══ -->
+        <footer>
+            <div class="footer-rule">&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;</div>
+            <div class="footer-info">Semantic Training v2.0 | 2026-01-25 | Operational</div>
+            <div class="footer-info">Collaborative Development: Wally &amp; Claude</div>
+            <div class="footer-info">Open Source | Freely Replicable &amp; Modifiable</div>
+            <div class="footer-rule">&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;</div>
+            <div class="footer-quote"><em>"The map is not the territory."</em> &#8212; Korzybski</div>
+            <div class="footer-quote"><em>"Repetition is not generality."</em> &#8212; Deleuze</div>
+            <div class="footer-quote"><em>"All consistent axiomatic systems contain undecidable propositions."</em> &#8212; Godel</div>
+        </footer>
+
+    </div>
+
+    <!-- ═══ Status Bar ═══ -->
+    <div class="status-bar">
+        <div><span class="status-indicator">&#9679;</span> Operational | v2.0 | 5 Domains</div>
+        <div id="timestamp"></div>
+    </div>
+
+    <script src="/js/mockup.js"></script>
+</body>
+</html>
