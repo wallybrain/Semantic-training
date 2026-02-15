@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library // wallyblanchard.com</title>
+    <style>
+        @font-face {
+            font-family: 'VT323';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(fonts/VT323-Regular.woff2) format('woff2');
+        }
+        @font-face {
+            font-family: 'Courier Prime';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(fonts/CourierPrime-Regular.woff2) format('woff2');
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0e0a1e;
+            --terminal-bg: #06060f;
+            --green: #66d9a0;
+            --green-dim: #4daa7a;
+            --green-dark: #337755;
+            --amber: #d4a853;
+            --cyan: #5bcefa;
+            --mono: 'VT323', monospace;
+            --mono-alt: 'Courier Prime', monospace;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--green);
+            font-family: var(--mono);
+            font-size: 18px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(102, 217, 160, 0.02) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+
+        .terminal-window {
+            background: var(--terminal-bg);
+            border: 1px solid rgba(102, 217, 160, 0.15);
+            margin-top: 20px;
+        }
+
+        .terminal-header {
+            background: rgba(102, 217, 160, 0.06);
+            border-bottom: 1px solid rgba(102, 217, 160, 0.15);
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .terminal-title {
+            font-size: 14px;
+            color: var(--green-dim);
+            letter-spacing: 2px;
+        }
+
+        .header-links {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+        }
+
+        .header-links a {
+            font-size: 14px;
+            padding: 2px 10px;
+            border: 1px solid rgba(102, 217, 160, 0.15);
+            color: var(--green-dark);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .header-links a:hover {
+            color: var(--green);
+            border-color: var(--green-dim);
+        }
+
+        .terminal-content {
+            padding: 25px;
+        }
+
+        h1 {
+            font-family: var(--mono);
+            font-size: 28px;
+            color: var(--green);
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            color: var(--green-dark);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            background: rgba(102, 217, 160, 0.05);
+            border: 1px solid rgba(102, 217, 160, 0.2);
+            color: var(--green);
+            font-family: var(--mono-alt);
+            font-size: 16px;
+            padding: 8px 12px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus {
+            border-color: var(--green-dim);
+        }
+
+        .search-box::placeholder {
+            color: var(--green-dark);
+        }
+
+        .sort-btn {
+            background: rgba(102, 217, 160, 0.05);
+            border: 1px solid rgba(102, 217, 160, 0.2);
+            color: var(--green-dim);
+            font-family: var(--mono);
+            font-size: 14px;
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sort-btn:hover, .sort-btn.active {
+            color: var(--green);
+            border-color: var(--green-dim);
+            background: rgba(102, 217, 160, 0.1);
+        }
+
+        .stats {
+            color: var(--green-dark);
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #count { color: var(--green-dim); }
+
+        .book-list {
+            list-style: none;
+        }
+
+        .book-item {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(102, 217, 160, 0.06);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: baseline;
+        }
+
+        .book-item:hover {
+            background: rgba(102, 217, 160, 0.03);
+        }
+
+        .book-title {
+            font-family: var(--mono-alt);
+            font-size: 16px;
+            color: var(--green);
+        }
+
+        .book-title a {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(102, 217, 160, 0.15);
+            transition: border-color 0.2s;
+        }
+
+        .book-title a:hover {
+            border-color: var(--green);
+        }
+
+        .book-reading {
+            color: var(--cyan);
+        }
+
+        .book-reading::after {
+            content: ' [reading]';
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--cyan);
+            opacity: 0.7;
+        }
+
+        .book-author {
+            font-family: var(--mono);
+            font-size: 14px;
+            color: var(--green-dim);
+        }
+
+        .book-author a {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(77, 170, 122, 0.15);
+            transition: border-color 0.2s;
+        }
+
+        .book-author a:hover {
+            border-color: var(--green-dim);
+        }
+
+        .book-meta {
+            font-family: var(--mono);
+            font-size: 13px;
+            color: var(--green-dark);
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .book-tags {
+            font-size: 12px;
+            color: var(--green-dark);
+            margin-top: 3px;
+            opacity: 0.6;
+        }
+
+        .letter-marker {
+            font-size: 22px;
+            color: var(--amber);
+            padding: 15px 0 5px;
+            border-bottom: 1px solid rgba(212, 168, 83, 0.2);
+            margin-bottom: 5px;
+            letter-spacing: 4px;
+        }
+
+        .letter-marker::before {
+            content: '// ';
+            color: var(--green-dark);
+            font-size: 14px;
+        }
+
+        .no-results {
+            color: var(--green-dark);
+            font-style: italic;
+            padding: 30px 0;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .status-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            font-size: 12px;
+            color: var(--green-dark);
+            padding: 4px 15px;
+            display: flex;
+            justify-content: space-between;
+            background: rgba(10, 10, 10, 0.95);
+            border-top: 1px solid rgba(102, 217, 160, 0.1);
+            z-index: 50;
+        }
+
+        @media (max-width: 768px) {
+            .book-item {
+                grid-template-columns: 1fr;
+            }
+            .book-meta {
+                text-align: left;
+            }
+            h1 { font-size: 22px; }
+            .controls { flex-direction: column; }
+            .sort-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="terminal-window">
+        <div class="terminal-header">
+            <span class="terminal-title">LIBRARY</span>
+            <div class="header-links">
+                <a href="/">[home]</a>
+                <a href="https://wallybrain.icu">[wallybrain]</a>
+                <a href="semantic-training.html">[fnord]</a>
+                <a href="https://solitaire.wallybrain.icu">[solitaire]</a>
+                <a href="https://code.wallyblanchard.com">[IDE]</a>
+            </div>
+        </div>
+        <div class="terminal-content">
+            <h1>$ cat /shelf/*</h1>
+            <div class="subtitle">Personal library — 453 volumes</div>
+
+            <div class="controls">
+                <input type="text" class="search-box" id="search" placeholder="search by title or author..." autocomplete="off">
+                <button class="sort-btn active" data-sort="author">author</button>
+                <button class="sort-btn" data-sort="title">title</button>
+                <button class="sort-btn" data-sort="year">year</button>
+                <button class="sort-btn" data-sort="pages">pages</button>
+            </div>
+
+            <div class="stats">
+                <span>sort: <span id="sort-label">author</span></span>
+                <span>showing <span id="count">453</span> of 453</span>
+            </div>
+
+            <div id="library"></div>
+        </div>
+    </div>
+</div>
+
+<div class="status-bar">
+    <span>LIBRARY v1.0 // SOURCE: LibraryThing</span>
+    <span id="timestamp"></span>
+</div>
+
+<script>
+var BOOKS = [{"t":"A course in miracles : combined volume","a":"","y":"1996","p":"1312","m":"Paper Book","g":"a course in miracles, ACIM, channeled, Christian, Christianity, course in miracles, faith, God, healing, inner peace, Jesus, Jesus Christ, life, love, metaphysics, miracles, new age, non-fiction, personal growth, philosophy, psychology, relationships, religion, self-help, self-study, spirit, spiritual, spiritual life, spirituality"},{"t":"Boy Scouts of America. Handbook for boys","a":"","y":"?","p":"","m":"Paper Book"},{"t":"The Sexual Politics of Meat: A Feminist-Vegetarian Critical Theory","a":"Carol J. Adams","y":"1999","p":"272","m":"Paperback","g":"activism, animal rights, animal welfare, animals, Carol J. Adams, critical theory, ecofeminism, ethics, feminism, feminist, feminist theory, food, food politics, gender, healthy cooking, meat, non-fiction, patriarchy, politics, sexism, sexual politics, theory, unread, veg*n, vegan, veganism, vegetarian, vegetarianism, women, women's studies"},{"t":"More Than Complete Hitchhiker's Guide: Complete & Unabridged","a":"Douglas Adams","y":"1987","p":"624","m":"Paper Book"},{"t":"The Crowley Tarot: The Handbook to the Cards","a":"Akron","y":"1995","p":"224","m":"Paperback","g":"Aleister Crowley, esoteric, occult, tarot, thoth, oracle, fortune telling, divination, thelema"},{"t":"Rosicrucian Manual","a":"Amorc","y":"?","p":"","m":"Hardcover"},{"t":"The Golden Ass","a":"Apuleius","y":"1955","p":"","m":"Paperback"},{"t":"A History of God: The 4,000-Year Quest of Judaism, Christianity and Islam","a":"Karen Armstrong","y":"1994","p":"496","m":"Paperback"},{"t":"Stars Like Dust","a":"Isaac Asimov","y":"1963","p":"","m":"Paperback"},{"t":"The Human Brain","a":"Isaac Asimov","y":"1965","p":"384","m":"Paperback"},{"t":"America Now: Short Readings from Recent Periodicals","a":"Robert Atwan","y":"2009","p":"480","m":"Paperback"},{"t":"The Dictionary of Difficult Words","a":"John Ayto","y":"2000","p":"292","m":"Hardcover"},{"t":"Cheer Up! Better Times Ahead!","a":"Roger W. Babson","y":"1932","p":"","m":"Hardcover"},{"t":"The Poetics of Reverie: Childhood, Language, and the Cosmos","a":"Gaston Bachelard","y":"1971","p":"224","m":"Paperback","g":"french, philosophy, language, dream, creative, imagination, linguistics, poetics, poetry"},{"t":"The Poetics of Space","a":"Gaston Bachelard","y":"1994","p":"288","m":"Paperback"},{"t":"The Psychoanalysis of Fire","a":"Gaston Bachelard","y":"1987","p":"128","m":"Paperback","g":"1930s, 20th, 20th century, alchemy, continental philosophy, counseling, criticism, desire, essay, essays, fire, French, French literature, French philosophy, Frye, history of science, imagination, literary criticism, meaning, myth, mythology, phenomenology, philosophy, philosophy of science, poetics, psychoanalysis, psychology, theory, thinking, transpersonal"},{"t":"Being and Event","a":"Alain Badiou","y":"2007","p":"560","m":"Paperback"},{"t":"The drought","a":"J. G. Ballard","y":"1968","p":"","m":"Paperback"},{"t":"Chronopolis and Other Stories","a":"J. G. Ballard","y":"1971","p":"310","m":"Hardcover"},{"t":"Reframing: Neuro-Linguistic Programming and the Transformation of Meaning","a":"Richard Bandler","y":"1982","p":"208","m":"Paperback"},{"t":"Walking On Glass","a":"Ian Banks","y":"1993","p":"352","m":"Paperback"},{"t":"The Crow Road","a":"Iain Banks","y":"1993","p":"512","m":"Paperback"},{"t":"The Player of Games","a":"Iain M. Banks","y":"2008","p":"416","m":"Paperback"},{"t":"The Algebraist","a":"Iain M. Banks","y":"2006","p":"434","m":"Paperback"},{"t":"Cabal","a":"Clive Barker","y":"1990","p":"406","m":"Paperback"},{"t":"The DAMNATION GAME.","a":"Clive. Barker","y":"1985","p":"","m":"Hardcover"},{"t":"The Great and Secret Show","a":"Clive Barker","y":"1999","p":"672","m":"Paperback"},{"t":"Imajica","a":"Clive Barker","y":"1991","p":"854","m":"Hardcover"},{"t":"Weaveworld 1ST Edition","a":"Clive Barker","y":"1987","p":"","m":"Hardcover"},{"t":"UNSPEAKABLE PRACTICES, UNNATURAL ACTS","a":"Donald Barthelme","y":"1968","p":"","m":"Paperback"},{"t":"Erotism: Death and Sensuality","a":"Georges Bataille","y":"1986","p":"280","m":"Paperback"},{"t":"Mind and Nature: A Necessary Unity (Advances in Systems Theory, Complexity, and the Human Sciences)","a":"Gregory Bateson","y":"2002","p":"220","m":"Paperback"},{"t":"Steps to an Ecology of Mind: Collected Essays in Anthropology, Psychiatry, Evolution, and Epistemology","a":"Gregory Bateson","y":"2000","p":"565","m":"Paperback"},{"t":"The System of Objects (Radical Thinkers)","a":"Jean Baudrillard","y":"2006","p":"224","m":"Paperback","g":"philosophy"},{"t":"The Intelligence of Evil or the Lucidity Pact (Talking Images)","a":"Jean Baudrillard","y":"2005","p":"208","m":"Paperback"},{"t":"Simulacra and Simulation","a":"Jean 0 Baudrillard","y":"1994","p":"176","m":"Paperback"},{"t":"THE ETHICS OF AMBIGUITY [ 1st ]","a":"Simone w/trans. by Bernard Frechtman De Beauvoir","y":"1949","p":"","m":"Hardcover"},{"t":"Life thoughts","a":"Henry Ward Beecher","y":"1858","p":"","m":"Paperback"},{"t":"Between Heaven and Earth: A Guide to Chinese Medicine","a":"Harriet Beinfield","y":"1992","p":"448","m":"Paperback"},{"t":"Great Sky River","a":"Gregory Benford","y":"1988","p":"10","m":"Paperback"},{"t":"Stalking the Wild Pendulum: On the Mechanics of Consciousness","a":"Itzhak Bentov","y":"1988","p":"208","m":"Paperback"},{"t":"Creative Evolution","a":"Henri Bergson","y":"2005","p":"472","m":"Paperback"},{"t":"The principles of human knowledge, and Three dialogues between Hylas and Philonous","a":"George Berkeley","y":"1963","p":"288","m":"Paper Book"},{"t":"Dictatorship of Virtue: How the Battle over Multiculturalism Is Reshaping Our Schools, Our Country, and Our Lives","a":"Richard Bernstein","y":"1995","p":"396","m":"Paperback"},{"t":"The Portable Blake - Selected and Arranged with an Introduction by Alfred Kazin","a":"William Blake","y":"1968","p":"","m":"Paperback"},{"t":"The Lucifer Principle: A Scientific Expedition into the Forces of History","a":"Howard Bloom","y":"1997","p":"466","m":"Paperback","g":"philosophy"},{"t":"The Closing of the American Mind","a":"Allan Bloom","y":"1988","p":"392","m":"Paperback","g":"philosophy"},{"t":"The Decameron or Ten Days' Entertainment","a":"BOCCACCIO","y":"","p":"","m":"Hardcover"},{"t":"All Music Guide to Electronica: The Definitive Guide to Electronic Music","a":"Vladimir Bogdanov","y":"2001","p":"600","m":"Paperback"},{"t":"'Twixt twelve and twenty","a":"Pat Boone","y":"1958","p":"176","m":"Paper Book"},{"t":"The Csound Book: Perspectives in Software Synthesis, Sound Design, Signal Processing,and Programming","a":"Richard Boulanger","y":"2000","p":"782","m":"Paperback"},{"t":"Planet of the Apes (Formerly published as \"Monkey Planet\" Great Britan 1964, Published & Manufactured in Great Britain)","a":"Pierre Boulle","y":"1991","p":"","m":"Paperback"},{"t":"Spiders House (Abacus Books)","a":"Paul Bowles","y":"1992","p":"406","m":"Paperback"},{"t":"Too Far From Home: The Selected Writings Of Paul Bowles","a":"Paul Bowles","y":"1993","p":"697","m":"Hardcover"},{"t":"The Fantastic Imagination: An Anthology of High Fantasy","a":"Robert H. and Kenneth J. Zahorski, edited by BOYER","y":"1977","p":"325","m":"Paperback"},{"t":"Zero","a":"Ignacio De Loyola Brandao","y":"1983","p":"317","m":"Paperback"},{"t":"Pronoia Is the Antidote for Paranoia, Revised and Expanded: How the Whole World Is Conspiring to Shower You with Blessings","a":"Rob Brezsny","y":"2009","p":"400","m":"Paperback"},{"t":"The wicked ways of Malcolm McLaren","a":"Craig Bromberg","y":"1989","p":"xxii; 330","m":"Paper Book"},{"t":"Between Man and Man","a":"Martin Buber","y":"1964","p":"","m":"Paperback"},{"t":"The Age of Fable, or Beauties of Mythology","a":"Thomas Bulfinch","y":"1898","p":"","m":"Hardcover"},{"t":"The Wanting Seed","a":"Anthony Burgess","y":"1962","p":"","m":"Paperback"},{"t":"The Western Lands","a":"William S. Burroughs","y":"1988","p":"272","m":"Paperback"},{"t":"My education : a book of dreams","a":"William S. Burroughs","y":"1996","p":"193","m":"Paper Book"},{"t":"The Place of Dead Roads: A Novel","a":"William S. Burroughs","y":"1995","p":"320","m":"Paperback","g":"20th century, American, American fiction, American literature, anarchism, beat, Beat Generation, Beat Literature, Burroughs, drugs, experimental, experimental fiction, fiction, gay, literary fiction, literature, novel, poetry, postmodernism, queer, sci-fi, science fiction, surreal, transgressive, trilogy, US literature, USA, western, William S. Burroughs, wsb"},{"t":"Imago","a":"Octavia E. Butler","y":"1990","p":"","m":"Paperback"},{"t":"Erewhon","a":"Samuel Butler","y":"2010","p":"136","m":"Paperback"},{"t":"Adulthood Rites","a":"Octavia E. Butler","y":"1989","p":"288","m":"Paperback"},{"t":"The Way of all Flesh","a":"Samuel Butler","y":"1950","p":"","m":"Hardcover"},{"t":"Candide or Optimism","a":"Voltaire - Translated By John Butt","y":"1982","p":"144","m":"Paperback","g":"philosophy, french"},{"t":"The Saga of the Volsungs: The Norse Epic of Sigurd the Dragon Slayer","a":"Jesse L. Byock","y":"2002","p":"145","m":"Paperback"},{"t":"Adam, and, The train: two novels","a":"Heinrich BÃ¶ll","y":"1970","p":"268","m":"Paper Book"},{"t":"Jurgen: A Comedy of Justice (Classic Reprint)","a":"James Branch Cabell","y":"1946","p":"","m":"Paperback"},{"t":"Silence: Lectures and Writings","a":"John Cage","y":"1961","p":"276","m":"Paperback"},{"t":"The Castle of Crossed Destinies","a":"Italo Calvino","y":"1979","p":"144","m":"Paperback"},{"t":"Oriental Mythology (The Masks of God, Volume II) (v. 2)","a":"Joseph Campbell","y":"1962","p":"561","m":"Paperback"},{"t":"Myths to Live By","a":"Joseph Campbell","y":"1984","p":"","m":"Paperback"},{"t":"The Stranger","a":"Albert Camus","y":"1989","p":"123","m":"Paperback","g":"french"},{"t":"The Rebel","a":"Albert Camus","y":"1956","p":"","m":"Paper Book"},{"t":"The Turning Point: Science, Society, and the Rising Culture","a":"Fritjof Capra","y":"1984","p":"464","m":"Paperback","g":"philosophy"},{"t":"Ender's Game","a":"Orson Scott Card","y":"1986","p":"","m":"Paperback"},{"t":"Brain droppings","a":"George Carlin","y":"1997","p":"xii; 258","m":"Paper Book"},{"t":"How to Win Friends & Influence People","a":"Dale Carnegie","y":"1990","p":"276","m":"Paperback"},{"t":"King Ink","a":"Nick Cave","y":"1990","p":"193","m":"Paperback"},{"t":"And the Ass Saw the Angel","a":"Nick Cave","y":"1990","p":"320","m":"Paperback"},{"t":"Journey to the End of the Night (Soft Cover)","a":"Louis-Ferdinand Celine","y":"1960","p":"","m":"Paperback"},{"t":"death on the Installment Plan","a":"Louis-Ferdinand Celine","y":"1966","p":"","m":"Paperback"},{"t":"Health Problems (Health and Growth Series)","a":"W. W. with Dean F. Smiley and Ruth M. Strang Charters","y":"1935","p":"","m":"Hardcover"},{"t":"The Canterbury Tales","a":"Geoffrey Chaucer","y":"1977","p":"","m":"Paper Book"},{"t":"Sensory experience (The Intext series in psychology)","a":"Raymond John Christman","y":"1971","p":"408","m":"Paperback"},{"t":"Jonathan Strange & Mr. Norrell: A Novel","a":"Susanna Clarke","y":"2005","p":"800","m":"Paperback"},{"t":"Selected poems, 1956-1968","a":"Leonard Cohen","y":"1968","p":"x; 245","m":"Paper Book"},{"t":"AN INTRODUCTION TO LOGIC AND SCIENTIFIC METHOD","a":"MORRIS R., & ERNEST NAGEL COHEN","y":"1934","p":"","m":"Paper Book"},{"t":"Behold a Pale Horse","a":"William Cooper","y":"1991","p":"500","m":"Paperback"},{"t":"Pornography (Opposing Viewpoints)","a":"Helen Cothran","y":"2001","p":"186","m":"Paperback"},{"t":"The Confessions of Aleister Crowley: An Autohagiography","a":"Aleister Crowley","y":"1989","p":"984","m":"Paperback"},{"t":"777 And Other Qabalistic Writings of Aleister Crowley: Including Gematria & Sepher Sephiroth","a":"Aleister Crowley","y":"1986","p":"336","m":"Paperback"},{"t":"Aleister Crowley Thoth Tarot Deck","a":"Aleister Crowley","y":"1972","p":"78","m":"Other"},{"t":"Book of Lies","a":"Aleister Crowley","y":"1986","p":"200","m":"Paperback"},{"t":"The Book of Thoth: A Short Essay on the Tarot of the Egyptians, Being the Equinox Volume III No. V","a":"Aleister Crowley","y":"1974","p":"308","m":"Paperback"},{"t":"Magick in Theory and Practice","a":"Aleister Crowley","y":"1976","p":"","m":"Paperback"},{"t":"The Cambridge Encyclopedia of Language","a":"David Crystal","y":"1997","p":"488","m":"Paperback"},{"t":"A selection of poems","a":"E. E. Cummings","y":"1965","p":"xiv; 194","m":"Paper Book"},{"t":"Programming and Problem Solving With C","a":"Nell B. Dale","y":"1996","p":"1155","m":"Paperback"},{"t":"Chariots of the Gods?","a":"Erich Von Daniken","y":"1971","p":"","m":"Paperback"},{"t":"A History Of Secret Societies","a":"Arkon Daraul","y":"2000","p":"256","m":"Paperback"},{"t":"The Matter Myth: Dramatic Discoveries That Challenge Our Understanding of Physical Reality","a":"Paul Davies","y":"1992","p":"320","m":"Paperback","g":"philosophy"},{"t":"The Cosmic Blueprint: New Discoveries in the Nature's Creative Ability to Order the Universe","a":"Paul Davies","y":"1989","p":"223","m":"Paperback"},{"t":"Dhalgren","a":"Samuel R. Delany","y":"2001","p":"816","m":"Paperback"},{"t":"Difference and Repetition","a":"Gilles Deleuze","y":"1995","p":"350","m":"Paperback"},{"t":"The Penultimate Truth","a":"Philip K. Dick","y":"1989","p":"","m":"Paperback","r":1},{"t":"The Divine Invasion","a":"Philip K. Dick","y":"1991","p":"240","m":"Paperback"},{"t":"Radio Free Albemuth","a":"Philip K. Dick","y":"1998","p":"224","m":"Paperback"},{"t":"Ubik","a":"Philip K. Dick","y":"1991","p":"224","m":"Paperback"},{"t":"Valis","a":"Philip K. Dick","y":"1991","p":"240","m":"Paperback"},{"t":"The Zap Gun","a":"Philip K. Dick","y":"2002","p":"256","m":"Paperback"},{"t":"Deus Irae","a":"Philip K. Dick","y":"1983","p":"192","m":"Paperback"},{"t":"The Short Happy Life of the Brown Oxford and Other Classic Stories (The Collected Stories of Philip K. Dick, Vol. 1) (Vol 1)","a":"Philip K. Dick","y":"1990","p":"432","m":"Paperback"},{"t":"The transmigration of Timothy Archer","a":"Philip K. Dick","y":"1982","p":"255","m":"Paper Book"},{"t":"The Subgenius Psychlopaedia of Slack: The Bobliographon","a":"J.R. \"Bob\" Dobbs","y":"2006","p":"256","m":"Paperback"},{"t":"The Idiot (Bantam Classic)","a":"Fyodor Dostoevsky","y":"1983","p":"720","m":"Paperback"},{"t":"The Possessed (Signet classics)","a":"Fyodor Dostoyevsky","y":"1962","p":"704","m":"Paperback"},{"t":"The House of the Dead (intoduction by Ernest Simmons) (The Laurel Dostoyevsky)","a":"Fyodor Dostoyevsky","y":"1967","p":"","m":"Paperback"},{"t":"The Double (Dover Thrift Editions)","a":"Fyodor Dostoyevsky","y":"1997","p":"144","m":"Paperback"},{"t":"The Encyclopedia of Delusions: A Critical Scrutiny of Current Beliefs and Conventions","a":"Ronald Frederick Henry Duncan","y":"1981","p":"242","m":"Paperback"},{"t":"Reflections Marin: Reflections on a Marine Venus","a":"Lawrence Durrell","y":"1978","p":"208","m":"Paperback"},{"t":"The Poetry of Lawrence Durrell","a":"Lawrence Durrell","y":"1962","p":"","m":"Hardcover"},{"t":"The Dhammapada","a":"Eknath Easwaran","y":"1986","p":"208","m":"Paper Book"},{"t":"The Frontiersmen: A Narrative","a":"Allan W. Eckert","y":"2001","p":"626","m":"Paperback"},{"t":"The Mysterious Flame of Queen Loana","a":"Umberto Eco","y":"2006","p":"480","m":"Paperback"},{"t":"Philosophy of Santayana","a":"Irwin Edman","y":"1953","p":"","m":"Hardcover","g":"philosophy"},{"t":"Wittgenstein's Poker: The Story of a Ten-Minute Argument Between Two Great Philosophers","a":"David Edmonds","y":"2002","p":"352","m":"Paperback","g":"philosophy"},{"t":"The Myth of the Eternal Return: Or, Cosmos and History (Bollingen Series, XLVI)","a":"Mircea Eliade","y":"1974","p":"195","m":"Paperback"},{"t":"Complete poems and plays","a":"T. S. Eliot","y":"1952","p":"vii; 392","m":"Paper Book"},{"t":"Flesh / Lord Tyger (Signet 2 Novel Omnibus)","a":"Philip Jose Farmer","y":"1981","p":"480","m":"Paperback"},{"t":"Pylon","a":"William Fauklner","y":"1951","p":"","m":"Paper Book"},{"t":"The portable Faulkner","a":"William, and Cowley, Malcolm Faulkner","y":"1965","p":"","m":"Paperback"},{"t":"Stephen Hawking: A Quest For The Theory Of Everything","a":"Kitty Ferguson","y":"1992","p":"192","m":"Paperback"},{"t":"The Aquarian Conspiracy: Personal and Social Transformation in the 1980s","a":"Marilyn Ferguson","y":"1981","p":"448","m":"Paperback"},{"t":"A Coney Island of the mind, poems","a":"Lawrence Ferlinghetti","y":"1958","p":"93","m":"Paper Book"},{"t":"Wreckers of Civilisation","a":"Simon Ford","y":"2000","p":"300","m":"Paperback"},{"t":"The Complete Books of Charles Fort: The Book of the Damned / Lo! / Wild Talents / New Lands","a":"Charles Fort","y":"1975","p":"1152","m":"Paperback"},{"t":"Discipline & Punish: The Birth of the Prison","a":"Michel Foucault","y":"1995","p":"352","m":"Paperback"},{"t":"Gods of the Cataclysm: A revolutionary investigation of man and his gods before and after the Great Cataclysm","a":"Hugh Fox","y":"1981","p":"301","m":"Hardcover"},{"t":"Thais","a":"Anatole France","y":"1976","p":"192","m":"Paperback"},{"t":"Civilization and Its Discontents","a":"Sigmund Freud","y":"1958","p":"","m":"Paper Book"},{"t":"General Psychological Theory","a":"Sigmund Freud","y":"1963","p":"","m":"Paperback"},{"t":"The dogma of Christ, and other essays on religion, psychology, and culture (Fawcett Premier books)","a":"Erich Fromm","y":"1973","p":"","m":"Paperback"},{"t":"Synergetics","a":"Richard Buckminster Fuller","y":"1982","p":"876","m":"Paperback","g":"philosophy"},{"t":"I Seem to Be a Verb: Environment and Man's Future","a":"R. Buckminster Fuller","y":"1970","p":"192","m":"Paperback"},{"t":"Critical Path","a":"R. Buckminster Fuller","y":"1982","p":"512","m":"Paperback","g":"philosophy"},{"t":"CRIME AND PUNISHMENT","a":"DOSTOYEVSKY FYODOR","y":"1968","p":"","m":"Paperback"},{"t":"Good Omens (Discworld)","a":"Neil Gaiman","y":"1992","p":"","m":"Paperback"},{"t":"The Kindly Ones (Sandman, Book 9)","a":"Neil Gaiman","y":"1999","p":"352","m":"Hardcover"},{"t":"Non-violent resistance (Satyagraha)","a":"Mahatma Gandhi","y":"1951","p":"xiv; 404","m":"Paper Book"},{"t":"All Men Are Brothers (Continuum Impacts)","a":"Mohandas K. Gandhi","y":"2005","p":"208","m":"Paperback"},{"t":"Grendel","a":"John Gardner","y":"1972","p":"152","m":"Paperback"},{"t":"The Night Is Large: Collected Essays, 1938-1995","a":"Martin Gardner","y":"1997","p":"608","m":"Paperback"},{"t":"Virtual Light","a":"William Gibson","y":"1993","p":"","m":"Paperback"},{"t":"Idoru","a":"William Gibson","y":"1997","p":"400","m":"Paperback"},{"t":"Pattern Recognition","a":"William Gibson","y":"2004","p":"368","m":"Paperback"},{"t":"Count Zero","a":"William Gibson","y":"1987","p":"256","m":"Paperback"},{"t":"Burning Chrome","a":"William Gibson","y":"1986","p":"208","m":"Paperback"},{"t":"The Immoralist","a":"AndrÃ© Gide","y":"1954","p":"","m":"Paperback","g":"french"},{"t":"The Information: A History, A Theory, A Flood","a":"James Gleick","y":"2012","p":"544","m":"Paperback"},{"t":"Faust: Part One (Worlds Classics) (Pt. 1)","a":"J. W. von Goethe","y":"1987","p":"240","m":"Paperback"},{"t":"Faust: Part Two (The World's Classics) (Pt. 2)","a":"Johann Wolfgang von Goethe","y":"1994","p":"400","m":"Paperback"},{"t":"Dead Souls (Penguin Classics)","a":"Nikolai Gogol","y":"1961","p":"384","m":"Paperback"},{"t":"Oblomov","a":"ivan goncharov","y":"1960","p":"","m":"Paperback"},{"t":"Webster's Third New International Dictionary/Unabridged","a":"Philip Babcock Gove","y":"1986","p":"","m":"Hardcover"},{"t":"The Adventure of Self-Discovery: Dimensions of Consciousness and New Perspectives in Psychotherapy and Inner Exploration","a":"Stanislav Grof","y":"1988","p":"321","m":"Paperback"},{"t":"Mindfulness in Plain English: Revised and Expanded Edition","a":"Bhante Henepola Gunaratana","y":"1996","p":"224","m":"Paperback"},{"t":"Beelzebub's Tales to His Grandson: All And Everything: 1st Series (Compass)","a":"G. I. Gurdjieff","y":"1999","p":"1248","m":"Paperback"},{"t":"Meetings with Remarkable Men (All and Everything)","a":"G. I. Gurdjieff","y":"1991","p":"320","m":"Paperback"},{"t":"Official Advanced Dungeons & Dragons Players Handbook","a":"Gary Gygax","y":"1978","p":"128","m":"Hardcover"},{"t":"Advanced Dungeons & Dragons: Dungeon Master's Guide","a":"Gary Gygax","y":"1979","p":"238","m":"Hardcover"},{"t":"The Structural Transformation of the Public Sphere: An Inquiry into a Category of Bourgeois Society (Studies in Contemporary German Social Thought)","a":"JÃ¼rgen Habermas","y":"1991","p":"301","m":"Paperback"},{"t":"Writer's Reference with Writing about Literature with 2009 MLA Update","a":"Diana Hacker","y":"2009","p":"624","m":"Paper Book"},{"t":"The Secret Teachings of All Ages (Reader's Edition)","a":"Manly P. Hall","y":"2003","p":"768","m":"Paperback"},{"t":"Planets in Youth: Patterns of Early Development (The Planet Series)","a":"Robert Hand","y":"1997","p":"384","m":"Paperback"},{"t":"Peace Is Every Step: The Path of Mindfulness in Everyday Life","a":"Thich Nhat Hanh","y":"1992","p":"160","m":"Paperback"},{"t":"Witchcraft At Salem","a":"Chadwick Hansen","y":"1969","p":"","m":"Paperback"},{"t":"The Last Hours of Ancient Sunlight: Revised and Updated: The Fate of the World and What We Can Do Before It's Too Late","a":"Thom Hartmann","y":"2004","p":"400","m":"Paperback"},{"t":"Use the Right Word: Modern Guide to Synonyms and Related Words","a":"S. I. Hayakawa","y":"1982","p":"726","m":"Hardcover"},{"t":"The Thirteen Books of the Elements, Vol. 1: Books 1-2","a":"Thomas L. Heath","y":"1956","p":"464","m":"Paperback"},{"t":"Georg Wilhelm Friedrich Hegel: The Phenomenology of Spirit (Cambridge Hegel Translations)","a":"Georg Hegel","y":"2019","p":"540","m":"Paperback"},{"t":"Phenomenology of Spirit","a":"G. W. F. Hegel","y":"1977","p":"640","m":"Paperback"},{"t":"Being and time","a":"Martin Heidegger","y":"1962","p":"589","m":"Paper Book"},{"t":"The Dosadi Experiment","a":"Frank Herbert","y":"1978","p":"","m":"Paper Book"},{"t":"Dune","a":"Frank Herbert","y":"1984","p":"","m":"Paperback"},{"t":"Zen, including Zen in the Art of Archery with an Introduction by D.T. Suzuki and The Method of Zen","a":"Eugen Herrigel","y":"1964","p":"","m":"Paperback"},{"t":"The Glass Bead Game","a":"Hermann HESSE","y":"1973","p":"520","m":"Paperback"},{"t":"Siddhartha","a":"Hermann Hesse","y":"1982","p":"160","m":"Paperback"},{"t":"Demian (Bantam Modern Classics)","a":"Hermann Hesse","y":"1969","p":"","m":"Paperback"},{"t":"The Tao of Pooh","a":"Benjamin Hoff","y":"1983","p":"176","m":"Paperback"},{"t":"LSD: My Problem Child: Reflections on Sacred Drugs, Mysticism, and Science","a":"Albert Hofmann","y":"1983","p":"202","m":"Paperback"},{"t":"INTERGLOSSA ; A DRAFT OF AN AUXILIARY FOR A DEMOCRATIC WORLD ORDER, BEING AN ATTEMPT TO APPLY SEMANTIC PRINCIPLES TO LANGUAGE DESIGN","a":"LANCELOT HOGBEN","y":"1943","p":"","m":"Paperback"},{"t":"Mathematics for the Million: How to Master the Magic of Numbers","a":"Lancelot Hogben","y":"1993","p":"656","m":"Paperback"},{"t":"Mathematics for the Million: How to Master the Magic of Numbers","a":"Lancelot Hogben","y":"1993","p":"656","m":"Paperback"},{"t":"A Shropshire lad (International pocket library)","a":"A. E Housman","y":"1919","p":"","m":"Paperback"},{"t":"The Evolutionary Journey: A Personal Guide to a Positive Future","a":"Barbara Marx Hubbard","y":"1993","p":"177","m":"Paperback"},{"t":"Devils of Loudun","a":"Aldous Huxley","y":"1979","p":"","m":"Paperback"},{"t":"Those Barren Leaves","a":"Aldous Huxley","y":"1956","p":"","m":"Hardcover"},{"t":"Brave New World","a":"Aldous Huxley","y":"1966","p":"","m":"Paperback"},{"t":"Eyeless In Gaza","a":"Aldous Huxley","y":"1961","p":"","m":"Paperback"},{"t":"The Perennial Philosophy","a":"Aldous Huxley","y":"1990","p":"336","m":"Paperback","g":"philosophy"},{"t":"The Art of Seeing","a":"Aldous Huxley","y":"1942","p":"","m":"Paper Book"},{"t":"Rebels & Devils: The Psychology of Liberation","a":"Christopher S. Hyatt","y":"2010","p":"432","m":"Paperback"},{"t":"Peer Gynt","a":"Henrik Ibsen","y":"1964","p":"","m":"Paperback"},{"t":"And the Truth Shall Set You Free","a":"David Icke","y":"1997","p":"518","m":"Paperback"},{"t":"Children of the Matrix: How an Interdimensional Race has Controlled the World for Thousands of Years-and Still Does","a":"David Icke","y":"2001","p":"493","m":"Paperback"},{"t":"A Hegel Dictionary","a":"Michael Inwood","y":"1992","p":"368","m":"Paperback"},{"t":"The Matrix and Philosophy: Welcome to the Desert of the Real (Popular Culture and Philosophy)","a":"William Irwin","y":"2002","p":"320","m":"Paperback","g":"philosophy"},{"t":"Light on yoga; yoga dÄ«pikÄ","a":"B. K. S. Iyengar","y":"1965","p":"342","m":"Paper Book"},{"t":"Pragmatism (Philosophical Classics)","a":"William James","y":"1995","p":"128","m":"Paperback","g":"philosophy"},{"t":"The Varieties of Religious Experience (Dover Value Editions)","a":"William James","y":"2002","p":"544","m":"Paperback","g":"philosophy"},{"t":"The Origin of Consciousness in the Breakdown of the Bicameral Mind","a":"Julian Jaynes","y":"1976","p":"467","m":"Hardcover"},{"t":"St. Francis of Assisi: A Biography","a":"Johannes Jorgensen","y":"1955","p":"354","m":"Paperback"},{"t":"A Portrait of the Artist as a Young Man","a":"James Joyce","y":"1964","p":"256","m":"Paperback"},{"t":"Ulysses (A Vintage Giant, V-380)","a":"James Joyce","y":"1961","p":"","m":"Paper Book"},{"t":"Finnegans Wake: Centennial Edition","a":"James Joyce","y":"1982","p":"640","m":"Paperback"},{"t":"Man and His Symbols","a":"Carl Gustav Jung","y":"1968","p":"432","m":"Paperback"},{"t":"The Archetypes and The Collective Unconscious (Collected Works of C.G. Jung Vol.9 Part 1)","a":"C. G. Jung","y":"1981","p":"470","m":"Paperback"},{"t":"Aion: Researches into the Phenomenology of the Self (Collected Works of C.G. Jung Vol.9 Part 2)","a":"C. G. Jung","y":"1979","p":"353","m":"Paperback"},{"t":"Parallel Worlds: A Journey Through Creation, Higher Dimensions, and the Future of the Cosmos","a":"Michio Kaku","y":"2006","p":"448","m":"Paperback"},{"t":"Immanuel Kant's Critique of Pure Reason","a":"Immanuel Kant","y":"1969","p":"","m":"Paperback","g":"philosophy"},{"t":"Critique of Pure Reason (The Cambridge Edition of the Works of Immanuel Kant)","a":"Immanuel Kant","y":"1999","p":"785","m":"Paperback"},{"t":"The Toxic Avenger: The Novel","a":"Lloyd Kaufman","y":"2006","p":"304","m":"Paperback"},{"t":"PLEASE UNDERSTAND ME: CHARACTER & TEMPERAMENT TYPES, Third Edition.","a":"David; Bates, Marilyn Keirsey","y":"1978","p":"210","m":"Paperback"},{"t":"The Camel Knows the Way","a":"Lorna Kelly","y":"2004","p":"277","m":"Paperback"},{"t":"Fear and Trembling (Penguin Classics)","a":"Soren Kierkegaard","y":"1986","p":"160","m":"Paperback","g":"philosophy"},{"t":"Roget's 21st century thesaurus in dictionary form : the essential reference for home, school, or office","a":"Barbara Ann Kipfer","y":"1992","p":"xi; 978","m":"Paper Book"},{"t":"The Jungle Books (Penguin Classics)","a":"Rudyard Kipling","y":"1990","p":"384","m":"Paperback"},{"t":"Practical Guide to Qabalistic Symbolism","a":"Gareth Knight","y":"1978","p":"640","m":"Hardcover"},{"t":"Darkness At Noon","a":"Arthur Koestler","y":"1961","p":"","m":"Paperback"},{"t":"The Roots of Coincidence","a":"Arthur Koestler","y":"1973","p":"158","m":"Paperback","g":"philosophy"},{"t":"Gestalt psychology;: An introduction to new concepts in modern psychology (A Mentor book)","a":"Wolfgang Kohler","y":"1961","p":"","m":"Paperback"},{"t":"Science & Sanity 2ND Edition","a":"Alfred Korzybski","y":"1941","p":"","m":"Hardcover"},{"t":"Total Freedom: The Essential Krishnamurti","a":"Jiddu Krishnamurti","y":"1996","p":"384","m":"Paperback"},{"t":"Mind Is a Myth: Disquieting Conversations with the Man Called UG","a":"U. G. Krishnamurti","y":"2007","p":"176","m":"Paperback"},{"t":"Anarchism ; & Anarchist communism : [two essays]","a":"Peter Kropotkin","y":"1987","p":"64","m":"Paper Book"},{"t":"The structure of scientific revolutions","a":"Thomas S. Kuhn","y":"1970","p":"xii; 210","m":"Paper Book","g":"philosophy"},{"t":"The Unbearable Lightness of Being","a":"Milan Kundera","y":"1988","p":"314","m":"Paperback"},{"t":"The Singularity Is Near: When Humans Transcend Biology","a":"Ray Kurzsweil","y":"2005","p":"605","m":"Paperback","r":1},{"t":"Ayurveda: A Practical Guide: The Science of Self Healing","a":"Vasant Lad","y":"1993","p":"175","m":"Paperback"},{"t":"Knots (World of man)","a":"R. D Laing","y":"1970","p":"90","m":"Hardcover"},{"t":"Interpersonal Perception","a":"R. D. Laing","y":"2000","p":"","m":"Paperback"},{"t":"The Voice of Experience","a":"R.D. Laing","y":"1983","p":"","m":"Paperback"},{"t":"Knots","a":"R.D. Laing","y":"1972","p":"96","m":"Paperback"},{"t":"Politics of Experience","a":"R.D. Laing","y":"1983","p":"192","m":"Paperback"},{"t":"The Divided Self: An Existential Study in Sanity and Madness (Penguin Psychology)","a":"R. D. Laing","y":"1965","p":"224","m":"Paperback"},{"t":"Politics of Experience","a":"R. D. Laing","y":"1974","p":"","m":"Paperback"},{"t":"J.F.K.: The Man & the Myth","a":"Victor Lasky","y":"1977","p":"883","m":"Paperback"},{"t":"Seven Pillars of Wisdom (Laurel Edition)","a":"T.E. Lawrence","y":"1962","p":"","m":"Paperback"},{"t":"The Plumed Serpent","a":"D. H. Lawrence","y":"1970","p":"464","m":"Paperback"},{"t":"The Politics of Ecstasy (Visions Series)","a":"Timothy Leary","y":"1990","p":"384","m":"Paperback"},{"t":"The Left Hand of Darkness","a":"Ursula K. LeGuin","y":"1987","p":"304","m":"Paperback"},{"t":"The Dispossessed","a":"Ursula LeGuin","y":"1975","p":"312","m":"Paperback"},{"t":"This Is Your Brain on Music: The Science of a Human Obsession","a":"Daniel J. Levitin","y":"2007","p":"322","m":"Paperback"},{"t":"The Aeneid of Virgil","a":"C. Day Lewis","y":"1952","p":"","m":"Paperback"},{"t":"The monk","a":"M. G. Lewis","y":"1952","p":"445","m":"Paper Book"},{"t":"Programming the Human Biocomputer","a":"John C. Lilly","y":"2004","p":"186","m":"Paperback"},{"t":"Simulations of God: The Science of Belief","a":"John C. Lilly","y":"1978","p":"304","m":"Paperback"},{"t":"The Audubon Society field guide to North American mushrooms","a":"Gary Lincoff","y":"1981","p":"926","m":"Paper Book"},{"t":"Digestive Wellness","a":"Elizabeth Lipski","y":"1999","p":"400","m":"Paperback"},{"t":"The Dream-Quest of Unknown Kadath","a":"H. P. Lovecraft","y":"1986","p":"256","m":"Paperback"},{"t":"GALA - A New Look at Life on Earth","a":"J.E. Lovelock","y":"1989","p":"176","m":"Paperback","g":"philosophy"},{"t":"Black Science : Ancient and Modern Techniques of Ninja Mind Manipulation","a":"Haha Lung","y":"2001","p":"181","m":"Paperback"},{"t":"E.T. 101: The Cosmic Instruction Manual","a":"Diana Luppi","y":"2016","p":"150","m":"Paperback"},{"t":"The Mind of a Mnemonist: A Little Book about a Vast Memory","a":"Aleksandr R. Luria","y":"1987","p":"192","m":"Paperback"},{"t":"Dictionary of Gods and Goddesses, Devils and Demons","a":"Manfred Lurker","y":"1987","p":"451","m":"Hardcover"},{"t":"The Alexander Technique: How to Use Your Body without Stress","a":"Wilfred Barlow M.D.","y":"1991","p":"240","m":"Paperback"},{"t":"Genius and Lust: a Journey Through the Major Writings of Henry Miller","a":"Norman Mailer","y":"1977","p":"492","m":"Paperback"},{"t":"THE MAGIC MOUNTAIN","a":"THOMAS MANN","y":"1969","p":"","m":"Paper Book"},{"t":"To Infinity and Beyond: A Cultural History of the Infinite","a":"Eli Maor","y":"1991","p":"304","m":"Paperback"},{"t":"Eros and Civilization - A Philosophical Inquiry Into Freud","a":"Herbert Marcuse","y":"1962","p":"","m":"Paperback"},{"t":"Bulfinch's Mythology: The Age of the Fable, The Age of Chivalry, Legends of","a":"Richard P. Martin","y":"1991","p":"768","m":"Hardcover"},{"t":"The Magician","a":"W. Somerset Maugham","y":"1960","p":"","m":"Paperback"},{"t":"Out of the Cave","a":"Dan McCullough","y":"2005","p":"208","m":"Paperback"},{"t":"The Invisible Landscape: Mind, Hallucinogens, and the I Ching","a":"Terence McKenna","y":"1994","p":"256","m":"Paperback"},{"t":"The Medium is the Massage","a":"Marshall McLuhan","y":"2005","p":"160","m":"Paperback"},{"t":"Understanding Media: The Extensions of Man","a":"Marshall McLuhan","y":"1994","p":"392","m":"Paperback"},{"t":"Male and female;: A study of the sexes in a changing world (A Mentor book)","a":"Margaret Mead","y":"1955","p":"","m":"Paperback"},{"t":"Managing and Troubleshooting PCs (Mike Meyers comp tia A Guide)","a":"Mike Meyers","y":"2007","p":"","m":"Paperback"},{"t":"Tropic of Capricorn","a":"Henry Miller","y":"1961","p":"","m":"Paperback"},{"t":"Cosmological Eye","a":"Henry Miller","y":"1969","p":"176","m":"Paperback"},{"t":"Tropic of Cancer","a":"Henry Miller","y":"1961","p":"","m":"Hardcover"},{"t":"Nexus: The Rosy Crucifixion III","a":"Henry Miller","y":"1994","p":"316","m":"Paperback"},{"t":"White Rabbit: A Psychedelic Reader","a":"John Miller","y":"1995","p":"304","m":"Paperback"},{"t":"Paradise Lost","a":"John Milton","y":"1969","p":"","m":"Paperback"},{"t":"Spring Snow (Haru No Yuki)","a":"Yukio (translated by Michael Gallagher) Mishima","y":"1980","p":"","m":"Paperback"},{"t":"Batman & Dracula: Red Rain","a":"Doug Moench","y":"1997","p":"96","m":"Comic book"},{"t":"The illustrated naked ape : a zoologist's study of the human animal","a":"Desmond Morris","y":"1967","p":"176","m":"Paper Book"},{"t":"THE AGE OF ARTHUR","a":"John Morris","y":"1996","p":"665","m":"Hardcover"},{"t":"Mahamudra: The Quintessence of Mind and Meditation","a":"Takpo Tashi Namgyal","y":"1987","p":"1","m":"Paperback"},{"t":"Fotonovel: Grease","a":"Michael Newman","y":"1978","p":"","m":"Paperback"},{"t":"Beyond Good and Evil (Prelude to a Philosophy of the Future)","a":"Friedrich Nietzsche","y":"1966","p":"256","m":"Paperback","g":"philosophy"},{"t":"The Birth of Tragedy (Dover Thrift Editions)","a":"Friedrich Nietzsche","y":"1995","p":"96","m":"Paperback","g":"philosophy"},{"t":"The gay science; with a prelude in rhymes and an appendix of songs","a":"Friedrich Wilhelm Nietzsche","y":"1974","p":"xviii; 396","m":"Paper Book","g":"philosophy"},{"t":"Operators and Things","a":"Barbara O'Brien","y":"1958","p":"","m":"Paperback"},{"t":"1984","a":"george orwell","y":"1961","p":"","m":"Paperback"},{"t":"Journey to the Heart/Discourses on the Sufi Way","a":"Osho","y":"1994","p":"258","m":"Paperback"},{"t":"In Search of the Miraculous : Fragments of an Unknown Teaching.","a":"P D Ouspensky","y":"1977","p":"399","m":"Paperback"},{"t":"In Search of the Miraculous (Harvest Book)","a":"P.D. Ouspensky","y":"1965","p":"399","m":"Paperback"},{"t":"Tertium Organum: The Third Canon of Thought- A Key to The Enigmas of the World","a":"P. D. Ouspensky","y":"1970","p":"","m":"Paperback"},{"t":"Thee psychick bible: Thee apocryphal scriptures of Genesis P-Orridge & thee [sic] third mind ov [sic] psychic TV","a":"Genesis P-Orridge","y":"1994","p":"175","m":"Paperback"},{"t":"Sexual Personae: Art and Decadence from Nefertiti to Emily Dickinson","a":"Camille Paglia","y":"1991","p":"736","m":"Paperback"},{"t":"The Yoga Sutras of Patanjali","a":"Patanjali","y":"2003","p":"432","m":"Paperback"},{"t":"The Concise Oxford Dictionary of English Literature (Oxford Paperback Reference)","a":"Sir Harvey Paul","y":"1970","p":"640","m":"Paperback"},{"t":"I Think, Therefore I Laugh","a":"John Paulos","y":"1990","p":"163","m":"Paperback","g":"philosophy"},{"t":"Dictionary of the Khazars: A Lexicon Novel in 100,000 Words (Male Edition)","a":"Milorad Pavic","y":"1989","p":"338","m":"Paperback"},{"t":"Awakening the Heroes Within: Twelve Archetypes to Help Us Find Ourselves and Transform Our World","a":"Carol S. Pearson","y":"1991","p":"352","m":"Paperback"},{"t":"Synchronicity: The Bridge Between Matter and Mind","a":"David Peat","y":"1987","p":"256","m":"Paperback"},{"t":"Gestalt Therapy Verbatim","a":"Frederick S. Peris","y":"1972","p":"","m":"Paperback"},{"t":"The Satyricon and the Fragments (Classics)","a":"Petronius","y":"1965","p":"208","m":"Paperback"},{"t":"Reich, Jung, Regardie & Me: Unhealed Healer.","a":"J. Marvin Spiegelman Ph.D.","y":"1992","p":"208","m":"Paperback"},{"t":"Symposium and Phaedrus","a":"Plato.","y":"1993","p":"92","m":"Paper Book","g":"philosophy"},{"t":"Elements of Expression","a":"Arthur Plotnik","y":"2000","p":"240","m":"Paperback"},{"t":"Edgar Allan Poe: Complete Tales and Poems","a":"Edgar Allan Poe","y":"2009","p":"842","m":"Hardcover"},{"t":"Guide to kulchur","a":"Ezra Pound","y":"1952","p":"379","m":"Paper Book"},{"t":"Thud!","a":"Terry Pratchett","y":"2006","p":"416","m":"Paperback"},{"t":"The Truth","a":"Terry Pratchett","y":"2001","p":"368","m":"Paperback"},{"t":"Soul Music","a":"Terry Pratchett","y":"1995","p":"384","m":"Paperback"},{"t":"The Color of Magic","a":"Terry Pratchett","y":"2000","p":"210","m":"Paperback"},{"t":"Remembrance of things past","a":"Marcel Proust","y":"1981","p":"1056","m":"Paper Book"},{"t":"Great World Atlas","a":"DK Publishing","y":"2008","p":"528","m":"Hardcover"},{"t":"Putnam's Handy Map Book","a":"Putnam","y":"1920","p":"","m":"Paper Book"},{"t":"Gravity's Rainbow","a":"Thomas Pynchon","y":"1980","p":"","m":"Paperback"},{"t":"V","a":"Thomas Pynchon","y":"1984","p":"","m":"Paperback"},{"t":"The Crying of Lot 49","a":"Thomas Pynchon","y":"1999","p":"160","m":"Paperback"},{"t":"Confessions of an English Opium Eater (Wordsworth Classics)","a":"Thomas De Quincey","y":"1999","p":"224","m":"Paperback"},{"t":"Gargantua and Pantagruel","a":"Francois Rabelais","y":"1991","p":"623","m":"Paperback","g":"french"},{"t":"Keys For Writers","a":"Ann Raimes","y":"2004","p":"512","m":"Paper Book"},{"t":"Wilhelm Reich (Pelican)","a":"Ola Raknes","y":"1971","p":"","m":"Paperback"},{"t":"Atlas Shrugged","a":"Ayn Rand","y":"1996","p":"1088","m":"Paperback","g":"philosophy"},{"t":"The Virtue of Selfishness","a":"Ayn Rand","y":"1964","p":"","m":"Paperback"},{"t":"A Garden of Pomegranates: Skrying on the Tree of Life","a":"Israel Regardie","y":"1995","p":"552","m":"Paperback"},{"t":"The Golden Dawn: The Original Account of the Teachings, Rites & Ceremonies of the Hermetic Order (Llewellyn's Golden Dawn Series)","a":"Israel Regardie","y":"2002","p":"844","m":"Paperback"},{"t":"THE FUNCTION OF THE ORGASM the Discovery of the Orgone","a":"WILHELM REICH","y":"1971","p":"","m":"Paperback"},{"t":"Zen Flesh, Zen Bones","a":"Paul Reps","y":"1971","p":"174","m":"Paperback"},{"t":"The Best of Rilke: 72 Form-True Verse Translations with Facing Originals, Commentary, and Compact Biography (English and German Edition)","a":"Rainer Maria Rilke","y":"1989","p":"213","m":"Paperback"},{"t":"The Three Levels of Spiritual Perception: A Commentary on the Three Visions","a":"Deshung Rinpoche","y":"2003","p":"576","m":"Paperback"},{"t":"The Computer Music Tutorial","a":"Curtis Roads","y":"1996","p":"1234","m":"Paperback"},{"t":"Still Life with Woodpecker","a":"Tom Robbins","y":"1981","p":"277","m":"Paperback"},{"t":"Another Roadside Attraction","a":"Tom Robbins","y":"1977","p":"352","m":"Paperback"},{"t":"Skinny Legs and All","a":"Tom Robbins","y":"1990","p":"422","m":"Hardcover"},{"t":"The Nag Hammadi library in English","a":"James M. (Ed.) Robinson","y":"1977","p":"494","m":"Hardcover"},{"t":"Doorways in the Sand","a":"Zelazny Roger","y":"1977","p":"","m":"Paperback"},{"t":"Ask Ed: Marijuana Law: Volume 1: Don't Get Busted","a":"Ed Rosenthal","y":"2000","p":"192","m":"Paperback"},{"t":"The Confessions of Jean Jacques Rousseau","a":"Jean Jacques Rousseau","y":"1967","p":"","m":"Paperback","g":"french"},{"t":"Concise Routledge encyclopedia of philosophy","a":"Routledge","y":"2000","p":"1030","m":"Hardcover","g":"philosophy"},{"t":"The god of small things","a":"Arundhati Roy","y":"1997","p":"xii; 321","m":"Paper Book"},{"t":"Spaceland: A Novel of the Fourth Dimension","a":"Rudy Rucker","y":"2002","p":"304","m":"Hardcover"},{"t":"Lunation Cycle: A Key to the Understanding of Personality","a":"Dane Rudhyar","y":"1967","p":"196","m":"Paperback"},{"t":"Unseen Rain: Quatrains of Rumi","a":"Jelaluddin Rumi","y":"1986","p":"83","m":"Paperback"},{"t":"Feeling the Shoulder of the Lion: Poems & Teaching Stories from the Mathnawi","a":"Jelaluddin Rumi","y":"1991","p":"103","m":"Paperback"},{"t":"Cyberia: Life in the Trenches of Hyperspace","a":"Douglas Rushkoff","y":"1995","p":"288","m":"Paperback"},{"t":"A History of Western Philosophy","a":"Bertrand Russell","y":"1967","p":"895","m":"Paperback","g":"philosophy"},{"t":"Mysticism and Logic","a":"bertrand russell","y":"1957","p":"","m":"Paperback","g":"philosophy"},{"t":"The Man Who Mistook His Wife for a Hat: And Other Clinical Tales","a":"Oliver W. Sacks","y":"1987","p":"256","m":"Paperback"},{"t":"Juliette or, Vice Amply Rewarded","a":"De Sade","y":"1965","p":"","m":"Paperback"},{"t":"Tarot","a":"Mouni Sadhu","y":"1978","p":"","m":"Paperback"},{"t":"THE TIBETAN BOOK OF THE DEAD (The Great Book of Natural Liberation Through Understanding in the Between)","a":"Padma Sambhava","y":"1993","p":"304","m":"Paperback"},{"t":"Scepticism and Animal Faith","a":"George Santayana","y":"1955","p":"314","m":"Paperback"},{"t":"Being and Nothingness: A Phenomenological Essay on Ontology","a":"Jean Paul Sartre","y":"1978","p":"811","m":"Paperback"},{"t":"The Wall: (Intimacy) and Other Stories (New Directions Paperbook)","a":"Jean-Paul Sartre","y":"1969","p":"144","m":"Paperback"},{"t":"Course in General Linguistics (Open Court Classics)","a":"Ferdinand de Saussure","y":"1998","p":"236","m":"Paperback"},{"t":"A Schnittke Reader:","a":"Alfred Schnittke","y":"2002","p":"296","m":"Hardcover"},{"t":"Schopenhauer: 'The World as Will and Representation': Volume 1 (The Cambridge Edition of the Works of Schopenhauer)","a":"Arthur Schopenhauer","y":"2014","p":"696","m":"Paperback"},{"t":"What is Life? Mind and Matter","a":"E. Schrodinger","y":"1968","p":"186","m":"Paperback"},{"t":"The Enochian Tarot: A New System of Divination for a New Age (Llewellyn's High Magick)","a":"Gerald Schueler","y":"2002","p":"352","m":"Paperback"},{"t":"Artaud on Theatre","a":"Claude Schumacher","y":"1991","p":"256","m":"Paperback"},{"t":"Gonzo: The Life of Hunter S. Thompson","a":"Corey Seymour","y":"2007","p":"496","m":"Hardcover"},{"t":"The Sonnets of Shakespeare","a":"William Shakespeare","y":"1960","p":"","m":"Paperback"},{"t":"William Shakespeare Unabr Ed Pb","a":"William Shakespeare","y":"1989","p":"1440","m":"Paperback"},{"t":"The mythic tarot","a":"Juliet Sharman-Burke","y":"2001","p":"224","m":"Paper Book"},{"t":"The Illuminatus! Trilogy: The Eye in the Pyramid, The Golden Apple, Leviathan","a":"Robert Shea","y":"1983","p":"805","m":"Paperback"},{"t":"Presence of the Past","a":"Rupert Sheldrake","y":"1989","p":"391","m":"Paperback","g":"philosophy"},{"t":"Where the Sidewalk Ends 30th Anniversary Edition: Poems and Drawings","a":"Shel Silverstein","y":"2004","p":"192","m":"Hardcover"},{"t":"Hyperion","a":"Dan Simmons","y":"1990","p":"481","m":"Paperback"},{"t":"The Necronomicon","a":"Simon","y":"1980","p":"288","m":"Paperback"},{"t":"Satan in Goray","a":"Isaac Bashevis Singer","y":"1966","p":"","m":"Paperback"},{"t":"A concise etymological dictionary of the English language","a":"Walter W. Skeat","y":"1911","p":"","m":"Paperback"},{"t":"Walden Two","a":"B. F. Skinner","y":"1970","p":"","m":"Paperback"},{"t":"Babel","a":"Patti Smith","y":"1979","p":"","m":"Paperback"},{"t":"Great Pyramid: Its Secrets & Mysteries Revealed","a":"Charles Piazzi Smyth","y":"1978","p":"664","m":"Hardcover"},{"t":"Illness as Metaphor","a":"Susan Sontag","y":"1988","p":"87","m":"Paperback"},{"t":"The Decline of the West: Form and Actuality","a":"Oswald Spengler","y":"1926","p":"","m":"Hardcover"},{"t":"A theologico-political treatise ; and, A political treatise","a":"Benedictus de Spinoza","y":"2004","p":"xxxiii; 390","m":"Paper Book","g":"philosophy"},{"t":"On the improvement of the understanding","a":"Benedictus de Spinoza","y":"1958","p":"xx; 40","m":"Paper Book"},{"t":"We Got the Neutron Bomb : The Untold Story of L.A. Punk","a":"Marc Spitz","y":"2001","p":"320","m":"Paperback"},{"t":"The Hundred Thousand Songs of Milarepa: A New Translation","a":"Christopher Stagg","y":"2017","p":"840","m":"Paperback"},{"t":"Three-Fisted Tales of \"Bob\"","a":"Ivan Stang","y":"1990","p":"352","m":"Paperback"},{"t":"HIGH WEIRDNESS BY MAIL","a":"Ivan Stang","y":"1988","p":"336","m":"Paperback"},{"t":"Star Maker (SF Masterworks) (S.F. Masterworks)","a":"Olaf Stapledon","y":"1999","p":"352","m":"Paperback"},{"t":"Anathem","a":"Neal Stephenson","y":"2009","p":"1008","m":"Paperback"},{"t":"In the Beginning...was the Command Line","a":"Neal Stephenson","y":"1999","p":"160","m":"Paperback"},{"t":"Zodiac","a":"Neal Stephenson","y":"1995","p":"320","m":"Paperback"},{"t":"Cryptonomicon","a":"Neal Stephenson","y":"2000","p":"928","m":"Paperback"},{"t":"Snow Crash","a":"Neal Stephenson","y":"1993","p":"480","m":"Paperback"},{"t":"Prisoners of Power (Best of Soviet SF)","a":"Arkady Strugatsky","y":"1977","p":"287","m":"Paperback"},{"t":"[THE ELEMENTS OF STYLE]The Elements of Style By Strunk, William, Jr.(Author)Paperback On 23 Jul 1999)","a":"William, Jr. Strunk","y":"1999","p":"","m":"Paperback"},{"t":"Not Always So: Practicing the True Spirit of Zen","a":"Shunryu Suzuki","y":"2002","p":"176","m":"Hardcover"},{"t":"Heaven and Hell","a":"Emanuel Swedenborg","y":"1984","p":"510","m":"Paperback"},{"t":"Metaphysics","a":"Richard Taylor","y":"1974","p":"xvii; 133","m":"Paper Book"},{"t":"Our Mathematical Universe: My Quest for the Ultimate Nature of Reality","a":"Max Tegmark","y":"2015","p":"432","m":"Paperback"},{"t":"Alices Adventures in Wonderland","a":"Carroll And Tenniel","y":"?","p":"","m":"Hardcover"},{"t":"When I Was a Wolf","a":"ShÅ«ji Terayama","y":"2020","p":"174","m":"Paperback"},{"t":"Fear and Loathing on the Campaign Trail '72","a":"Dr. Hunter S Thompson","y":"1983","p":"512","m":"Paperback"},{"t":"Black Holes and Time Warps: Einstein's Outrageous Legacy (Commonwealth Fund Book Program)","a":"Kip S. Thorne","y":"1995","p":"624","m":"Paperback","g":"philosophy"},{"t":"The Courage to Be","a":"Paul Tillich","y":"2000","p":"238","m":"Paperback"},{"t":"Future Shock","a":"Alvin Toffler","y":"1970","p":"","m":"Hardcover"},{"t":"The Fellowship of the Ring First Ace Edition","a":"J. R. R. Tolkien","y":"1965","p":"","m":"Paperback"},{"t":"The Lord of the Rings (Movie Art Cover)","a":"J.R.R. Tolkien","y":"2001","p":"1168","m":"Paperback"},{"t":"War and Peace (The Modern Library of the World's Best Books)","a":"Count Leo Tolstoy","y":"1955","p":"","m":"Hardcover"},{"t":"The Vintage Turgenev","a":"ivan turgenev","y":"1950","p":"","m":"Paperback"},{"t":"The Adventures of Huckleberry Finn","a":"Mark Twain","y":"1962","p":"250","m":"Hardcover"},{"t":"The Cloud of Unknowing (Classics of World Spirituality)","a":"Evelyn Underhill","y":"2003","p":"208","m":"Paperback"},{"t":"JavaScript for Dummies, 2nd Edition","a":"Emily A. Vander Veer","y":"1997","p":"400","m":"Paperback"},{"t":"A Thirsty Evil","a":"Gore Vidal","y":"1978","p":"112","m":"Paperback"},{"t":"Thirteen Stories and Thirteen Epitaphs","a":"William T. Vollmann","y":"1994","p":"256","m":"Paperback"},{"t":"Fathers and Crows (Seven Dreams)","a":"William Vollmann","y":"1993","p":"1008","m":"Paperback"},{"t":"Thirteen Stories and Thirteen Epitaphs","a":"William T. Vollmann","y":"1994","p":"256","m":"Paperback"},{"t":"The Ice-Shirt (Seven Dreams)","a":"William Vollmann","y":"1993","p":"432","m":"Paperback"},{"t":"The Rainbow Stories (Contemporary American Fiction)","a":"William Vollmann","y":"1992","p":"560","m":"Paperback"},{"t":"Player Piano","a":"Kurt Vonnegut","y":"1980","p":"304","m":"Paperback"},{"t":"Music in India; The Classical Traditions","a":"Bonnie C. Wade","y":"1997","p":"252","m":"Hardcover"},{"t":"Brief Interviews with Hideous Men","a":"David Foster Wallace","y":"2000","p":"336","m":"Paperback"},{"t":"The Qabalistic Tarot: A Textbook of Mystical Philosophy","a":"Robert Wang","y":"1987","p":"286","m":"Paperback"},{"t":"The Wisdom of Insecurity","a":"Alan W. Watts","y":"1968","p":"160","m":"Paperback"},{"t":"The Book: On the Taboo Against Knowing Who You Are","a":"Alan Watts","y":"1989","p":"163","m":"Paperback"},{"t":"The Essential Alan Watts","a":"Alan Watts","y":"1998","p":"142","m":"Paperback"},{"t":"Tao: The Watercourse Way","a":"Alan Watts","y":"1977","p":"160","m":"Paperback"},{"t":"Symmetry","a":"Hermann Weyl","y":"1966","p":"176","m":"Hardcover"},{"t":"The Magician's Companion: A Practical and Encyclopedic Guide to Magical and Religious Symbolism (Llewellyn's High Magick Series)","a":"Bill Whitcomb","y":"2002","p":"608","m":"Paperback"},{"t":"Principia Mathematica - Volume One","a":"Alfred North Whitehead","y":"2011","p":"680","m":"Paperback"},{"t":"Sex, Ecology, Spirituality: The Spirit of Evolution","a":"Ken Wilber","y":"1995","p":"816","m":"Hardcover","g":"philosophy"},{"t":"Eye to Eye: The Quest for the New Paradigm","a":"Ken Wilber","y":"2001","p":"336","m":"Paperback"},{"t":"Uncle Willie's Highly Opinionated Guide to The Residents 1972 -1992 : A Survey of Two Decades of Anonymous Fame","a":"Uncle Willie","y":"1993","p":"","m":"Paperback"},{"t":"Robert Anton Wilson Explains Everything: (or Old Bob Exposes His Ignorance)","a":"Robert Anton Wilson","y":"2005","p":"","m":"CD audiobook"},{"t":"The Outsider","a":"Colin Wilson","y":"1987","p":"320","m":"Paperback","g":"philosophy"},{"t":"Rattling the Cage: Toward Legal Rights for Animals","a":"Steven M. Wise","y":"2000","p":"384","m":"Paperback"},{"t":"Insatiability: A Novel in Two Parts (Quartet Encounters)","a":"Stanislaw Ignacy Witkiewicz","y":"1985","p":"480","m":"Paperback"},{"t":"The Blue and Brown Books","a":"Ludwig Wittgenstein","y":"1942","p":"208","m":"Paperback","g":"philosophy"},{"t":"A New Kind of Science","a":"Stephen Wolfram","y":"2002","p":"1192","m":"Hardcover"},{"t":"Islandia","a":"Austin Tappan Wright","y":"1958","p":"","m":"Hardcover"},{"t":"The Portable Chekhov paperback","a":"Avrahm Yarmolinsky","y":"1968","p":"","m":"Paperback"},{"t":"The Science of Being and the Art of Living: Transcendental Meditation","a":"Maharishi Mahesh Yogi","y":"1968","p":"336","m":"Paperback"},{"t":"An Introduction to Programming With C","a":"Diane Zak","y":"2010","p":"944","m":"Paperback"},{"t":"A People's History of the United States: 1492 to Present","a":"Howard Zinn","y":"2005","p":"768","m":"Paperback"},{"t":"Cogito and the Unconscious (Series: SIC 2)","a":"Slavoj Zizek","y":"1998","p":"288","m":"Paperback"},{"t":"The Fragile Absolute: Or, Why the Christian Legacy is Worth Fighting For","a":"Slavoj Zizek","y":"2000","p":"192","m":"Hardcover"},{"t":"The Fragile Absolute: Or, Why the Christian Legacy is Worth Fighting For","a":"Slavoj Zizek","y":"2000","p":"192","m":"Hardcover"},{"t":"The Dancing Wu Li Masters: An Overview of the New Physics","a":"Gary Zukav","y":"1984","p":"339","m":"Paperback"}];
+
+var currentSort = 'author';
+var currentDir = 1;
+
+function getLastName(a) {
+    if (!a) return '';
+    var parts = a.trim().split(' ');
+    return parts[parts.length - 1].toLowerCase();
+}
+
+function sortBooks(books, field) {
+    return books.slice().sort(function(a, b) {
+        var va, vb;
+        if (field === 'author') {
+            va = getLastName(a.a);
+            vb = getLastName(b.a);
+        } else if (field === 'title') {
+            va = (a.t || '').toLowerCase().replace(/^(the |a |an )/, '');
+            vb = (b.t || '').toLowerCase().replace(/^(the |a |an )/, '');
+        } else if (field === 'year') {
+            va = parseInt(a.y) || 0;
+            vb = parseInt(b.y) || 0;
+            return (vb - va) * currentDir;
+        } else if (field === 'pages') {
+            va = parseInt(a.p) || 0;
+            vb = parseInt(b.p) || 0;
+            return (vb - va) * currentDir;
+        }
+        if (va < vb) return -1 * currentDir;
+        if (va > vb) return 1 * currentDir;
+        return 0;
+    });
+}
+
+function getGroupKey(book, field) {
+    if (field === 'author') {
+        var ln = getLastName(book.a);
+        return ln ? ln[0].toUpperCase() : '#';
+    } else if (field === 'title') {
+        var t = (book.t || '').replace(/^(The |A |An )/i, '').trim();
+        var c = t[0] || '#';
+        return /[0-9]/.test(c) ? '#' : c.toUpperCase();
+    }
+    return null;
+}
+
+function render(books) {
+    var container = document.getElementById('library');
+    var frag = document.createDocumentFragment();
+    var lastGroup = null;
+    var useGroups = (currentSort === 'author' || currentSort === 'title');
+
+    if (books.length === 0) {
+        var noRes = document.createElement('div');
+        noRes.className = 'no-results';
+        noRes.textContent = 'no matches found';
+        frag.appendChild(noRes);
+        container.innerHTML = '';
+        container.appendChild(frag);
+        document.getElementById('count').textContent = '0';
+        return;
+    }
+
+    var list = document.createElement('ul');
+    list.className = 'book-list';
+
+    for (var i = 0; i < books.length; i++) {
+        var b = books[i];
+
+        if (useGroups) {
+            var group = getGroupKey(b, currentSort);
+            if (group !== lastGroup) {
+                var marker = document.createElement('div');
+                marker.className = 'letter-marker';
+                marker.textContent = group;
+                frag.appendChild(marker);
+                if (list.children.length > 0) {
+                    frag.appendChild(list);
+                    list = document.createElement('ul');
+                    list.className = 'book-list';
+                }
+                lastGroup = group;
+            }
+        }
+
+        var li = document.createElement('li');
+        li.className = 'book-item';
+
+        var info = document.createElement('div');
+        var titleSpan = document.createElement('div');
+        titleSpan.className = 'book-title' + (b.r ? ' book-reading' : '');
+        var titleLink = document.createElement('a');
+        var searchQ = b.t + (b.a ? ' ' + b.a : '') + ' book';
+        titleLink.href = 'https://duckduckgo.com/?q=' + encodeURIComponent(searchQ);
+        titleLink.target = '_blank';
+        titleLink.rel = 'noopener';
+        titleLink.textContent = b.t;
+        titleSpan.appendChild(titleLink);
+        info.appendChild(titleSpan);
+
+        if (b.a) {
+            var authorSpan = document.createElement('div');
+            authorSpan.className = 'book-author';
+            var authorLink = document.createElement('a');
+            authorLink.href = 'https://duckduckgo.com/?q=' + encodeURIComponent(b.a + ' author');
+            authorLink.target = '_blank';
+            authorLink.rel = 'noopener';
+            authorLink.textContent = b.a;
+            authorSpan.appendChild(authorLink);
+            info.appendChild(authorSpan);
+        }
+
+        if (b.g) {
+            var tagsSpan = document.createElement('div');
+            tagsSpan.className = 'book-tags';
+            var tagList = b.g.split(', ').slice(0, 6).join(' / ');
+            tagsSpan.textContent = tagList;
+            info.appendChild(tagsSpan);
+        }
+
+        var meta = document.createElement('div');
+        meta.className = 'book-meta';
+        var parts = [];
+        if (b.y) parts.push(b.y);
+        if (b.p) parts.push(b.p + 'p');
+        if (b.m) parts.push(b.m.replace('Paper Book', 'PB').replace('Paperback', 'PB').replace('Hardcover', 'HC').replace('Mass Market Paperback', 'PB').replace('CD audiobook', 'Audio').replace('Comic book', 'Comic'));
+        meta.textContent = parts.join(' / ');
+
+        li.appendChild(info);
+        li.appendChild(meta);
+        list.appendChild(li);
+    }
+
+    frag.appendChild(list);
+    container.innerHTML = '';
+    container.appendChild(frag);
+    document.getElementById('count').textContent = books.length.toString();
+}
+
+function update() {
+    var q = document.getElementById('search').value.toLowerCase().trim();
+    var filtered = BOOKS;
+    if (q) {
+        filtered = BOOKS.filter(function(b) {
+            return (b.t && b.t.toLowerCase().indexOf(q) !== -1) ||
+                   (b.a && b.a.toLowerCase().indexOf(q) !== -1) ||
+                   (b.g && b.g.toLowerCase().indexOf(q) !== -1);
+        });
+    }
+    var sorted = sortBooks(filtered, currentSort);
+    render(sorted);
+}
+
+document.getElementById('search').addEventListener('input', update);
+
+document.querySelectorAll('.sort-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        var newSort = this.dataset.sort;
+        if (newSort === currentSort) {
+            currentDir *= -1;
+        } else {
+            currentSort = newSort;
+            currentDir = 1;
+        }
+        document.querySelectorAll('.sort-btn').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        document.getElementById('sort-label').textContent = currentSort + (currentDir === -1 ? ' (rev)' : '');
+        update();
+    });
+});
+
+function updateTimestamp() {
+    var now = new Date();
+    document.getElementById('timestamp').textContent = 'SYS_TIME: ' + now.toISOString().replace('T', ' ').substring(0, 19);
+}
+updateTimestamp();
+setInterval(updateTimestamp, 1000);
+
+update();
+</script>
+</body>
+</html>

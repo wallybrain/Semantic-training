@@ -136,25 +136,28 @@
             opacity: 0.5;
         }
 
-        .nav-back {
+        .nav-bar {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            top: 0; left: 0; right: 0;
             font-size: 13px;
+            color: var(--green-dark);
+            padding: 6px 15px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background: rgba(10, 10, 10, 0.9);
+            border-bottom: 1px solid rgba(102, 217, 160, 0.1);
             z-index: 100;
         }
 
-        .nav-back a {
+        .nav-bar a {
             color: var(--green-dark);
             text-decoration: none;
-            border: 1px solid rgba(102, 217, 160, 0.15);
-            padding: 3px 8px;
-            transition: all 0.2s;
+            transition: color 0.2s;
         }
 
-        .nav-back a:hover {
+        .nav-bar a:hover {
             color: var(--green);
-            border-color: var(--green-dim);
         }
 
         .status {
@@ -193,8 +196,13 @@
 
 <div class="hint">click anywhere or press space</div>
 
-<div class="nav-back">
+<div class="nav-bar">
     <a href="/">[home]</a>
+    <a href="https://wallybrain.icu">[wallybrain]</a>
+    <a href="semantic-training.html">[fnord]</a>
+    <a href="library.html">[library]</a>
+    <a href="https://solitaire.wallybrain.icu">[solitaire]</a>
+    <a href="https://code.wallyblanchard.com">[IDE]</a>
 </div>
 
 <div class="status">
@@ -476,7 +484,7 @@ function resetAutoTimer() {
 }
 
 document.addEventListener('click', function(e) {
-    if (e.target.closest('.nav-back')) return;
+    if (e.target.closest('.nav-bar')) return;
     if (!isGlitching) transmit();
 });
 
