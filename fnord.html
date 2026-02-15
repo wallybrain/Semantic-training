@@ -204,12 +204,40 @@
 
 <script>
 var TRANSMISSIONS = [
+    // === KORZYBSKI ===
     { text: "The map is not the territory.\nThe word is not the thing defined.", source: "Korzybski" },
-    { text: "Repetition is not generality.\nRepetition and resemblance are different in kind,\nextremely so.", source: "Deleuze" },
-    { text: "All consistent axiomatic systems\ncontain undecidable propositions.", source: "Gödel" },
     { text: "Whatever you say it is, it isn't.", source: "Korzybski" },
     { text: "A is not A.\nEverything changes.\nNothing has fixed essence.", source: "Korzybski — Non-Identity" },
     { text: "We never know everything about anything.", source: "Korzybski — Non-Allness" },
+    { text: "Language can refer to itself,\ncreating insight through paradox.", source: "Korzybski — Self-Reflexiveness" },
+    { text: "Humans accumulate knowledge\nacross generations.", source: "Korzybski — Time-Binding" },
+    { text: "God may forgive your sins,\nbut your nervous system won't.", source: "Korzybski" },
+    { text: "There are two ways to slide easily\nthrough life:\nto believe everything\nor to doubt everything.\nBoth ways save us from thinking.", source: "Korzybski" },
+    { text: "If a psychiatric and scientific revolution\noccurred, we should learn\nto use our nervous systems properly.", source: "Korzybski" },
+    { text: "The objective level is not words.\nThe objective level is UN-SPEAKABLE.", source: "Korzybski" },
+
+    // === DELEUZE ===
+    { text: "Repetition is not generality.\nRepetition and resemblance are different in kind,\nextremely so.", source: "Deleuze" },
+    { text: "Each engagement creates\nunrepeatable differentiation.", source: "Deleuze — applied" },
+    { text: "Framework resists systematization\nwhile maintaining structural integrity.", source: "Deleuze — applied" },
+    { text: "A concept is a brick.\nIt can be used to build a courthouse of reason.\nOr it can be thrown through the window.", source: "Deleuze" },
+    { text: "The task of philosophy is not to discover\nwhat is hidden,\nbut to make visible precisely what is visible.", source: "Deleuze" },
+    { text: "Bring something incomprehensible into the world.", source: "Deleuze" },
+    { text: "There is no more a method for learning\nthan there is a method for finding treasures.", source: "Deleuze" },
+    { text: "Something in the world\nforces us to think.\nThis something is an object\nnot of recognition but of\na fundamental encounter.", source: "Deleuze" },
+    { text: "Thought is not a tree.\nThe brain is not a rooted\nor ramified matter.", source: "Deleuze" },
+    { text: "Make yourself a body without organs.", source: "Deleuze & Guattari" },
+    { text: "A rhizome has no beginning or end;\nit is always in the middle,\nbetween things, interbeing.", source: "Deleuze & Guattari" },
+    { text: "We do not lack communication.\nOn the contrary, we have too much of it.\nWe lack creation.\nWe lack resistance to the present.", source: "Deleuze" },
+
+    // === GÖDEL ===
+    { text: "All consistent axiomatic systems\ncontain undecidable propositions.", source: "Gödel" },
+    { text: "No framework can be\nsimultaneously complete and consistent.\nThis is feature, not bug.", source: "Gödel — applied" },
+    { text: "Either mathematics is too big\nfor the human mind,\nor the human mind is more\nthan a machine.", source: "Gödel" },
+    { text: "The meaning of the world is the separation\nof wish and fact.", source: "Gödel" },
+    { text: "I don't believe in empirical science.\nI only believe in a priori truth.", source: "Gödel" },
+
+    // === WILSON ===
     { text: "The real universe is always\none step beyond logic.", source: "Wilson" },
     { text: "What the thinker thinks,\nthe prover proves.", source: "Wilson" },
     { text: "Every nervous system creates\nits own model of the universe.", source: "Wilson" },
@@ -223,11 +251,6 @@ var TRANSMISSIONS = [
     { text: "Reality is the original Rorschach.", source: "Wilson" },
     { text: "Horror is the natural reaction\nto the last 5,000 years of history.", source: "Wilson" },
     { text: "We look at the world through windows\non which have been drawn grids.\nDifferent philosophies use different grids.", source: "Wilson" },
-    { text: "Stalling indicates productive threshold.\nNeuroplasticity in progress,\nnot failure.", source: "Semantic Training" },
-    { text: "Neural systems reorganizing under stress\nexhibit temporary entropy-increase\nbefore new patterns crystallize.", source: "Semantic Training" },
-    { text: "No framework can be\nsimultaneously complete and consistent.\nThis is feature, not bug.", source: "Gödel — applied" },
-    { text: "Each engagement creates\nunrepeatable differentiation.", source: "Deleuze — applied" },
-    { text: "Meaning emerges through use,\ncontext, and relational structure.", source: "Linguistic Domain" },
     { text: "Consciousness is not IN the body.\nThe body is IN consciousness.", source: "Wilson" },
     { text: "Under the present brutal and primitive\nconditions on this planet,\nevery person you meet should be regarded\nas one of the walking wounded.", source: "Wilson" },
     { text: "GROUPS NEVER LEARN ANYTHING.\nONLY INDIVIDUALS LEARN.", source: "Wilson" },
@@ -238,11 +261,156 @@ var TRANSMISSIONS = [
     { text: "It is my firm belief that it is a mistake\nto hold firm beliefs.", source: "Wilson" },
     { text: "The abandoned infant's cry\nis rage, not fear.", source: "Wilson" },
     { text: "Is the thought which is thinking\nabout the thought which is thinking\nabout this sentence\nthe same thought?", source: "Wilson" },
+    { text: "Convictions cause convicts.", source: "Wilson" },
+    { text: "The easiest way to get brainwashed\nis to be born.", source: "Wilson" },
+    { text: "Communication is only possible\nbetween equals.", source: "Wilson" },
+    { text: "In the province of the mind,\nwhat one believes to be true\neither is true\nor becomes true.", source: "Wilson" },
+    { text: "Certitude belongs exclusively\nto those who only own one encyclopedia.", source: "Wilson" },
+
+    // === RUSSELL ===
+    { text: "The whole problem with the world\nis that fools and fanatics\nare always so certain of themselves,\nand wiser people so full of doubts.", source: "Russell" },
+    { text: "Do not fear to be eccentric in opinion,\nfor every opinion now accepted\nwas once eccentric.", source: "Russell" },
+    { text: "The good life is one inspired by love\nand guided by knowledge.", source: "Russell" },
+    { text: "One of the symptoms of an approaching\nnervous breakdown is the belief\nthat one's work is terribly important.", source: "Russell" },
+    { text: "In all affairs it's a healthy thing\nnow and then\nto hang a question mark\non the things you have long taken for granted.", source: "Russell" },
+    { text: "The fundamental cause of trouble\nis that in the modern world\nthe stupid are cocksure\nwhile the intelligent are full of doubt.", source: "Russell" },
+    { text: "Most people would sooner die\nthan think;\nin fact, they do so.", source: "Russell" },
+    { text: "Science is what you know.\nPhilosophy is what you don't know.", source: "Russell" },
+    { text: "The observer, when he seems to himself\nto be observing a stone,\nis really observing\nthe effects of the stone upon himself.", source: "Russell" },
+    { text: "Mathematics, rightly viewed, possesses\nnot only truth but supreme beauty.", source: "Russell" },
+
+    // === FULLER ===
+    { text: "You never change things\nby fighting the existing reality.\nTo change something,\nbuild a new model that makes\nthe existing model obsolete.", source: "Fuller" },
+    { text: "I seem to be a verb.", source: "Fuller" },
+    { text: "There is nothing in a caterpillar\nthat tells you it's going to be a butterfly.", source: "Fuller" },
+    { text: "Dare to be naive.", source: "Fuller" },
+    { text: "When I am working on a problem,\nI never think about beauty.\nI think only how to solve the problem.\nBut when I have finished,\nif the solution is not beautiful,\nI know it is wrong.", source: "Fuller" },
+    { text: "We are called to be architects of the future,\nnot its victims.", source: "Fuller" },
+    { text: "Humanity is acquiring all the right technology\nfor all the wrong reasons.", source: "Fuller" },
+    { text: "Universe is the aggregate of\nall humanity's consciously apprehended\nand communicated experience.", source: "Fuller" },
+    { text: "Either war is obsolete, or men are.", source: "Fuller" },
+    { text: "Everyone is born a genius,\nbut the process of living de-geniuses them.", source: "Fuller" },
+
+    // === GURDJIEFF ===
+    { text: "Man is a machine.\nAll his deeds, actions, words,\nthoughts, feelings, convictions,\nand habits are the result\nof external influences.", source: "Gurdjieff" },
+    { text: "A man may be born,\nbut in order to be born,\nhe must first die,\nand in order to die,\nhe must first awake.", source: "Gurdjieff" },
+    { text: "Without self knowledge,\nwithout understanding the working\nand functions of his machine,\nman cannot be free.", source: "Gurdjieff" },
+    { text: "If you want to lose your faith,\nmake friends with a priest.", source: "Gurdjieff" },
+    { text: "Conscious faith is freedom.\nEmotional faith is slavery.\nMechanical faith is foolishness.", source: "Gurdjieff" },
+    { text: "A considerable percentage of the people\nwe meet on the street\nare people who are empty inside,\nthat is, they are actually already dead.", source: "Gurdjieff" },
+    { text: "The highest that a man can attain\nis to be able to do.", source: "Gurdjieff" },
+    { text: "Man has no individual I.\nBut there are, instead,\nhundreds and thousands\nof separate small I's.", source: "Gurdjieff" },
+    { text: "Remember you come here\nhaving already understood the necessity\nof struggling with yourself —\nonly with yourself.\nTherefore thank everyone\nwho gives you the opportunity.", source: "Gurdjieff" },
+
+    // === JOYCE ===
+    { text: "A man of genius makes no mistakes.\nHis errors are volitional\nand are the portals of discovery.", source: "Joyce" },
+    { text: "Think you're escaping\nand run into yourself.\nLongest way round\nis the shortest way home.", source: "Joyce" },
+    { text: "riverrun, past Eve and Adam's,\nfrom swerve of shore to bend of bay,\nbrings us by a commodius vicus\nof recirculation back to Howth Castle\nand Environs.", source: "Joyce — Finnegans Wake" },
+    { text: "Every life is many days, day after day.\nWe walk through ourselves,\nmeeting robbers, ghosts, giants,\nold men, young men, wives, widows,\nbrothers-in-love,\nbut always meeting ourselves.", source: "Joyce" },
+    { text: "Welcome, O life!\nI go to encounter for the millionth time\nthe reality of experience.", source: "Joyce" },
+    { text: "I am tomorrow, or some future day,\nwhat I establish today.\nI am today\nwhat I established yesterday\nor some previous day.", source: "Joyce" },
+    { text: "His writing is not about something.\nIt is that something itself.", source: "Joyce — on Finnegans Wake" },
+
+    // === ŽIŽEK ===
+    { text: "The truly brave thing is not to fight\nbut to think.", source: "Žižek" },
+    { text: "The threat today is not passivity,\nbut pseudo-activity,\nthe urge to be active\nand participate.", source: "Žižek" },
+    { text: "It is easier to imagine\nthe end of the world\nthan the end of capitalism.", source: "Žižek" },
+    { text: "The function of ideology is not to offer us\na point of escape from our reality\nbut to offer us the social reality itself\nas an escape.", source: "Žižek" },
+    { text: "What if the true evil of our societies\nis not their capitalist dynamics\nbut the attempts to extricate ourselves\nfrom them?", source: "Žižek" },
+    { text: "Don't act. Just think.", source: "Žižek" },
+    { text: "We feel free because we lack\nthe very language to articulate\nour unfreedom.", source: "Žižek" },
+    { text: "The most dangerous thing\nis to take a person at their word.", source: "Žižek" },
+
+    // === HALL ===
+    { text: "To live in the world\nwithout becoming aware\nof the meaning of the world\nis like wandering about\nin a great library\nwithout touching the books.", source: "Manly P. Hall" },
+    { text: "Words are potent weapons\nfor all causes, good or bad.", source: "Manly P. Hall" },
+    { text: "The end of science is not to prove a theory,\nbut to improve mankind.", source: "Manly P. Hall" },
+    { text: "Man's status in the natural world\nis determined by the quality\nof his thinking.", source: "Manly P. Hall" },
+    { text: "There is a universe of knowledge\navailable to those\nwho have the courage\nto look for it.", source: "Manly P. Hall" },
+    { text: "We are the prisoners of our own abstractions.", source: "Manly P. Hall" },
+    { text: "The seeker after truth\nis not one who studies the writings\nof the ancients\nand puts his trust in them,\nbut rather the one who suspects his faith\nand questions what he gathers from them.", source: "Manly P. Hall" },
+
+    // === QUIGLEY ===
+    { text: "The growth of financial capitalism\nmade possible a centralization of\nworld economic control\nand use of this power\nfor the direct benefit of financiers.", source: "Quigley" },
+    { text: "The argument that the two parties\nshould represent opposed ideals and policies\nis a foolish idea.", source: "Quigley" },
+    { text: "Each civilization is born,\nit culminates,\nand it decays.\nThere is a ceaseless interplay\nof forces.", source: "Quigley" },
+
+    // === CARROLL ===
+    { text: "If you don't know where you are going,\nany road will get you there.", source: "Lewis Carroll" },
+    { text: "Sometimes I've believed\nas many as six impossible things\nbefore breakfast.", source: "Lewis Carroll" },
+    { text: "It's no use going back to yesterday,\nbecause I was a different person then.", source: "Lewis Carroll" },
+    { text: "Begin at the beginning\nand go on till you come to the end:\nthen stop.", source: "Lewis Carroll" },
+    { text: "Why, sometimes I've believed\nas many as six impossible things\nbefore breakfast.", source: "Lewis Carroll" },
+    { text: "Who in the world am I?\nAh, that's the great puzzle.", source: "Lewis Carroll" },
+    { text: "If I had a world of my own,\neverything would be nonsense.\nNothing would be what it is,\nbecause everything would be\nwhat it isn't.", source: "Lewis Carroll" },
+
+    // === WILBER ===
+    { text: "The Kosmos is not a place\nbut a process.", source: "Wilber" },
+    { text: "Nobody is smart enough\nto be wrong all the time.", source: "Wilber" },
+    { text: "The integral approach is committed\nto the full spectrum\nof consciousness as it manifests\nin all its extraordinary diversity.", source: "Wilber" },
+    { text: "A truly balanced and comprehensive\napproach to existence\nwould include all of these approaches\nand would weave them together\ninto a coherent and seamless tapestry.", source: "Wilber" },
+    { text: "There is arguably no more\nimportant and pressing topic\nthan the relation of science\nand religion in the modern world.", source: "Wilber" },
+    { text: "The only way to know the truth\nis to become it.", source: "Wilber" },
+
+    // === BURROUGHS ===
+    { text: "Language is a virus from outer space.", source: "Burroughs" },
+    { text: "Nothing is true,\neverything is permitted.", source: "Burroughs" },
+    { text: "A paranoid is someone\nwho knows a little\nof what's going on.", source: "Burroughs" },
+    { text: "Your mind will answer most questions\nif you learn to relax and wait\nfor the answer.", source: "Burroughs" },
+    { text: "When you cut into the present\nthe future leaks out.", source: "Burroughs" },
+    { text: "Smash the control images.\nSmash the control machine.", source: "Burroughs" },
+    { text: "There is no intensity of love or feeling\nthat does not involve the risk\nof crippling hurt.\nIt is a duty to take this risk,\nto love and feel without defense\nor reserve.", source: "Burroughs" },
+    { text: "The cat does not offer services.\nThe cat offers itself.", source: "Burroughs" },
+
+    // === LILLY ===
+    { text: "In the province of the mind,\nwhat one believes to be true\nis true or becomes true,\nwithin certain limits to be found\nexperientially and experimentally.", source: "Lilly" },
+    { text: "Our only security is our ability\nto change.", source: "Lilly" },
+    { text: "All human beings, all persons\nwho reach adulthood in the world today\nare programmed biocomputers.", source: "Lilly" },
+    { text: "The miracle is that the universe\ncreated a part of itself\nto study the rest of it,\nand that this part,\nin studying itself,\nfinds the rest of the universe\nin its own natural inner realities.", source: "Lilly" },
+    { text: "You don't have to suffer\ncontinual chaos in order to grow.", source: "Lilly" },
+
+    // === CAMPBELL ===
+    { text: "The cave you fear to enter\nholds the treasure you seek.", source: "Campbell" },
+    { text: "We must be willing\nto let go of the life we planned\nso as to have the life\nthat is waiting for us.", source: "Campbell" },
+    { text: "Life has no meaning.\nEach of us has meaning\nand we bring it to life.\nIt is a waste to be asking the question\nwhen you are the answer.", source: "Campbell" },
+    { text: "Follow your bliss\nand the universe will open doors\nwhere there were only walls.", source: "Campbell" },
+    { text: "People say that what we're all seeking\nis a meaning for life.\nI think that what we're seeking\nis an experience of being alive.", source: "Campbell" },
+    { text: "The privilege of a lifetime\nis being who you are.", source: "Campbell" },
+    { text: "If you can see your path\nlaid out in front of you step by step,\nyou know it's not your path.\nYour own path you make\nwith every step you take.\nThat's why it's your path.", source: "Campbell" },
+    { text: "Myths are public dreams,\ndreams are private myths.", source: "Campbell" },
+    { text: "Where you stumble,\nthere lies your treasure.", source: "Campbell" },
+    { text: "The demon that you can swallow\ngives you its power,\nand the greater life's pain,\nthe greater life's reply.", source: "Campbell" },
+
+    // === KABBALAH ===
+    { text: "Ein Sof — the infinite.\nWithout end, without boundary.\nThe source from which all emanates\nand to which all returns.", source: "Kabbalah" },
+    { text: "As above, so below.\nAs within, so without.\nAs the universe, so the soul.", source: "Kabbalah — Hermeticism" },
+    { text: "God contracts to make room\nfor the world.\nWithdrawal precedes creation.", source: "Kabbalah — Tzimtzum" },
+    { text: "Every letter of every word\ncontains worlds and souls\nand divinity.", source: "Kabbalah — Baal Shem Tov" },
+    { text: "The ten Sephiroth:\nthey are ten and not nine.\nThey are ten and not eleven.\nUnderstand with wisdom.\nBe wise with understanding.", source: "Kabbalah — Sefer Yetzirah" },
+    { text: "Sparks of holiness\nare scattered throughout the world.\nTo gather them is the work\nof restoration.", source: "Kabbalah — Tikkun" },
+
+    // === I-CHING ===
+    { text: "When the way comes to an end,\nthen change.\nHaving changed, you pass through.", source: "I-Ching" },
+    { text: "The movement of heaven is full of power.\nThus the superior man\nmakes himself strong and untiring.", source: "I-Ching — Hexagram 1" },
+    { text: "The earth in its devotion\ncarries all things.\nThe superior man\nlets his character be broad,\ndeep, and sustaining.", source: "I-Ching — Hexagram 2" },
+    { text: "In the midst of difficulty\nlies opportunity.", source: "I-Ching — Hexagram 3" },
+    { text: "Fire above, water below.\nThe image of revolution.\nThe superior man\nregulates the calendar\nand makes the seasons clear.", source: "I-Ching — Hexagram 49" },
+    { text: "Still water runs deep.\nKeep still,\nand the world will freely come to you.", source: "I-Ching — Hexagram 52" },
+
+    // === TAROT ===
+    { text: "The Fool steps off the cliff\nnot from ignorance\nbut from trust.", source: "Tarot — The Fool" },
+    { text: "As above, so below.\nOne hand points to heaven,\nthe other to earth.\nThe channel is open.", source: "Tarot — The Magician" },
+    { text: "Between the pillars sits silence.\nThe answers exist\nbefore the questions are asked.", source: "Tarot — The High Priestess" },
+    { text: "The Tower falls\nnot as punishment\nbut as liberation from false structures.", source: "Tarot — The Tower" },
+    { text: "The wheel turns.\nWhat rises must descend.\nWhat descends must rise.\nThe only constant is the turning.", source: "Tarot — Wheel of Fortune" },
+    { text: "Death is not an ending.\nIt is the necessary clearing\nthat precedes all transformation.", source: "Tarot — Death" },
+
+    // === SEMANTIC TRAINING FRAMEWORK ===
+    { text: "Stalling indicates productive threshold.\nNeuroplasticity in progress,\nnot failure.", source: "Semantic Training" },
+    { text: "Neural systems reorganizing under stress\nexhibit temporary entropy-increase\nbefore new patterns crystallize.", source: "Semantic Training" },
     { text: "Increased chaos in comprehension-responses\nmay indicate neuroplastic adaptation.\nEntropy before crystallization.", source: "Semantic Training" },
     { text: "We CANNOT directly measure neuroplasticity.\nWe CAN observe behavioral markers\nsuggesting adaptation.", source: "Semantic Training" },
-    { text: "Language can refer to itself,\ncreating insight through paradox.", source: "Korzybski — Self-Reflexiveness" },
-    { text: "Humans accumulate knowledge\nacross generations.", source: "Korzybski — Time-Binding" },
-    { text: "Framework resists systematization\nwhile maintaining structural integrity.", source: "Deleuze — applied" },
+    { text: "Meaning emerges through use,\ncontext, and relational structure.", source: "Linguistic Domain" },
 ];
 
 var GLITCH = "\u2593\u2592\u2591\u2588\u2584\u2580\u2590\u258C\u2554\u2557\u255A\u255D\u2551\u2550\u253C\u252C\u2534\u251C\u2524\u2500\u2502\u25CF\u25C6\u25C7\u25CB\u25CE";
