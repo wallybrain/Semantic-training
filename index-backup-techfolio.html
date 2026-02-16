@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wally Blanchard :: Electronic Music</title>
-    <meta name="description" content="Wally Blanchard — electronic music producer based in Columbus, GA. IDM, noise, techno, and experimental sound design as wallybrain.">
-    <meta property="og:title" content="Wally Blanchard — Electronic Music">
-    <meta property="og:description" content="Electronic music producer. IDM, noise, techno, and experimental sound design as wallybrain.">
+    <title>Wally Blanchard :: Music + Engineering</title>
+    <meta name="description" content="Wally Blanchard — electronic music producer and AI systems builder. Designing and shipping production software with AI-assisted development, MCP servers, and self-hosted infrastructure.">
+    <meta property="og:title" content="Wally Blanchard — Music + AI Systems">
+    <meta property="og:description" content="Electronic music producer and AI systems builder. Shipping production software with Claude Code, MCP, and self-hosted infrastructure.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://wallyblanchard.com/">
     <link rel="canonical" href="https://wallyblanchard.com/">
@@ -75,6 +75,11 @@
         @keyframes textGlow {
             0%, 100% { text-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary-dark); }
             50% { text-shadow: 0 0 7px var(--primary), 0 0 15px var(--primary-dark); }
+        }
+
+        @keyframes typeIn {
+            from { width: 0; }
+            to { width: 100%; }
         }
 
         body {
@@ -252,26 +257,26 @@
             font-size: 28px;
             text-transform: uppercase;
             letter-spacing: 3px;
-            color: var(--accent);
-            text-shadow: 0 0 10px var(--accent-dim);
-            border-bottom: 2px solid var(--accent-dim);
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary-dark);
+            border-bottom: 2px solid var(--primary-dark);
             padding-bottom: 10px;
             margin-bottom: 20px;
         }
 
         .section-title::before {
             content: '/// ';
-            color: var(--accent-dim);
-        }
-
-        .section-title.green {
-            color: var(--primary);
-            text-shadow: 0 0 10px var(--primary-dark);
-            border-bottom-color: var(--primary-dark);
-        }
-
-        .section-title.green::before {
             color: var(--primary-dim);
+        }
+
+        .section-title.accent {
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-dim);
+            border-bottom-color: var(--accent-dim);
+        }
+
+        .section-title.accent::before {
+            color: var(--accent-dim);
         }
 
         /* Bio */
@@ -287,50 +292,68 @@
             color: var(--primary);
         }
 
-        .bio .highlight-accent {
-            color: var(--accent);
+        /* Two-column layout */
+        .dual-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 700px) {
+            .dual-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-name {
+                font-size: 32px;
+                letter-spacing: 3px;
+            }
+            .hero-tagline {
+                font-size: 15px;
+            }
+            .terminal-content {
+                padding: 20px;
+            }
+            .terminal-buttons {
+                display: none;
+            }
         }
 
         /* Project cards */
         .project {
-            border: 1px solid var(--accent-dim);
+            border: 1px solid var(--primary-dark);
             padding: 18px;
             margin-bottom: 15px;
             transition: all 0.2s;
         }
 
         .project:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 15px rgba(0, 204, 255, 0.15);
-        }
-
-        .project.green {
-            border-color: var(--primary-dark);
-        }
-
-        .project.green:hover {
             border-color: var(--primary);
             box-shadow: 0 0 15px rgba(0, 255, 65, 0.15);
+        }
+
+        .project.accent {
+            border-color: var(--accent-dim);
+        }
+
+        .project.accent:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(0, 204, 255, 0.15);
         }
 
         .project-name {
             font-size: 22px;
             letter-spacing: 2px;
             margin-bottom: 6px;
-            color: var(--accent);
         }
 
         .project-name::before {
             content: '> ';
-            color: var(--accent-dim);
-        }
-
-        .project.green .project-name {
-            color: var(--primary);
-        }
-
-        .project.green .project-name::before {
             color: var(--primary-dim);
+        }
+
+        .project.accent .project-name::before {
+            color: var(--accent-dim);
         }
 
         .project-desc {
@@ -349,25 +372,34 @@
 
         .tag {
             font-size: 13px;
-            color: var(--accent-dim);
-            border: 1px solid rgba(0, 204, 255, 0.15);
+            color: var(--primary-dark);
+            border: 1px solid rgba(0, 255, 65, 0.15);
             padding: 2px 8px;
             letter-spacing: 1px;
         }
 
-        .tag.green {
-            color: var(--primary-dark);
-            border-color: rgba(0, 255, 65, 0.15);
+        .tag.accent {
+            color: var(--accent-dim);
+            border-color: rgba(0, 204, 255, 0.15);
         }
 
         .project-link {
-            color: var(--accent);
+            color: var(--primary);
             text-decoration: none;
-            border-bottom: 1px dotted var(--accent-dim);
+            border-bottom: 1px dotted var(--primary-dim);
             transition: all 0.2s;
         }
 
         .project-link:hover {
+            text-shadow: 0 0 8px var(--primary);
+        }
+
+        .project-link.accent {
+            color: var(--accent);
+            border-bottom-color: var(--accent-dim);
+        }
+
+        .project-link.accent:hover {
             text-shadow: 0 0 8px var(--accent);
         }
 
@@ -380,24 +412,16 @@
         }
 
         .skill-category {
-            border: 1px solid var(--accent-dim);
+            border: 1px solid var(--primary-dark);
             padding: 15px;
-        }
-
-        .skill-category.green {
-            border-color: var(--primary-dark);
         }
 
         .skill-label {
             font-size: 14px;
-            color: var(--accent-dim);
+            color: var(--primary-dark);
             letter-spacing: 2px;
             text-transform: uppercase;
             margin-bottom: 8px;
-        }
-
-        .skill-category.green .skill-label {
-            color: var(--primary-dark);
         }
 
         .skill-list {
@@ -461,22 +485,6 @@
             border-top: 1px solid var(--primary-dark);
             background: rgba(0, 122, 31, 0.08);
         }
-
-        @media (max-width: 700px) {
-            .hero-name {
-                font-size: 32px;
-                letter-spacing: 3px;
-            }
-            .hero-tagline {
-                font-size: 15px;
-            }
-            .terminal-content {
-                padding: 20px;
-            }
-            .terminal-buttons {
-                display: none;
-            }
-        }
     </style>
 </head>
 <body>
@@ -493,9 +501,11 @@
                 <span class="terminal-title">WALLYBLANCHARD.COM</span>
                 <div style="margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
                     <a href="/" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[home]</a>
-                    <a href="https://wallybrain.icu" class="nav-link accent" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[listen]</a>
+                    <a href="https://wallybrain.icu" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[wallybrain]</a>
                     <a href="semantic-training.html" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[fnord]</a>
                     <a href="library.html" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[library]</a>
+                    <a href="https://solitaire.wallybrain.icu" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[solitaire]</a>
+                    <a href="https://code.wallyblanchard.com" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[IDE]</a>
                 </div>
             </div>
             <div class="terminal-content" style="position: relative; background: url('hero-bg.jpg') center center / cover no-repeat;">
@@ -506,7 +516,7 @@
                     </div>
                     <div class="hero-name">Lewis W Blanchard III</div>
                     <div style="font-size: 22px; color: var(--primary-dim); letter-spacing: 3px; margin-bottom: 10px;">&ldquo;Wally&rdquo;</div>
-                    <div class="hero-tagline">Electronic Music Producer</div>
+                    <div class="hero-tagline">Electronic Music &middot; AI Systems Builder &middot; Infrastructure</div>
                     <div class="hero-location">Columbus, GA</div>
                 </div>
             </div>
@@ -520,27 +530,21 @@
                     <div class="terminal-button"></div>
                     <div class="terminal-button"></div>
                 </div>
-                <span class="terminal-title">$ whoami</span>
+                <a href="semantic-training.html" class="terminal-title" style="text-decoration: none; color: inherit;">$ whoami</a>
             </div>
             <div class="terminal-content">
                 <p class="bio">
-                    I make <span class="highlight-accent">electronic music</span> under the name
-                    <a href="https://wallybrain.icu" class="project-link">wallybrain</a>.
-                    IDM, noise, techno, and whatever happens when you point a jazz habit at a wall of synthesizers.
-                    Nine albums so far. The sound lives somewhere between
-                    <span class="highlight-accent">controlled chaos</span> and <span class="highlight-accent">deliberate accident</span>
-                    &mdash; stochastic processes steered by hands and ears, not grids and presets.
+                    I make <span class="highlight">electronic music</span> and <span class="highlight">build AI-powered systems</span> &mdash;
+                    often at the same time. I produce IDM, noise, and techno as
+                    <span class="highlight">wallybrain</span>, and I architect the platforms, agents, and
+                    infrastructure that support creative practice.
                 </p>
                 <p class="bio">
-                    Most of the work is human-first: drum machines programmed by feel,
-                    chords voiced like a piano player who wandered into the wrong studio,
-                    textures sculpted in real time. The computer is a tool, not the author.
-                </p>
-                <p class="bio">
-                    Lately I've also been dabbling in <span class="highlight">agentic coding</span> &mdash;
-                    building little tools and sites with AI assistance. Still very much a noob at it,
-                    but it scratches a similar itch to music: you describe something that doesn't exist yet,
-                    iterate until it sounds right, and eventually it's a thing.
+                    I build with AI, not just about AI. Using Claude Code and the Model Context Protocol,
+                    I design and ship full systems &mdash; music platforms, Discord-integrated AI companions,
+                    epistemological frameworks, automated monitoring pipelines &mdash; from concept to production.
+                    I handle the architecture, the prompts, the infrastructure, and the security hardening.
+                    The AI writes the code. I make sure it's the <span class="highlight">right</span> code.
                 </p>
             </div>
         </div>
@@ -556,85 +560,168 @@
                 <span class="terminal-title">MUSIC</span>
             </div>
             <div class="terminal-content">
-                <h2 class="section-title">The Music</h2>
-
-                <div class="project">
-                    <div class="project-name"><a href="https://wallybrain.icu" class="project-link">wallybrain.icu</a></div>
-                    <p class="project-desc">
-                        All nine albums live here. Waveform player, per-track color theming,
-                        album collections. Put on headphones and start anywhere.
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">IDM</span>
-                        <span class="tag">Noise</span>
-                        <span class="tag">Techno</span>
-                        <span class="tag">Experimental</span>
-                        <span class="tag">Ambient</span>
-                    </div>
-                </div>
-
-                <h2 class="section-title" style="margin-top: 30px;">Process</h2>
+                <h2 class="section-title accent">Music</h2>
                 <p class="bio">
-                    The workflow starts physical. <span class="highlight-accent">MIDI controllers under the hands</span>,
-                    not a mouse on a piano roll. Drum parts are programmed on pad controllers &mdash;
-                    velocity, timing, and feel come from the performance, not quantization.
-                    Melodies and chords happen on keyboards and the <span class="highlight-accent">Roli Seaboard</span>,
-                    which lets you bend and slide notes like a fretless instrument.
-                </p>
-                <p class="bio">
-                    The interesting stuff comes from <span class="highlight-accent">stochastic composition</span> &mdash;
-                    feeding human randomness through algorithmic MIDI devices, probability gates,
-                    and chance operations. You set up conditions for surprise, then react to what comes out.
-                    Jazz thinking applied to electronic production.
+                    Electronic music under the name <a href="https://wallybrain.icu" class="project-link accent" target="_blank">wallybrain</a>.
+                    IDM, noise, techno, and experimental sound design. 9 albums and counting.
+                    The workflow is deliberately <span class="highlight" style="color: var(--accent)">human-first</span> &mdash;
+                    hands on keys and pads, stochastic processes driven by physical gesture, jazz voicings
+                    translated into electronic contexts.
                 </p>
 
-                <h2 class="section-title" style="margin-top: 30px;">Tools</h2>
-
-                <div class="project">
-                    <div class="project-name">DAWs</div>
+                <div class="project accent">
+                    <div class="project-name" style="color: var(--accent)">wallybrain.icu</div>
                     <p class="project-desc">
-                        Ableton Live 12 is the primary workspace &mdash; session view for improvisation
-                        and experimentation, arrangement view for shaping final pieces.
-                        FL Studio for when the workflow wants a different shape.
+                        Self-built music platform with waveform visualization, album collections,
+                        per-track color theming, and a persistent bottom-bar player. Listen to everything there.
                     </p>
                     <div class="project-tags">
-                        <span class="tag">Ableton Live 12</span>
-                        <span class="tag">FL Studio</span>
+                        <span class="tag accent">IDM</span>
+                        <span class="tag accent">Noise</span>
+                        <span class="tag accent">Techno</span>
+                        <span class="tag accent">Experimental</span>
+                    </div>
+                </div>
+
+                <div class="project accent">
+                    <div class="project-name" style="color: var(--accent)">DAWs</div>
+                    <p class="project-desc">
+                        Ableton Live 12 (primary) and FL Studio. Session and arrangement view production,
+                        audio and MIDI routing, effect chain design, resampling workflows.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag accent">Ableton Live</span>
+                        <span class="tag accent">FL Studio</span>
+                    </div>
+                </div>
+
+                <div class="project accent">
+                    <div class="project-name" style="color: var(--accent)">Instruments &amp; VSTs</div>
+                    <p class="project-desc">
+                        Deep library of software synthesizers and processors from
+                        Arturia, u-he, Native Instruments, Waves, UVI, Plugin Alliance, and AAS.
+                        Subtractive, FM, granular, physical modeling, and wavetable synthesis.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag accent">Arturia</span>
+                        <span class="tag accent">u-he</span>
+                        <span class="tag accent">Native Instruments</span>
+                        <span class="tag accent">Waves</span>
+                        <span class="tag accent">UVI</span>
+                        <span class="tag accent">Plugin Alliance</span>
+                        <span class="tag accent">AAS</span>
+                    </div>
+                </div>
+
+                <div class="project accent">
+                    <div class="project-name" style="color: var(--accent)">Performance &amp; Process</div>
+                    <p class="project-desc">
+                        Human-driven workflow: MIDI drum controllers for rhythm programming,
+                        Roli Seaboard for expressive polyphonic input, keyboard controllers for
+                        jazz comping and chord voicing into MIDI. Stochastic composition via
+                        human randomness and algorithmic MIDI devices &mdash; controlled chaos
+                        shaped by feel rather than quantization grids.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag accent">Roli Seaboard</span>
+                        <span class="tag accent">MIDI Controllers</span>
+                        <span class="tag accent">Drum Programming</span>
+                        <span class="tag accent">Stochastic</span>
+                        <span class="tag accent">Jazz Voicing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENGINEERING -->
+        <div class="terminal-window" id="engineering">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                </div>
+                <span class="terminal-title">ENGINEERING</span>
+            </div>
+            <div class="terminal-content">
+                <h2 class="section-title">AI Systems</h2>
+                <p class="bio">
+                    I design and ship production systems using AI-assisted development &mdash; Claude Code,
+                    Model Context Protocol, and agent-driven workflows. I architect the system, define the
+                    requirements, manage the infrastructure, and direct the AI to build it right.
+                </p>
+
+                <div class="project">
+                    <div class="project-name">wallybrain-music</div>
+                    <p class="project-desc">
+                        Full music platform &mdash; waveform visualization, album collections, per-track color theming,
+                        persistent player, audio processing pipeline, 2FA admin panel. Built entirely through
+                        AI-assisted development. A+ security score on Mozilla Observatory.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">AI-Built</span>
+                        <span class="tag">SvelteKit</span>
+                        <span class="tag">Docker</span>
+                        <span class="tag">Full-Stack</span>
                     </div>
                 </div>
 
                 <div class="project">
-                    <div class="project-name">Instruments &amp; Sound Design</div>
+                    <div class="project-name">CHIASM</div>
                     <p class="project-desc">
-                        Deep library of software synthesizers across every synthesis method &mdash;
-                        subtractive, FM, granular, physical modeling, wavetable, and additive.
-                        Sound design is half the composition process: building the voice
-                        before writing what it says.
+                        AI companion that monitors server activity and delivers stoic-philosophical coaching via Discord.
+                        Tiered memory with importance scoring, decay, and semantic consolidation. Intent classification,
+                        goal tracking, preference learning. 46 requirements shipped across 6 phases, exposed as an MCP server.
                     </p>
                     <div class="project-tags">
-                        <span class="tag">Arturia</span>
-                        <span class="tag">u-he</span>
-                        <span class="tag">Native Instruments</span>
-                        <span class="tag">Waves</span>
-                        <span class="tag">UVI</span>
-                        <span class="tag">Plugin Alliance</span>
-                        <span class="tag">AAS</span>
+                        <span class="tag">AI Agent</span>
+                        <span class="tag">Claude API</span>
+                        <span class="tag">Discord Bot</span>
+                        <span class="tag">MCP</span>
                     </div>
                 </div>
 
                 <div class="project">
-                    <div class="project-name">Hardware &amp; Controllers</div>
+                    <div class="project-name">MCP Server Ecosystem</div>
                     <p class="project-desc">
-                        Roli Seaboard for MPE expression &mdash; pitch bends, slides, and pressure
-                        per finger. MIDI drum pads for rhythm. Keyboard controllers for
-                        chord voicing and jazz comping. The physical interface shapes the music
-                        in ways a mouse never could.
+                        13 Model Context Protocol servers orchestrated for AI-assisted development &mdash;
+                        epistemological discourse framework, SQLite operations, web scraping, workflow automation,
+                        local LLM inference, sequential reasoning. Custom-built and third-party, all integrated
+                        into a unified AI development environment.
                     </p>
                     <div class="project-tags">
-                        <span class="tag">Roli Seaboard</span>
-                        <span class="tag">MIDI Pads</span>
-                        <span class="tag">MPE</span>
-                        <span class="tag">Keyboard Controllers</span>
+                        <span class="tag">MCP</span>
+                        <span class="tag">AI Toolchain</span>
+                        <span class="tag">Claude Code</span>
+                        <span class="tag">Ollama</span>
+                    </div>
+                </div>
+
+                <div class="project">
+                    <div class="project-name">Infrastructure</div>
+                    <p class="project-desc">
+                        Self-hosted Linux server with hardened security: Caddy reverse proxy, Authelia TOTP 2FA,
+                        n8n workflow automation delivering health monitoring and security reminders via Discord,
+                        fail2ban, auditd, iptables rules. Lynis score 79/100. Everything containerized.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">Linux</span>
+                        <span class="tag">Docker</span>
+                        <span class="tag">Security</span>
+                        <span class="tag">n8n</span>
+                    </div>
+                </div>
+
+                <div class="project">
+                    <div class="project-name"><a href="semantic-training.html" class="project-link">Semantic Training</a></div>
+                    <p class="project-desc">
+                        Epistemological navigation framework &mdash; a structured methodology for deep inquiry
+                        and knowledge synthesis, designed to scaffold AI-human reasoning workflows.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">Epistemology</span>
+                        <span class="tag">AI Reasoning</span>
+                        <span class="tag">Framework</span>
                     </div>
                 </div>
             </div>
@@ -655,45 +742,69 @@
 
                 <div class="skills-grid">
                     <div class="skill-category">
-                        <div class="skill-label">Production</div>
+                        <div class="skill-label">AI Development</div>
                         <div class="skill-list">
-                            Ableton Live 12<br>
-                            FL Studio<br>
-                            Sound Design<br>
-                            Mixing &amp; Processing<br>
-                            Resampling<br>
-                            Effect Chain Design
+                            Claude Code<br>
+                            Claude API<br>
+                            Model Context Protocol<br>
+                            Prompt Engineering<br>
+                            Agent Architecture<br>
+                            AI-Assisted Building
                         </div>
                     </div>
                     <div class="skill-category">
-                        <div class="skill-label">Synthesis</div>
+                        <div class="skill-label">System Design</div>
                         <div class="skill-list">
-                            Subtractive<br>
-                            FM Synthesis<br>
-                            Granular<br>
-                            Physical Modeling<br>
-                            Wavetable<br>
-                            Additive
+                            Architecture Planning<br>
+                            Requirements Analysis<br>
+                            Database Design<br>
+                            API Design<br>
+                            Security Hardening<br>
+                            Production Deployment
                         </div>
                     </div>
                     <div class="skill-category">
-                        <div class="skill-label">Performance</div>
+                        <div class="skill-label">Infrastructure</div>
                         <div class="skill-list">
-                            MIDI Drum Programming<br>
+                            Linux (Ubuntu)<br>
+                            Docker / Compose<br>
+                            Caddy Reverse Proxy<br>
+                            n8n Automation<br>
+                            DNS / SSL / CSP<br>
+                            Self-Hosting
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <div class="skill-label">AI Toolchain</div>
+                        <div class="skill-list">
+                            MCP Servers (13)<br>
+                            Ollama (Local LLM)<br>
+                            Firecrawl / Exa<br>
+                            Sequential Thinking<br>
+                            Playwright<br>
+                            Custom Skills &amp; Agents
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <div class="skill-label">Music Production</div>
+                        <div class="skill-list">
+                            Ableton Live / FL Studio<br>
+                            Sound Design &amp; Synthesis<br>
+                            Drum Programming<br>
+                            MIDI Performance<br>
                             Roli Seaboard / MPE<br>
-                            Keyboard &amp; Comping<br>
-                            Jazz Voicing<br>
-                            Stochastic Composition<br>
-                            Live Improvisation
+                            Stochastic Composition
                         </div>
                     </div>
-                    <div class="skill-category green">
-                        <div class="skill-label">Other Interests</div>
+                    <div class="skill-category">
+                        <div class="skill-label">Platforms Built</div>
                         <div class="skill-list">
-                            Agentic Coding<br>
-                            Self-Hosted Infrastructure<br>
-                            Linux / Docker<br>
-                            Epistemology
+                            Music Streaming Site<br>
+                            AI Discord Companion<br>
+                            Epistemological Framework<br>
+                            Monitoring Dashboards<br>
+                            Auth &amp; 2FA Systems<br>
+                            Workflow Automation
                         </div>
                     </div>
                 </div>
@@ -711,7 +822,7 @@
                 <span class="terminal-title">CONTACT</span>
             </div>
             <div class="terminal-content">
-                <h2 class="section-title green">Contact</h2>
+                <h2 class="section-title">Contact</h2>
                 <p class="prompt-line"><span class="cmd">echo $LINKS</span></p>
                 <div class="nav-links" style="justify-content: flex-start; margin-top: 15px;">
                     <a href="https://wallybrain.icu" class="nav-link accent" target="_blank">Listen</a>
