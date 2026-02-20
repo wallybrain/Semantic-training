@@ -1,0 +1,108 @@
+{
+    "name": "MIX",
+    "filename": "mix",
+    "version": "2.84.3",
+    "compile_options": "-lang wasm-i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 2",
+    "library_list": [
+        "/usr/share/faust/stdfaust.lib"
+    ],
+    "include_pathnames": [
+        "/faust/user/inc0",
+        "/share/faust",
+        "/usr/local/share/faust",
+        "/usr/share/faust",
+        "."
+    ],
+    "size": 24,
+    "code": "aOGo",
+    "inputs": 4,
+    "outputs": 1,
+    "meta": [
+        {
+            "author": "Walpurgis"
+        },
+        {
+            "compile_options": "-lang wasm-i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 2"
+        },
+        {
+            "description": "4-channel mixer — 4 audio inputs, per-channel levels, master level, mono sum out"
+        },
+        {
+            "filename": "mix"
+        },
+        {
+            "name": "MIX"
+        },
+        {
+            "version": "1.0"
+        }
+    ],
+    "ui": [
+        {
+            "type": "vgroup",
+            "label": "MIX",
+            "items": [
+                {
+                    "type": "hslider",
+                    "label": "level1",
+                    "varname": "fHslider1",
+                    "shortname": "level1",
+                    "address": "/MIX/level1",
+                    "index": 4,
+                    "init": 0.8,
+                    "min": 0,
+                    "max": 1,
+                    "step": 0.001
+                },
+                {
+                    "type": "hslider",
+                    "label": "level2",
+                    "varname": "fHslider2",
+                    "shortname": "level2",
+                    "address": "/MIX/level2",
+                    "index": 8,
+                    "init": 0.8,
+                    "min": 0,
+                    "max": 1,
+                    "step": 0.001
+                },
+                {
+                    "type": "hslider",
+                    "label": "level3",
+                    "varname": "fHslider3",
+                    "shortname": "level3",
+                    "address": "/MIX/level3",
+                    "index": 12,
+                    "init": 0.8,
+                    "min": 0,
+                    "max": 1,
+                    "step": 0.001
+                },
+                {
+                    "type": "hslider",
+                    "label": "level4",
+                    "varname": "fHslider4",
+                    "shortname": "level4",
+                    "address": "/MIX/level4",
+                    "index": 16,
+                    "init": 0.8,
+                    "min": 0,
+                    "max": 1,
+                    "step": 0.001
+                },
+                {
+                    "type": "hslider",
+                    "label": "master",
+                    "varname": "fHslider0",
+                    "shortname": "master",
+                    "address": "/MIX/master",
+                    "index": 0,
+                    "init": 0.8,
+                    "min": 0,
+                    "max": 1,
+                    "step": 0.001
+                }
+            ]
+        }
+    ]
+}

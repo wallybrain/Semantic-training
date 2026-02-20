@@ -462,6 +462,57 @@
             background: rgba(0, 122, 31, 0.08);
         }
 
+        /* Side scanners */
+        @keyframes sideScan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        .side-scanner {
+            position: fixed;
+            top: 0;
+            width: 2px;
+            height: 80px;
+            pointer-events: none;
+            z-index: 998;
+            animation: sideScan 10s linear infinite;
+            opacity: 0.3;
+        }
+
+        .side-scanner--left {
+            left: 0;
+            background: linear-gradient(to bottom, transparent 0%, var(--primary) 50%, transparent 100%);
+            box-shadow: 0 0 4px var(--primary-dark);
+        }
+
+        .side-scanner--right {
+            right: 0;
+            background: linear-gradient(to bottom, transparent 0%, var(--primary) 50%, transparent 100%);
+            box-shadow: 0 0 4px var(--primary-dark);
+            animation-delay: -5s;
+        }
+
+        .side-glow {
+            position: fixed;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            pointer-events: none;
+            z-index: 997;
+            background: var(--primary-dark);
+            opacity: 0.15;
+        }
+
+        .side-glow--left {
+            left: 0;
+            box-shadow: 0 0 3px var(--primary-dark);
+        }
+
+        .side-glow--right {
+            right: 0;
+            box-shadow: 0 0 3px var(--primary-dark);
+        }
+
         @media (max-width: 700px) {
             .hero-name {
                 font-size: 32px;
@@ -496,6 +547,7 @@
                     <a href="https://wallybrain.net" class="nav-link accent" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[listen]</a>
                     <a href="semantic-training.html" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[fnord]</a>
                     <a href="library.html" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[library]</a>
+                    <a href="synth.html" class="nav-link accent" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[synth]</a>
                 </div>
             </div>
             <div class="terminal-content" style="position: relative; background: url('hero-bg.jpg') center center / cover no-repeat;">

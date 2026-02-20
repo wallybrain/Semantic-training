@@ -1,0 +1,247 @@
+{
+    "name": "SEQ",
+    "filename": "seq",
+    "version": "2.84.3",
+    "compile_options": "-lang wasm-i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 2",
+    "library_list": [
+        "/usr/share/faust/stdfaust.lib",
+        "/usr/share/faust/basics.lib"
+    ],
+    "include_pathnames": [
+        "/faust/user/inc0",
+        "/share/faust",
+        "/usr/local/share/faust",
+        "/usr/share/faust",
+        "."
+    ],
+    "size": 84,
+    "code": "2F2+",
+    "inputs": 1,
+    "outputs": 2,
+    "meta": [
+        {
+            "author": "Walpurgis"
+        },
+        {
+            "basics.lib/name": "Faust Basic Element Library"
+        },
+        {
+            "basics.lib/version": "1.22.0"
+        },
+        {
+            "compile_options": "-lang wasm-i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 2"
+        },
+        {
+            "description": "8-step sequencer — clock trigger in, pitch CV + gate out. Advances on rising edge."
+        },
+        {
+            "filename": "seq"
+        },
+        {
+            "name": "SEQ"
+        },
+        {
+            "version": "1.0"
+        }
+    ],
+    "ui": [
+        {
+            "type": "vgroup",
+            "label": "SEQ",
+            "items": [
+                {
+                    "type": "nentry",
+                    "label": "step0_gate",
+                    "varname": "fEntry15",
+                    "shortname": "step0_gate",
+                    "address": "/SEQ/step0_gate",
+                    "index": 76,
+                    "init": 1,
+                    "min": 0,
+                    "max": 1,
+                    "step": 1
+                },
+                {
+                    "type": "nentry",
+                    "label": "step0_pitch",
+                    "varname": "fEntry7",
+                    "shortname": "step0_pitch",
+                    "address": "/SEQ/step0_pitch",
+                    "index": 44,
+                    "init": 60,
+                    "min": 21,
+                    "max": 108,
+                    "step": 1
+                },
+                {
+                    "type": "nentry",
+                    "label": "step1_gate",
+                    "varname": "fEntry14",
+                    "shortname": "step1_gate",
+                    "address": "/SEQ/step1_gate",
+                    "index": 72,
+                    "init": 1,
+                    "min": 0,
+                    "max": 1,
+                    "step": 1
+                },
+                {
+                    "type": "nentry",
+                    "label": "step1_pitch",
+                    "varname": "fEntry6",
+                    "shortname": "step1_pitch",
+                    "address": "/SEQ/step1_pitch",
+                    "index": 40,
+                    "init": 62,
+                    "min": 21,
+                    "max": 108,
+                    "step": 1
+                },
+                {
+                    "type": "nentry",
+                    "label": "step2_gate",
+                    "varname": "fEntry13",
+                    "shortname": "step2_gate",
+                    "address": "/SEQ/step2_gate",
+                    "index": 68,
+                    "init": 1,
+                    "min": 0,
+                    "max": 1,
+                    "step": 1
+                },
+                {
+                    "type": "nentry",
+                    "label": "step2_pitch",
+                    "varname": "fEntry5",
+                    "shortname": "step2_pitch",
+                    "address": "/SEQ/step2_pitch",
+                    "index": 36,
+                    "init": 64,
+                    "min": 21,
+                    "max": 108,
+                    "step": 1
+                },
+                {
+                    "type": "nentry",
+                    "label": "step3_gate",
+                    "varname": "fEntry12",
+                    "shortname": "step3_gate",
+                    "address": "/SEQ/step3_gate",
+                    "index": 64,
+                    "init": 1,
+                    "min": 0,
+                    "max": 1,
+                    "step": 1
+                },
+                {
+                    "type": "nentry",
+                    "label": "step3_pitch",
+                    "varname": "fEntry4",
+                    "shortname": "step3_pitch",
+                    "address": "/SEQ/step3_pitch",
+                    "index": 32,
+                    "init": 65,
+                    "min": 21,
+                    "max": 108,
+                    "step": 1
+                },
+                {
+                    "type": "nentry",
+                    "label": "step4_gate",
+                    "varname": "fEntry11",
+                    "shortname": "step4_gate",
+                    "address": "/SEQ/step4_gate",
+                    "index": 60,
+                    "init": 1,
+                    "min": 0,
+                    "max": 1,
+                    "step": 1
+                },
+                {
+                    "type": "nentry",
+                    "label": "step4_pitch",
+                    "varname": "fEntry3",
+                    "shortname": "step4_pitch",
+                    "address": "/SEQ/step4_pitch",
+                    "index": 28,
+                    "init": 67,
+                    "min": 21,
+                    "max": 108,
+                    "step": 1
+                },
+                {
+                    "type": "nentry",
+                    "label": "step5_gate",
+                    "varname": "fEntry10",
+                    "shortname": "step5_gate",
+                    "address": "/SEQ/step5_gate",
+                    "index": 56,
+                    "init": 0,
+                    "min": 0,
+                    "max": 1,
+                    "step": 1
+                },
+                {
+                    "type": "nentry",
+                    "label": "step5_pitch",
+                    "varname": "fEntry2",
+                    "shortname": "step5_pitch",
+                    "address": "/SEQ/step5_pitch",
+                    "index": 24,
+                    "init": 69,
+                    "min": 21,
+                    "max": 108,
+                    "step": 1
+                },
+                {
+                    "type": "nentry",
+                    "label": "step6_gate",
+                    "varname": "fEntry9",
+                    "shortname": "step6_gate",
+                    "address": "/SEQ/step6_gate",
+                    "index": 52,
+                    "init": 1,
+                    "min": 0,
+                    "max": 1,
+                    "step": 1
+                },
+                {
+                    "type": "nentry",
+                    "label": "step6_pitch",
+                    "varname": "fEntry1",
+                    "shortname": "step6_pitch",
+                    "address": "/SEQ/step6_pitch",
+                    "index": 20,
+                    "init": 71,
+                    "min": 21,
+                    "max": 108,
+                    "step": 1
+                },
+                {
+                    "type": "nentry",
+                    "label": "step7_gate",
+                    "varname": "fEntry8",
+                    "shortname": "step7_gate",
+                    "address": "/SEQ/step7_gate",
+                    "index": 48,
+                    "init": 1,
+                    "min": 0,
+                    "max": 1,
+                    "step": 1
+                },
+                {
+                    "type": "nentry",
+                    "label": "step7_pitch",
+                    "varname": "fEntry0",
+                    "shortname": "step7_pitch",
+                    "address": "/SEQ/step7_pitch",
+                    "index": 16,
+                    "init": 72,
+                    "min": 21,
+                    "max": 108,
+                    "step": 1
+                }
+            ]
+        }
+    ]
+}

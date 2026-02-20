@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WALPURGIS :: Modular Synthesizer</title>
+    <meta name="description" content="Walpurgis — browser-based modular synthesizer and step sequencer by Wally Blanchard.">
+    <meta property="og:title" content="WALPURGIS — Modular Synthesizer">
+    <meta property="og:description" content="Browser-based modular synth and step sequencer. Patch, tweak, explore.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wallyblanchard.com/synth.html">
+    <link rel="canonical" href="https://wallyblanchard.com/synth.html">
+    <style>
+        @font-face {
+            font-family: 'VT323';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(fonts/VT323-Regular.woff2) format('woff2');
+        }
+        @font-face {
+            font-family: 'Courier Prime';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(fonts/CourierPrime-Regular.woff2) format('woff2');
+        }
+        @font-face {
+            font-family: 'Courier Prime';
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url(fonts/CourierPrime-Bold.woff2) format('woff2');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0e0a1e;
+            --module-bg: #06060f;
+            --primary: #66d9a0;
+            --primary-dim: #4daa7a;
+            --primary-dark: #337755;
+            --accent: #00ccff;
+            --accent-dim: #0099bb;
+            --text: #66d9a0;
+            --text-dim: #4daa7a;
+            --mono: 'VT323', monospace;
+            --mono-alt: 'Courier Prime', monospace;
+            --bar-height: 38px;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.95; }
+            10% { opacity: 0.98; }
+            15% { opacity: 0.96; }
+            20% { opacity: 0.97; }
+            100% { opacity: 0.97; }
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 16px;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            animation: flicker 0.15s infinite;
+            user-select: none;
+        }
+
+        /* Scanline overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(0, 255, 65, 0.03) 50%,
+                rgba(0, 0, 0, 0.3) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Top bar */
+        #top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--bar-height);
+            background: var(--module-bg);
+            border-bottom: 1px solid var(--primary-dark);
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            gap: 16px;
+            z-index: 100;
+            font-size: 15px;
+            letter-spacing: 1px;
+        }
+
+        #top-bar .title {
+            font-size: 20px;
+            color: var(--primary);
+            text-shadow: 0 0 8px var(--primary-dark), 0 0 20px rgba(0, 255, 65, 0.15);
+            letter-spacing: 3px;
+            flex-shrink: 0;
+        }
+
+        #top-bar .separator {
+            color: var(--primary-dark);
+            flex-grow: 1;
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .bar-btn {
+            background: transparent;
+            border: 1px solid var(--primary-dark);
+            color: var(--primary-dim);
+            font-family: var(--mono);
+            font-size: 14px;
+            padding: 2px 10px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .bar-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            text-shadow: 0 0 5px var(--primary);
+        }
+
+        .bar-btn.active {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(102, 217, 160, 0.1);
+            text-shadow: 0 0 5px var(--primary);
+        }
+
+        #bpm-display {
+            color: var(--accent);
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        #status-indicator {
+            color: var(--primary-dark);
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        #status-indicator.active {
+            color: var(--primary);
+            text-shadow: 0 0 5px var(--primary);
+        }
+
+        .bar-link {
+            color: var(--primary-dim);
+            text-decoration: none;
+            font-size: 14px;
+            border: 1px solid var(--primary-dark);
+            padding: 2px 10px;
+            white-space: nowrap;
+        }
+
+        .bar-link:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+            text-shadow: 0 0 5px var(--primary);
+        }
+
+        /* Canvas area */
+        #synth-canvas {
+            position: fixed;
+            top: var(--bar-height);
+            left: 0;
+            right: 0;
+            bottom: var(--bar-height);
+            cursor: default;
+        }
+
+        /* Bottom status bar */
+        #bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--bar-height);
+            background: var(--module-bg);
+            border-top: 1px solid var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            z-index: 100;
+            font-size: 13px;
+            color: var(--primary-dark);
+            letter-spacing: 1px;
+        }
+
+        #bottom-bar span {
+            white-space: nowrap;
+        }
+
+        /* Modal overlay for save/load */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(14, 10, 30, 0.85);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--module-bg);
+            border: 2px solid var(--primary-dark);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
+            padding: 0;
+            min-width: 340px;
+            max-width: 480px;
+        }
+
+        .modal-header {
+            background: var(--primary-dark);
+            padding: 6px 12px;
+            border-bottom: 1px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-header .btn-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .modal-header .btn-dot {
+            width: 10px;
+            height: 10px;
+            border: 1px solid var(--primary);
+            background: transparent;
+        }
+
+        .modal-header .modal-title {
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+
+        .modal-body {
+            padding: 16px;
+        }
+
+        .modal-body input {
+            background: var(--bg);
+            border: 1px solid var(--primary-dark);
+            color: var(--primary);
+            font-family: var(--mono);
+            font-size: 16px;
+            padding: 6px 10px;
+            width: 100%;
+            outline: none;
+        }
+
+        .modal-body input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 5px rgba(102, 217, 160, 0.3);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            justify-content: flex-end;
+        }
+
+        .patch-list {
+            list-style: none;
+            max-height: 240px;
+            overflow-y: auto;
+        }
+
+        .patch-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 8px;
+            border-bottom: 1px solid rgba(51, 119, 85, 0.3);
+            cursor: pointer;
+        }
+
+        .patch-list li:hover {
+            background: rgba(102, 217, 160, 0.08);
+        }
+
+        .flash-msg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--module-bg);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-family: var(--mono);
+            font-size: 20px;
+            padding: 10px 24px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 8px var(--primary);
+            z-index: 600;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+
+        .flash-msg.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top bar -->
+    <div id="top-bar">
+        <span class="title">WALPURGIS</span>
+        <button id="btn-start" class="bar-btn" onclick="toggleAudio()">START</button>
+        <span id="bpm-display">BPM: 120</span>
+        <span class="separator"></span>
+        <button class="bar-btn" onclick="showSaveModal()">SAVE</button>
+        <button class="bar-btn" onclick="showLoadModal()">LOAD</button>
+        <button class="bar-btn" onclick="sharePatch()">SHARE</button>
+        <span class="separator"></span>
+        <span id="status-indicator">STANDBY</span>
+        <a href="/" class="bar-link">[home]</a>
+    </div>
+
+    <!-- Main canvas -->
+    <canvas id="synth-canvas"></canvas>
+
+    <!-- Bottom status bar -->
+    <div id="bottom-bar">
+        <span>SYSTEM ONLINE</span>
+        <span>MODULES: 12</span>
+        <span id="sample-rate">SAMPLE RATE: --</span>
+        <span id="clock-display"></span>
+    </div>
+
+    <!-- Save modal -->
+    <div id="save-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="btn-dots">
+                    <div class="btn-dot"></div>
+                    <div class="btn-dot"></div>
+                    <div class="btn-dot"></div>
+                </div>
+                <span class="modal-title">> SAVE PATCH</span>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="save-name" placeholder="patch name..." maxlength="32"
+                    onkeydown="if(event.key==='Enter')savePatch();if(event.key==='Escape')closeModals();">
+                <div class="modal-actions">
+                    <button class="bar-btn" onclick="savePatch()">SAVE</button>
+                    <button class="bar-btn" onclick="closeModals()">CANCEL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load modal -->
+    <div id="load-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="btn-dots">
+                    <div class="btn-dot"></div>
+                    <div class="btn-dot"></div>
+                    <div class="btn-dot"></div>
+                </div>
+                <span class="modal-title">> LOAD PATCH</span>
+            </div>
+            <div class="modal-body">
+                <ul id="patch-list" class="patch-list"></ul>
+                <div class="modal-actions">
+                    <button class="bar-btn" onclick="closeModals()">CLOSE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flash message (COPIED, SAVED, etc.) -->
+    <div id="flash-msg" class="flash-msg"></div>
+
+    <script src="synth/state.js"></script>
+    <script type="module">
+        // Load FAUST engine (ES module) — sets window.WalpurgisEngine
+        await import('./synth/engine.js');
+
+        // Load patcher (IIFE) — sets window.WalpurgisPatcher, auto-inits canvas
+        await new Promise(function(resolve) {
+            var s = document.createElement('script');
+            s.src = 'synth/patcher.js';
+            s.onload = resolve;
+            document.body.appendChild(s);
+        });
+
+        // --- App logic (all exposed on window for onclick handlers) ---
+
+        // Clock display
+        function updateClock() {
+            var now = new Date();
+            var pad = function(n) { return String(n).padStart(2, '0'); };
+            document.getElementById('clock-display').textContent =
+                now.getUTCFullYear() + '-' + pad(now.getUTCMonth()+1) + '-' + pad(now.getUTCDate()) + ' ' +
+                pad(now.getUTCHours()) + ':' + pad(now.getUTCMinutes()) + ':' + pad(now.getUTCSeconds()) + ' UTC';
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Flash message helper
+        function flash(msg, duration) {
+            duration = duration || 800;
+            var el = document.getElementById('flash-msg');
+            el.textContent = msg;
+            el.classList.add('visible');
+            setTimeout(function() { el.classList.remove('visible'); }, duration);
+        }
+
+        // Modal helpers
+        function closeModals() {
+            document.getElementById('save-modal').classList.remove('visible');
+            document.getElementById('load-modal').classList.remove('visible');
+        }
+
+        function showSaveModal() {
+            document.getElementById('save-modal').classList.add('visible');
+            document.getElementById('save-name').value = '';
+            document.getElementById('save-name').focus();
+        }
+
+        function deletePatch(name) {
+            WalpurgisState.remove(name);
+            showLoadModal();
+        }
+
+        function showLoadModal() {
+            var list = document.getElementById('patch-list');
+            var patches = WalpurgisState.listPatches();
+            while (list.firstChild) list.removeChild(list.firstChild);
+
+            if (patches.length === 0) {
+                var empty = document.createElement('li');
+                empty.style.color = 'var(--primary-dark)';
+                empty.style.cursor = 'default';
+                empty.textContent = 'No saved patches';
+                list.appendChild(empty);
+            } else {
+                patches.forEach(function(name) {
+                    var li = document.createElement('li');
+                    var nameSpan = document.createElement('span');
+                    nameSpan.className = 'patch-name';
+                    nameSpan.textContent = name;
+                    var delSpan = document.createElement('span');
+                    delSpan.className = 'patch-delete';
+                    delSpan.textContent = '[x]';
+                    delSpan.style.color = 'var(--primary-dark)';
+                    delSpan.style.cursor = 'pointer';
+                    delSpan.style.padding = '0 4px';
+                    delSpan.style.fontSize = '14px';
+                    delSpan.addEventListener('mouseenter', function() { this.style.color = '#ff6666'; });
+                    delSpan.addEventListener('mouseleave', function() { this.style.color = 'var(--primary-dark)'; });
+                    delSpan.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        deletePatch(name);
+                    });
+                    li.appendChild(nameSpan);
+                    li.appendChild(delSpan);
+                    li.addEventListener('click', function() { loadPatch(name); });
+                    list.appendChild(li);
+                });
+            }
+            document.getElementById('load-modal').classList.add('visible');
+        }
+
+        function savePatch() {
+            var name = document.getElementById('save-name').value.trim();
+            if (!name) return;
+            var state = WalpurgisPatcher.getState();
+            WalpurgisState.save(name, state);
+            closeModals();
+            flash('SAVED');
+        }
+
+        function loadPatch(name) {
+            var state = WalpurgisState.load(name);
+            if (state) {
+                WalpurgisPatcher.setState(state);
+                closeModals();
+                flash('LOADED');
+            }
+        }
+
+        function sharePatch() {
+            var state = WalpurgisPatcher.getState();
+            WalpurgisState.toHash(state);
+            navigator.clipboard.writeText(window.location.href).then(function() { flash('COPIED'); });
+        }
+
+        // Audio toggle
+        var audioRunning = false;
+        var audioLoading = false;
+        async function toggleAudio() {
+            if (audioLoading) return;
+            var btn = document.getElementById('btn-start');
+            var status = document.getElementById('status-indicator');
+
+            if (!audioRunning) {
+                audioLoading = true;
+                btn.textContent = 'LOADING...';
+                btn.classList.add('active');
+                status.textContent = 'LOADING MODULES...';
+                status.classList.add('active');
+                try {
+                    await WalpurgisEngine.start();
+                    audioRunning = true;
+                    btn.textContent = 'STOP';
+                    status.textContent = 'SIGNAL CHAIN ACTIVE';
+                    var sr = WalpurgisEngine.getSampleRate();
+                    if (sr) document.getElementById('sample-rate').textContent = 'SAMPLE RATE: ' + sr;
+                } catch(e) {
+                    console.error('Failed to start audio:', e);
+                    btn.textContent = 'START';
+                    btn.classList.remove('active');
+                    status.textContent = 'ERROR';
+                    flash('AUDIO ERROR');
+                }
+                audioLoading = false;
+            } else {
+                WalpurgisEngine.stop();
+                audioRunning = false;
+                btn.textContent = 'START';
+                btn.classList.remove('active');
+                status.textContent = 'STANDBY';
+                status.classList.remove('active');
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT') return;
+
+            if (e.code === 'Space') {
+                e.preventDefault();
+                toggleAudio();
+            } else if (e.code === 'KeyR' && !e.ctrlKey && !e.metaKey) {
+                if (confirm('Reset to default patch?')) {
+                    WalpurgisPatcher.loadDefaultPatch();
+                    flash('RESET');
+                }
+            } else if (e.code === 'Escape') {
+                closeModals();
+                WalpurgisPatcher.cancelCableDrag();
+            }
+        });
+
+        // Check for hash state
+        var hashState = WalpurgisState.fromHash();
+        if (hashState) {
+            WalpurgisPatcher.setState(hashState);
+        }
+
+        // Expose functions for onclick handlers in HTML
+        window.toggleAudio = toggleAudio;
+        window.showSaveModal = showSaveModal;
+        window.showLoadModal = showLoadModal;
+        window.sharePatch = sharePatch;
+        window.savePatch = savePatch;
+        window.closeModals = closeModals;
+    </script>
+</body>
+</html>

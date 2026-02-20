@@ -1,0 +1,119 @@
+{
+    "name": "DLY",
+    "filename": "dly",
+    "version": "2.84.3",
+    "compile_options": "-lang wasm-i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 2",
+    "library_list": [
+        "/usr/share/faust/stdfaust.lib",
+        "/usr/share/faust/delays.lib",
+        "/usr/share/faust/maths.lib",
+        "/usr/share/faust/platform.lib"
+    ],
+    "include_pathnames": [
+        "/faust/user/inc0",
+        "/share/faust",
+        "/usr/local/share/faust",
+        "/usr/share/faust",
+        "."
+    ],
+    "size": 2097188,
+    "code": "oKK1",
+    "inputs": 2,
+    "outputs": 1,
+    "meta": [
+        {
+            "author": "Walpurgis"
+        },
+        {
+            "compile_options": "-lang wasm-i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 2"
+        },
+        {
+            "delays.lib/name": "Faust Delay Library"
+        },
+        {
+            "delays.lib/version": "1.2.0"
+        },
+        {
+            "description": "Delay effect — time CV in, time/feedback/mix params"
+        },
+        {
+            "filename": "dly"
+        },
+        {
+            "maths.lib/author": "GRAME"
+        },
+        {
+            "maths.lib/copyright": "GRAME"
+        },
+        {
+            "maths.lib/license": "LGPL with exception"
+        },
+        {
+            "maths.lib/name": "Faust Math Library"
+        },
+        {
+            "maths.lib/version": "2.9.0"
+        },
+        {
+            "name": "DLY"
+        },
+        {
+            "platform.lib/name": "Generic Platform Library"
+        },
+        {
+            "platform.lib/version": "1.3.0"
+        },
+        {
+            "version": "1.0"
+        }
+    ],
+    "ui": [
+        {
+            "type": "vgroup",
+            "label": "DLY",
+            "items": [
+                {
+                    "type": "hslider",
+                    "label": "feedback",
+                    "varname": "fHslider1",
+                    "shortname": "feedback",
+                    "address": "/DLY/feedback",
+                    "index": 4,
+                    "init": 0.4,
+                    "min": 0,
+                    "max": 0.95,
+                    "step": 0.001
+                },
+                {
+                    "type": "hslider",
+                    "label": "mix",
+                    "varname": "fHslider0",
+                    "shortname": "mix",
+                    "address": "/DLY/mix",
+                    "index": 0,
+                    "init": 0.5,
+                    "min": 0,
+                    "max": 1,
+                    "step": 0.001
+                },
+                {
+                    "type": "hslider",
+                    "label": "time",
+                    "varname": "fHslider2",
+                    "shortname": "time",
+                    "address": "/DLY/time",
+                    "index": 2097176,
+                    "meta": [
+                        {
+                            "unit": "s"
+                        }
+                    ],
+                    "init": 0.25,
+                    "min": 0.01,
+                    "max": 2,
+                    "step": 0.001
+                }
+            ]
+        }
+    ]
+}

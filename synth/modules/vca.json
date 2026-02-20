@@ -1,0 +1,72 @@
+{
+    "name": "VCA",
+    "filename": "vca",
+    "version": "2.84.3",
+    "compile_options": "-lang wasm-i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 2",
+    "library_list": [
+        "/usr/share/faust/stdfaust.lib"
+    ],
+    "include_pathnames": [
+        "/faust/user/inc0",
+        "/share/faust",
+        "/usr/local/share/faust",
+        "/usr/share/faust",
+        "."
+    ],
+    "size": 12,
+    "code": "SJqo",
+    "inputs": 2,
+    "outputs": 1,
+    "meta": [
+        {
+            "author": "Walpurgis"
+        },
+        {
+            "compile_options": "-lang wasm-i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 2"
+        },
+        {
+            "description": "Voltage Controlled Amplifier — audio in, CV in, gain and CV depth"
+        },
+        {
+            "filename": "vca"
+        },
+        {
+            "name": "VCA"
+        },
+        {
+            "version": "1.0"
+        }
+    ],
+    "ui": [
+        {
+            "type": "vgroup",
+            "label": "VCA",
+            "items": [
+                {
+                    "type": "hslider",
+                    "label": "cvDepth",
+                    "varname": "fHslider1",
+                    "shortname": "cvDepth",
+                    "address": "/VCA/cvDepth",
+                    "index": 4,
+                    "init": 1,
+                    "min": 0,
+                    "max": 1,
+                    "step": 0.001
+                },
+                {
+                    "type": "hslider",
+                    "label": "gain",
+                    "varname": "fHslider0",
+                    "shortname": "gain",
+                    "address": "/VCA/gain",
+                    "index": 0,
+                    "init": 0.8,
+                    "min": 0,
+                    "max": 1,
+                    "step": 0.001
+                }
+            ]
+        }
+    ]
+}

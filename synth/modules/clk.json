@@ -1,0 +1,114 @@
+{
+    "name": "CLK",
+    "filename": "clk",
+    "version": "2.84.3",
+    "compile_options": "-lang wasm-i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 2",
+    "library_list": [
+        "/usr/share/faust/stdfaust.lib",
+        "/usr/share/faust/oscillators.lib",
+        "/usr/share/faust/maths.lib",
+        "/usr/share/faust/platform.lib",
+        "/usr/share/faust/basics.lib"
+    ],
+    "include_pathnames": [
+        "/faust/user/inc0",
+        "/share/faust",
+        "/usr/local/share/faust",
+        "/usr/share/faust",
+        "."
+    ],
+    "size": 48,
+    "code": "qEXE",
+    "inputs": 0,
+    "outputs": 1,
+    "meta": [
+        {
+            "author": "Walpurgis"
+        },
+        {
+            "basics.lib/name": "Faust Basic Element Library"
+        },
+        {
+            "basics.lib/version": "1.22.0"
+        },
+        {
+            "compile_options": "-lang wasm-i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 2"
+        },
+        {
+            "description": "Master Clock — BPM with swing, outputs square wave clock signal"
+        },
+        {
+            "filename": "clk"
+        },
+        {
+            "maths.lib/author": "GRAME"
+        },
+        {
+            "maths.lib/copyright": "GRAME"
+        },
+        {
+            "maths.lib/license": "LGPL with exception"
+        },
+        {
+            "maths.lib/name": "Faust Math Library"
+        },
+        {
+            "maths.lib/version": "2.9.0"
+        },
+        {
+            "name": "CLK"
+        },
+        {
+            "oscillators.lib/name": "Faust Oscillator Library"
+        },
+        {
+            "oscillators.lib/version": "1.7.0"
+        },
+        {
+            "platform.lib/name": "Generic Platform Library"
+        },
+        {
+            "platform.lib/version": "1.3.0"
+        },
+        {
+            "version": "1.0"
+        }
+    ],
+    "ui": [
+        {
+            "type": "vgroup",
+            "label": "CLK",
+            "items": [
+                {
+                    "type": "hslider",
+                    "label": "bpm",
+                    "varname": "fHslider0",
+                    "shortname": "bpm",
+                    "address": "/CLK/bpm",
+                    "index": 16,
+                    "meta": [
+                        {
+                            "unit": "BPM"
+                        }
+                    ],
+                    "init": 120,
+                    "min": 20,
+                    "max": 300,
+                    "step": 0.1
+                },
+                {
+                    "type": "hslider",
+                    "label": "swing",
+                    "varname": "fHslider1",
+                    "shortname": "swing",
+                    "address": "/CLK/swing",
+                    "index": 44,
+                    "init": 0,
+                    "min": 0,
+                    "max": 0.5,
+                    "step": 0.001
+                }
+            ]
+        }
+    ]
+}

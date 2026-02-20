@@ -1,0 +1,163 @@
+{
+    "name": "LFO",
+    "filename": "lfo",
+    "version": "2.84.3",
+    "compile_options": "-lang wasm-i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 2",
+    "library_list": [
+        "/usr/share/faust/stdfaust.lib",
+        "/usr/share/faust/basics.lib",
+        "/usr/share/faust/oscillators.lib",
+        "/usr/share/faust/maths.lib",
+        "/usr/share/faust/platform.lib",
+        "/usr/share/faust/filters.lib"
+    ],
+    "include_pathnames": [
+        "/faust/user/inc0",
+        "/share/faust",
+        "/usr/local/share/faust",
+        "/usr/share/faust",
+        "."
+    ],
+    "size": 278632,
+    "code": "eP/m",
+    "inputs": 0,
+    "outputs": 1,
+    "meta": [
+        {
+            "author": "Walpurgis"
+        },
+        {
+            "basics.lib/name": "Faust Basic Element Library"
+        },
+        {
+            "basics.lib/version": "1.22.0"
+        },
+        {
+            "compile_options": "-lang wasm-i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 2"
+        },
+        {
+            "description": "Low Frequency Oscillator — sin/square/saw/tri, rate, depth. Output CV 0-1."
+        },
+        {
+            "filename": "lfo"
+        },
+        {
+            "filters.lib/lowpass0_highpass1": "MIT-style STK-4.3 license"
+        },
+        {
+            "filters.lib/name": "Faust Filters Library"
+        },
+        {
+            "filters.lib/pole:author": "Julius O. Smith III"
+        },
+        {
+            "filters.lib/pole:copyright": "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>"
+        },
+        {
+            "filters.lib/pole:license": "MIT-style STK-4.3 license"
+        },
+        {
+            "filters.lib/version": "1.7.1"
+        },
+        {
+            "maths.lib/author": "GRAME"
+        },
+        {
+            "maths.lib/copyright": "GRAME"
+        },
+        {
+            "maths.lib/license": "LGPL with exception"
+        },
+        {
+            "maths.lib/name": "Faust Math Library"
+        },
+        {
+            "maths.lib/version": "2.9.0"
+        },
+        {
+            "name": "LFO"
+        },
+        {
+            "oscillators.lib/lf_sawpos:author": "Bart Brouns, revised by Stéphane Letz"
+        },
+        {
+            "oscillators.lib/lf_sawpos:licence": "STK-4.3"
+        },
+        {
+            "oscillators.lib/name": "Faust Oscillator Library"
+        },
+        {
+            "oscillators.lib/saw2ptr:author": "Julius O. Smith III"
+        },
+        {
+            "oscillators.lib/saw2ptr:license": "STK-4.3"
+        },
+        {
+            "oscillators.lib/sawN:author": "Julius O. Smith III"
+        },
+        {
+            "oscillators.lib/sawN:license": "STK-4.3"
+        },
+        {
+            "oscillators.lib/version": "1.7.0"
+        },
+        {
+            "platform.lib/name": "Generic Platform Library"
+        },
+        {
+            "platform.lib/version": "1.3.0"
+        },
+        {
+            "version": "1.0"
+        }
+    ],
+    "ui": [
+        {
+            "type": "vgroup",
+            "label": "LFO",
+            "items": [
+                {
+                    "type": "hslider",
+                    "label": "depth",
+                    "varname": "fHslider0",
+                    "shortname": "depth",
+                    "address": "/LFO/depth",
+                    "index": 262144,
+                    "init": 1,
+                    "min": 0,
+                    "max": 1,
+                    "step": 0.001
+                },
+                {
+                    "type": "hslider",
+                    "label": "rate",
+                    "varname": "fHslider1",
+                    "shortname": "rate",
+                    "address": "/LFO/rate",
+                    "index": 262172,
+                    "meta": [
+                        {
+                            "unit": "Hz"
+                        }
+                    ],
+                    "init": 1,
+                    "min": 0.1,
+                    "max": 20,
+                    "step": 0.01
+                },
+                {
+                    "type": "nentry",
+                    "label": "waveform",
+                    "varname": "fEntry0",
+                    "shortname": "waveform",
+                    "address": "/LFO/waveform",
+                    "index": 262148,
+                    "init": 0,
+                    "min": 0,
+                    "max": 3,
+                    "step": 1
+                }
+            ]
+        }
+    ]
+}
