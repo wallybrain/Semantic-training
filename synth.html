@@ -190,8 +190,8 @@
             position: fixed;
             top: var(--bar-height);
             left: 0;
-            right: 0;
-            bottom: var(--bar-height);
+            width: 100vw;
+            height: calc(100vh - var(--bar-height) - var(--bar-height));
             cursor: default;
         }
 
@@ -345,15 +345,21 @@
     <!-- Top bar -->
     <div id="top-bar">
         <span class="title">WALPURGIS</span>
-        <button id="btn-start" class="bar-btn" onclick="toggleAudio()">START</button>
+        <button id="btn-start" class="bar-btn" onclick="if(window.toggleAudio)toggleAudio();else this.textContent='LOADING...'">START</button>
         <span id="bpm-display">BPM: 120</span>
         <span class="separator"></span>
         <button class="bar-btn" onclick="showSaveModal()">SAVE</button>
         <button class="bar-btn" onclick="showLoadModal()">LOAD</button>
         <button class="bar-btn" onclick="sharePatch()">SHARE</button>
         <span class="separator"></span>
-        <span id="status-indicator">STANDBY</span>
+        <span id="status-indicator">LOADING SCRIPTS...</span>
         <a href="/" class="bar-link">[home]</a>
+        <a href="https://wallybrain.net" class="bar-link">[wallybrain]</a>
+        <a href="semantic-training.html" class="bar-link">[fnord]</a>
+        <a href="library.html" class="bar-link">[library]</a>
+        <a href="https://solitaire.wallybrain.icu" class="bar-link">[solitaire]</a>
+        <a href="zork.html" class="bar-link">[zork]</a>
+        <a href="https://code.wallyblanchard.com" class="bar-link">[IDE]</a>
     </div>
 
     <!-- Main canvas -->
@@ -414,16 +420,29 @@
 
     <script src="synth/state.js"></script>
     <script type="module">
+        // Show errors visibly since we can't always access console
+        function showError(msg) {
+            var el = document.getElementById('status-indicator');
+            if (el) { el.textContent = 'ERR: ' + msg; el.style.color = '#ff6666'; }
+            console.error('[Walpurgis]', msg);
+        }
+        window.onerror = function(msg) { showError(msg); };
+
+        try {
         // Load FAUST engine (ES module) — sets window.WalpurgisEngine
         await import('./synth/engine.js');
+        } catch(e) { showError('engine load: ' + e.message); }
 
+        try {
         // Load patcher (IIFE) — sets window.WalpurgisPatcher, auto-inits canvas
-        await new Promise(function(resolve) {
+        await new Promise(function(resolve, reject) {
             var s = document.createElement('script');
             s.src = 'synth/patcher.js';
             s.onload = resolve;
+            s.onerror = reject;
             document.body.appendChild(s);
         });
+        } catch(e) { showError('patcher load: ' + e.message); }
 
         // --- App logic (all exposed on window for onclick handlers) ---
 
@@ -597,6 +616,10 @@
         window.sharePatch = sharePatch;
         window.savePatch = savePatch;
         window.closeModals = closeModals;
+
+        // Mark ready
+        document.getElementById('status-indicator').textContent = 'READY';
+        document.getElementById('btn-start').textContent = 'START';
     </script>
 </body>
 </html>
