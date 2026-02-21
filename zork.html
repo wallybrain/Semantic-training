@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZORK :: Interactive Fiction Terminal</title>
+    <meta name="description" content="Play Zork I, II, and III — classic Infocom text adventures in the browser.">
+    <link rel="preload" href="fonts/VT323-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <style>
+        @font-face {
+            font-family: 'VT323';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(fonts/VT323-Regular.woff2) format('woff2');
+        }
+        @font-face {
+            font-family: 'Courier Prime';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(fonts/CourierPrime-Regular.woff2) format('woff2');
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 20px;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --green: #66d9a0;
+            --green-dim: #5cb88a;
+            --green-dark: #4d9968;
+            --mono: 'VT323', monospace;
+            --mono-alt: 'Courier Prime', monospace;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--green);
+            font-family: var(--mono);
+            font-size: 18px;
+            line-height: 1.6;
+            overflow: hidden;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(102, 217, 160, 0.02) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 80px;
+            background: linear-gradient(to bottom, transparent, rgba(102, 217, 160, 0.08), transparent);
+            pointer-events: none;
+            z-index: 99;
+            animation: scanline 6s linear infinite;
+            opacity: 0.4;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--green);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Nav bar */
+        .nav-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            font-size: 13px;
+            color: var(--green-dark);
+            padding: 6px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            background: rgba(10, 10, 10, 0.85);
+            border-bottom: 1px solid rgba(102, 217, 160, 0.1);
+            z-index: 50;
+        }
+
+        .nav-left, .nav-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-bar a {
+            color: var(--green-dark);
+            text-decoration: none;
+            transition: all 0.15s ease-out;
+        }
+
+        .nav-bar a:hover {
+            color: var(--green);
+            text-shadow: 0 0 6px rgba(102, 217, 160, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .nav-bar a:active {
+            transform: translateY(1px);
+        }
+
+        /* Game selector */
+        .game-select {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            padding: 50px 15px 12px;
+            flex-shrink: 0;
+        }
+
+        .game-btn {
+            font-family: var(--mono);
+            font-size: 16px;
+            background: transparent;
+            color: var(--green-dark);
+            border: 1px solid rgba(102, 217, 160, 0.2);
+            padding: 6px 16px;
+            cursor: pointer;
+            transition: all 0.15s ease-out;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .game-btn:hover {
+            color: var(--green);
+            border-color: var(--green);
+            transform: translateY(-1px);
+            box-shadow: 0 0 8px rgba(102, 217, 160, 0.2);
+        }
+
+        .game-btn:active {
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+        .game-btn.active {
+            color: var(--bg);
+            background: var(--green);
+            border-color: var(--green);
+            text-shadow: none;
+        }
+
+        .game-label {
+            font-size: 13px;
+            color: var(--green-dark);
+        }
+
+        /* Game status line (Zork's score/moves/room) */
+        #game-status {
+            font-family: var(--mono-alt);
+            font-size: 14px;
+            color: var(--green-dim);
+            background: rgba(102, 217, 160, 0.05);
+            border-top: 1px solid rgba(102, 217, 160, 0.1);
+            border-bottom: 1px solid rgba(102, 217, 160, 0.1);
+            padding: 4px 15px;
+            white-space: pre;
+            overflow: hidden;
+            flex-shrink: 0;
+            min-height: 22px;
+            display: none;
+        }
+
+        /* Terminal output area */
+        #terminal {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--green-dark) transparent;
+        }
+
+        #terminal::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #terminal::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #terminal::-webkit-scrollbar-thumb {
+            background: var(--green-dark);
+            border-radius: 3px;
+        }
+
+        #output {
+            font-family: var(--mono-alt);
+            font-size: 16px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Welcome screen */
+        #welcome {
+            font-family: var(--mono-alt);
+            font-size: 16px;
+            line-height: 1.5;
+            padding: 30px 15px;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        #welcome .ascii-title {
+            font-family: var(--mono);
+            font-size: 14px;
+            line-height: 1.2;
+            color: var(--green-dim);
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        #welcome p {
+            max-width: 500px;
+            color: var(--green-dim);
+        }
+
+        #welcome .hint {
+            font-size: 13px;
+            color: var(--green-dark);
+        }
+
+        /* Input area */
+        .input-area {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            border-top: 1px solid rgba(102, 217, 160, 0.1);
+            flex-shrink: 0;
+        }
+
+        .input-prompt {
+            color: var(--green-dim);
+            margin-right: 8px;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        #game-input {
+            flex: 1;
+            font-family: var(--mono-alt);
+            font-size: 16px;
+            background: transparent;
+            border: none;
+            color: var(--green);
+            caret-color: var(--green);
+            outline: none;
+            min-height: 44px;
+        }
+
+        .cursor-blink {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background: var(--green);
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+            margin-left: 4px;
+        }
+
+        /* Status bar */
+        .status {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            font-size: 12px;
+            color: var(--green-dark);
+            padding: 4px 15px;
+            display: flex;
+            justify-content: space-between;
+            backdrop-filter: blur(8px);
+            background: rgba(10, 10, 10, 0.85);
+            border-top: 1px solid rgba(102, 217, 160, 0.1);
+            z-index: 50;
+        }
+
+        /* Side scanners */
+        @keyframes sideScan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        .side-scanner {
+            position: fixed;
+            top: 0;
+            width: 2px;
+            height: 80px;
+            pointer-events: none;
+            z-index: 98;
+            animation: sideScan 10s linear infinite;
+            opacity: 0.3;
+        }
+
+        .side-scanner--left {
+            left: 0;
+            background: linear-gradient(to bottom, transparent 0%, var(--green) 50%, transparent 100%);
+            box-shadow: 0 0 4px var(--green-dark);
+        }
+
+        .side-scanner--right {
+            right: 0;
+            background: linear-gradient(to bottom, transparent 0%, var(--green) 50%, transparent 100%);
+            box-shadow: 0 0 4px var(--green-dark);
+            animation-delay: -5s;
+        }
+
+        .side-glow {
+            position: fixed;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            pointer-events: none;
+            z-index: 97;
+            background: var(--green-dark);
+            opacity: 0.15;
+        }
+
+        .side-glow--left { left: 0; box-shadow: 0 0 3px var(--green-dark); }
+        .side-glow--right { right: 0; box-shadow: 0 0 3px var(--green-dark); }
+
+        /* Loading state */
+        #loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: var(--green-dim);
+        }
+
+        @media (max-width: 768px) {
+            #output { font-size: 14px; }
+            #game-input { font-size: 16px; }
+            .game-btn { font-size: 14px; padding: 6px 12px; }
+            #welcome .ascii-title { font-size: 10px; }
+            .nav-bar a {
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                font-size: 14px;
+            }
+            .nav-bar { padding: 4px 10px; }
+        }
+
+        @media (max-width: 480px) {
+            #output { font-size: 13px; }
+            #welcome .ascii-title { font-size: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav-bar">
+    <div class="nav-left">
+        <a href="https://wallybrain.net">[wallybrain]</a>
+    </div>
+    <div class="nav-right">
+        <a href="/">[home]</a>
+        <a href="semantic-training.html">[fnord]</a>
+        <a href="library.html">[library]</a>
+        <a href="https://solitaire.wallybrain.icu">[solitaire]</a>
+        <a href="https://code.wallyblanchard.com">[IDE]</a>
+    </div>
+</div>
+
+<div class="game-select">
+    <span class="game-label">PLAY:</span>
+    <button class="game-btn" data-game="zork1" onclick="loadGame('zork1')">Zork I</button>
+    <button class="game-btn" data-game="zork2" onclick="loadGame('zork2')">Zork II</button>
+    <button class="game-btn" data-game="zork3" onclick="loadGame('zork3')">Zork III</button>
+</div>
+
+<div id="game-status"></div>
+
+<div id="welcome">
+    <div class="ascii-title">
+ _______ ______  ______ __  __
+|__   __|  __  ||  __  |  |/ /
+   | |  | |  | || |__) |    /
+   | |  | |  | ||  _  /|    \
+   | |  | |__| || | \ \|  |\  \
+   |_|  |______||_|  \_\_| |__/</div>
+    <p>The classic Infocom text adventure trilogy, playable in the browser.</p>
+    <p>Open-sourced by Microsoft under the MIT license.</p>
+    <p class="hint">Select a game above to begin. Type commands like LOOK, GO NORTH, TAKE SWORD, OPEN MAILBOX.</p>
+</div>
+
+<div id="terminal" style="display:none">
+    <div id="output"></div>
+</div>
+
+<div id="loading">Loading story file...</div>
+
+<div class="input-area" style="display:none" id="input-area">
+    <span class="input-prompt">&gt;</span>
+    <input type="text" id="game-input" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <span class="cursor-blink"></span>
+</div>
+
+<div style="height: 28px; flex-shrink: 0;"></div>
+
+<div class="status">
+    <span>ZORK // Z-MACHINE v3 INTERPRETER</span>
+    <span id="save-status"></span>
+</div>
+
+<div class="side-scanner side-scanner--left"></div>
+<div class="side-scanner side-scanner--right"></div>
+<div class="side-glow side-glow--left"></div>
+<div class="side-glow side-glow--right"></div>
+
+<script src="js/zvm.min.js"></script>
+<script src="js/glk-shim.js"></script>
+<script>
+(function() {
+    var outputEl = document.getElementById('output');
+    var inputEl = document.getElementById('game-input');
+    var statusEl = document.getElementById('game-status');
+    var terminalEl = document.getElementById('terminal');
+    var welcomeEl = document.getElementById('welcome');
+    var loadingEl = document.getElementById('loading');
+    var inputArea = document.getElementById('input-area');
+    var saveStatus = document.getElementById('save-status');
+
+    var currentGame = null;
+    var glk = null;
+    var vm = null;
+    var commandHistory = [];
+    var historyIndex = -1;
+
+    var gameFiles = {
+        zork1: 'games/zork1.z3',
+        zork2: 'games/zork2.z3',
+        zork3: 'games/zork3.z3'
+    };
+
+    var gameNames = {
+        zork1: 'Zork I: The Great Underground Empire',
+        zork2: 'Zork II: The Wizard of Frobozz',
+        zork3: 'Zork III: The Dungeon Master'
+    };
+
+    window.loadGame = function(gameId) {
+        if (currentGame === gameId) return;
+        currentGame = gameId;
+
+        // Update button states
+        var btns = document.querySelectorAll('.game-btn');
+        btns.forEach(function(btn) {
+            btn.classList.toggle('active', btn.getAttribute('data-game') === gameId);
+        });
+
+        // Show loading
+        welcomeEl.style.display = 'none';
+        terminalEl.style.display = 'none';
+        inputArea.style.display = 'none';
+        loadingEl.style.display = 'block';
+
+        // Fetch story file
+        fetch(gameFiles[gameId])
+            .then(function(res) {
+                if (!res.ok) throw new Error('Failed to load ' + gameFiles[gameId]);
+                return res.arrayBuffer();
+            })
+            .then(function(buf) {
+                startGame(gameId, new Uint8Array(buf));
+            })
+            .catch(function(err) {
+                loadingEl.style.display = 'none';
+                welcomeEl.style.display = 'flex';
+                alert('Error loading game: ' + err.message);
+            });
+    };
+
+    function startGame(gameId, storyData) {
+        // Clear previous game state
+        while (outputEl.firstChild) {
+            outputEl.removeChild(outputEl.firstChild);
+        }
+        statusEl.textContent = '';
+        commandHistory = [];
+        historyIndex = -1;
+
+        // Show terminal
+        loadingEl.style.display = 'none';
+        terminalEl.style.display = 'block';
+        inputArea.style.display = 'flex';
+        statusEl.style.display = 'block';
+
+        // Check for saved game
+        var saveKey = 'zork_save_' + gameId;
+        var hasSave = localStorage.getItem(saveKey);
+        if (hasSave) {
+            saveStatus.textContent = 'save found';
+        } else {
+            saveStatus.textContent = '';
+        }
+
+        // Create Glk shim and VM
+        glk = new GlkShim(outputEl, inputEl, statusEl, { gameId: gameId });
+
+        vm = new ZVM();
+        glk.setVM(vm);
+
+        vm.prepare(storyData, { Glk: glk });
+        vm.init();
+
+        inputEl.focus();
+    }
+
+    // Handle input
+    inputEl.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            var text = inputEl.value;
+            inputEl.value = '';
+
+            if (text.length > 0) {
+                commandHistory.push(text);
+                historyIndex = commandHistory.length;
+            }
+
+            if (glk && glk.pendingLineCallback) {
+                glk.submitLine(text);
+            } else if (glk && glk.pendingCharCallback) {
+                glk.submitChar(text.charCodeAt(0) || 13);
+            }
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (historyIndex > 0) {
+                historyIndex--;
+                inputEl.value = commandHistory[historyIndex];
+            }
+        } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (historyIndex < commandHistory.length - 1) {
+                historyIndex++;
+                inputEl.value = commandHistory[historyIndex];
+            } else {
+                historyIndex = commandHistory.length;
+                inputEl.value = '';
+            }
+        }
+    });
+
+    // Handle char input for key presses anywhere
+    document.addEventListener('keydown', function(e) {
+        if (glk && glk.pendingCharCallback && document.activeElement !== inputEl) {
+            glk.submitChar(e.which || e.keyCode);
+        }
+    });
+
+    // Click terminal to focus input
+    terminalEl.addEventListener('click', function() {
+        inputEl.focus();
+    });
+})();
+</script>
+</body>
+</html>
