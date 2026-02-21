@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library // wallyblanchard.com</title>
+    <link rel="preload" href="fonts/VT323-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <style>
         @font-face {
             font-family: 'VT323';
@@ -21,12 +22,17 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 20px;
+        }
+
         :root {
             --bg: #0e0a1e;
             --terminal-bg: #06060f;
             --green: #66d9a0;
-            --green-dim: #4daa7a;
-            --green-dark: #337755;
+            --green-dim: #5cb88a;
+            --green-dark: #4d9968;
             --amber: #d4a853;
             --cyan: #5bcefa;
             --mono: 'VT323', monospace;
@@ -50,7 +56,7 @@
             background: linear-gradient(to bottom, rgba(102, 217, 160, 0.02) 50%, rgba(0, 0, 0, 0.25) 50%);
             background-size: 100% 4px;
             pointer-events: none;
-            z-index: 1000;
+            z-index: 100;
         }
 
         .container {
@@ -143,7 +149,8 @@
         }
 
         .search-box:focus {
-            border-color: var(--green-dim);
+            border-color: var(--green);
+            box-shadow: 0 0 12px rgba(102, 217, 160, 0.1);
         }
 
         .search-box::placeholder {
@@ -158,13 +165,22 @@
             font-size: 14px;
             padding: 8px 14px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s ease-out;
         }
 
         .sort-btn:hover, .sort-btn.active {
             color: var(--green);
             border-color: var(--green-dim);
             background: rgba(102, 217, 160, 0.1);
+        }
+
+        .sort-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(102, 217, 160, 0.15);
+        }
+
+        .sort-btn:active {
+            transform: translateY(1px);
         }
 
         .stats {
@@ -181,6 +197,11 @@
             list-style: none;
         }
 
+        @keyframes book-appear {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .book-item {
             padding: 10px 0;
             border-bottom: 1px solid rgba(102, 217, 160, 0.06);
@@ -188,10 +209,21 @@
             grid-template-columns: 1fr auto;
             gap: 10px;
             align-items: baseline;
+            transition: background 0.15s ease, transform 0.1s ease;
+            content-visibility: auto;
+            contain-intrinsic-size: auto 45px;
+            animation: book-appear linear;
+            animation-timeline: view();
+            animation-range: entry 0% entry 30%;
         }
 
         .book-item:hover {
-            background: rgba(102, 217, 160, 0.03);
+            background: rgba(102, 217, 160, 0.05);
+            transform: translateX(4px);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .book-item { animation: none; }
         }
 
         .book-title {
@@ -252,7 +284,7 @@
             font-size: 12px;
             color: var(--green-dark);
             margin-top: 3px;
-            opacity: 0.6;
+            opacity: 0.8;
         }
 
         .letter-marker {
@@ -262,6 +294,10 @@
             border-bottom: 1px solid rgba(212, 168, 83, 0.2);
             margin-bottom: 5px;
             letter-spacing: 4px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--terminal-bg);
         }
 
         .letter-marker::before {
@@ -286,9 +322,61 @@
             padding: 4px 15px;
             display: flex;
             justify-content: space-between;
-            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(8px);
+            background: rgba(10, 10, 10, 0.85);
             border-top: 1px solid rgba(102, 217, 160, 0.1);
             z-index: 50;
+        }
+
+        /* Side scanners */
+        @keyframes sideScan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        .side-scanner {
+            position: fixed;
+            top: 0;
+            width: 2px;
+            height: 80px;
+            pointer-events: none;
+            z-index: 998;
+            animation: sideScan 10s linear infinite;
+            opacity: 0.3;
+        }
+
+        .side-scanner--left {
+            left: 0;
+            background: linear-gradient(to bottom, transparent 0%, var(--green) 50%, transparent 100%);
+            box-shadow: 0 0 4px var(--green-dark);
+        }
+
+        .side-scanner--right {
+            right: 0;
+            background: linear-gradient(to bottom, transparent 0%, var(--green) 50%, transparent 100%);
+            box-shadow: 0 0 4px var(--green-dark);
+            animation-delay: -5s;
+        }
+
+        .side-glow {
+            position: fixed;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            pointer-events: none;
+            z-index: 997;
+            background: var(--green-dark);
+            opacity: 0.15;
+        }
+
+        .side-glow--left {
+            left: 0;
+            box-shadow: 0 0 3px var(--green-dark);
+        }
+
+        .side-glow--right {
+            right: 0;
+            box-shadow: 0 0 3px var(--green-dark);
         }
 
         @media (max-width: 768px) {
@@ -300,7 +388,15 @@
             }
             h1 { font-size: 22px; }
             .controls { flex-direction: column; }
-            .sort-btn { width: 100%; }
+            .sort-btn {
+                width: 100%;
+                min-height: 44px;
+                font-size: 16px;
+            }
+            .search-box {
+                min-height: 44px;
+                font-size: 16px;
+            }
         }
     </style>
 </head>
