@@ -10,6 +10,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://wallyblanchard.com/">
     <link rel="canonical" href="https://wallyblanchard.com/">
+    <link rel="preload" href="fonts/VT323-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <style>
         @font-face {
             font-family: 'VT323';
@@ -42,10 +43,10 @@
             --bg: #0a0a0a;
             --terminal-bg: #000000;
             --primary: #00ff41;
-            --primary-dim: #00b82e;
-            --primary-dark: #007a1f;
+            --primary-dim: #00cc33;
+            --primary-dark: #009926;
             --text: #00ff41;
-            --text-dim: #00b82e;
+            --text-dim: #00cc33;
             --cursor: #00ff41;
             --mono: 'VT323', monospace;
             --mono-alt: 'Courier Prime', monospace;
@@ -99,7 +100,7 @@
             );
             background-size: 100% 4px;
             pointer-events: none;
-            z-index: 1000;
+            z-index: 100;
         }
 
         body::after {
@@ -116,7 +117,7 @@
                 transparent 100%
             );
             pointer-events: none;
-            z-index: 999;
+            z-index: 99;
             animation: scanline 8s linear infinite;
             opacity: 0.3;
         }
@@ -127,12 +128,20 @@
             padding: 20px;
         }
 
+        @keyframes section-appear {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .terminal-window {
             background: var(--terminal-bg);
             border: 2px solid var(--primary-dark);
             box-shadow: 0 0 20px rgba(0, 255, 65, 0.3), inset 0 0 100px rgba(0, 255, 65, 0.05);
             margin: 20px 0;
             position: relative;
+            animation: section-appear linear;
+            animation-timeline: view();
+            animation-range: entry 0% entry 15%;
         }
 
         .terminal-header {
@@ -158,7 +167,7 @@
             font-family: var(--mono);
             font-size: 14px;
             letter-spacing: 1px;
-            transition: all 0.2s;
+            transition: all 0.15s ease-out;
         }
 
         .header-links {
@@ -174,6 +183,13 @@
             color: var(--terminal-bg);
             text-shadow: none;
             border-bottom-style: solid;
+            transform: translateY(-1px);
+            box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
+        }
+
+        .ide-link:active {
+            transform: translateY(1px);
+            box-shadow: none;
         }
 
         .terminal-buttons {
@@ -190,8 +206,11 @@
                 display: none;
             }
             .ide-link {
-                font-size: 12px;
+                font-size: 14px;
                 padding: 2px 6px;
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
             }
         }
 
@@ -358,6 +377,12 @@
             padding: 20px;
             background: rgba(0, 255, 65, 0.03);
             box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+            transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+        }
+
+        .domain-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(0, 255, 65, 0.35);
         }
 
         .domain-card h3 {
@@ -485,7 +510,8 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background: var(--primary-dark);
+            backdrop-filter: blur(8px);
+            background: rgba(0, 122, 31, 0.85);
             color: var(--primary);
             padding: 8px 20px;
             font-size: 16px;
@@ -498,6 +524,57 @@
 
         .timestamp {
             color: var(--primary-dim);
+        }
+
+        /* Side scanners */
+        @keyframes sideScan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        .side-scanner {
+            position: fixed;
+            top: 0;
+            width: 2px;
+            height: 80px;
+            pointer-events: none;
+            z-index: 98;
+            animation: sideScan 10s linear infinite;
+            opacity: 0.3;
+        }
+
+        .side-scanner--left {
+            left: 0;
+            background: linear-gradient(to bottom, transparent 0%, var(--primary) 50%, transparent 100%);
+            box-shadow: 0 0 4px var(--primary-dark);
+        }
+
+        .side-scanner--right {
+            right: 0;
+            background: linear-gradient(to bottom, transparent 0%, var(--primary) 50%, transparent 100%);
+            box-shadow: 0 0 4px var(--primary-dark);
+            animation-delay: -5s;
+        }
+
+        .side-glow {
+            position: fixed;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            pointer-events: none;
+            z-index: 97;
+            background: var(--primary-dark);
+            opacity: 0.15;
+        }
+
+        .side-glow--left {
+            left: 0;
+            box-shadow: 0 0 3px var(--primary-dark);
+        }
+
+        .side-glow--right {
+            right: 0;
+            box-shadow: 0 0 3px var(--primary-dark);
         }
 
         @media (max-width: 768px) {
@@ -528,6 +605,20 @@
 
         html {
             scroll-behavior: smooth;
+            scroll-padding-top: 20px;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
 
         ::selection {
