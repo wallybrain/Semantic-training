@@ -402,21 +402,20 @@
 
 <div class="game-select">
     <span class="game-label">PLAY:</span>
-    <button class="game-btn" data-game="zork1" onclick="loadGame('zork1')">Zork I</button>
-    <button class="game-btn" data-game="zork2" onclick="loadGame('zork2')">Zork II</button>
-    <button class="game-btn" data-game="zork3" onclick="loadGame('zork3')">Zork III</button>
+    <button class="game-btn" data-game="zork1">Zork I</button>
+    <button class="game-btn" data-game="zork2">Zork II</button>
+    <button class="game-btn" data-game="zork3">Zork III</button>
 </div>
 
 <div id="game-status"></div>
 
 <div id="welcome">
     <div class="ascii-title">
- _______ ______  ______ __  __
-|__   __|  __  ||  __  |  |/ /
-   | |  | |  | || |__) |    /
-   | |  | |  | ||  _  /|    \
-   | |  | |__| || | \ \|  |\  \
-   |_|  |______||_|  \_\_| |__/</div>
+ _____  ___  ____  _  __
+|__  / / _ \|  _ \| |/ /
+  / / | | | | |_) | ' /
+ / /_ | |_| |  _ &lt;| . \
+/____| \___/|_| \_\_|\_\</div>
     <p>The classic Infocom text adventure trilogy, playable in the browser.</p>
     <p>Open-sourced by Microsoft under the MIT license.</p>
     <p class="hint">Select a game above to begin. Type commands like LOOK, GO NORTH, TAKE SWORD, OPEN MAILBOX.</p>
@@ -477,7 +476,14 @@
         zork3: 'Zork III: The Dungeon Master'
     };
 
-    window.loadGame = function(gameId) {
+    // Bind game selector buttons (no inline onclick — CSP blocks it)
+    document.querySelectorAll('.game-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            loadGame(btn.getAttribute('data-game'));
+        });
+    });
+
+    function loadGame(gameId) {
         if (currentGame === gameId) return;
         currentGame = gameId;
 
@@ -494,20 +500,24 @@
         loadingEl.style.display = 'block';
 
         // Fetch story file
+        console.log('Fetching:', gameFiles[gameId]);
         fetch(gameFiles[gameId])
             .then(function(res) {
-                if (!res.ok) throw new Error('Failed to load ' + gameFiles[gameId]);
+                console.log('Fetch response:', res.status, res.ok);
+                if (!res.ok) throw new Error('Failed to load ' + gameFiles[gameId] + ' (HTTP ' + res.status + ')');
                 return res.arrayBuffer();
             })
             .then(function(buf) {
+                console.log('Story loaded, bytes:', buf.byteLength);
                 startGame(gameId, new Uint8Array(buf));
             })
             .catch(function(err) {
+                console.error('Load error:', err);
                 loadingEl.style.display = 'none';
                 welcomeEl.style.display = 'flex';
                 alert('Error loading game: ' + err.message);
             });
-    };
+    }
 
     function startGame(gameId, storyData) {
         // Clear previous game state
@@ -534,13 +544,18 @@
         }
 
         // Create Glk shim and VM
-        glk = new GlkShim(outputEl, inputEl, statusEl, { gameId: gameId });
+        try {
+            glk = new GlkShim(outputEl, inputEl, statusEl, { gameId: gameId });
 
-        vm = new ZVM();
-        glk.setVM(vm);
+            vm = new ZVM();
+            glk.setVM(vm);
 
-        vm.prepare(storyData, { Glk: glk });
-        vm.init();
+            vm.prepare(storyData, { Glk: glk });
+            vm.init();
+        } catch (err) {
+            console.error('ZVM init error:', err);
+            outputEl.appendChild(document.createTextNode('[Error starting game: ' + err.message + ']'));
+        }
 
         inputEl.focus();
     }
