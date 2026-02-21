@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>fnord</title>
+    <link rel="preload" href="fonts/VT323-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <style>
         @font-face {
             font-family: 'VT323';
@@ -21,11 +22,16 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 20px;
+        }
+
         :root {
             --bg: #0a0a0a;
             --green: #66d9a0;
-            --green-dim: #4daa7a;
-            --green-dark: #337755;
+            --green-dim: #5cb88a;
+            --green-dark: #4d9968;
             --mono: 'VT323', monospace;
             --mono-alt: 'Courier Prime', monospace;
         }
@@ -52,7 +58,7 @@
             background: linear-gradient(to bottom, rgba(102, 217, 160, 0.02) 50%, rgba(0, 0, 0, 0.25) 50%);
             background-size: 100% 4px;
             pointer-events: none;
-            z-index: 1000;
+            z-index: 100;
         }
 
         body::after {
@@ -62,7 +68,7 @@
             width: 100%; height: 80px;
             background: linear-gradient(to bottom, transparent, rgba(102, 217, 160, 0.08), transparent);
             pointer-events: none;
-            z-index: 999;
+            z-index: 99;
             animation: scanline 6s linear infinite;
             opacity: 0.4;
         }
@@ -133,7 +139,7 @@
             text-align: center;
             font-size: 12px;
             color: var(--green-dark);
-            opacity: 0.5;
+            opacity: 0.6;
         }
 
         .nav-bar {
@@ -144,7 +150,8 @@
             padding: 6px 15px;
             display: flex;
             justify-content: space-between;
-            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(8px);
+            background: rgba(10, 10, 10, 0.85);
             border-bottom: 1px solid rgba(102, 217, 160, 0.1);
             z-index: 100;
         }
@@ -157,11 +164,12 @@
         .nav-bar a {
             color: var(--green-dark);
             text-decoration: none;
-            transition: color 0.2s;
+            transition: all 0.15s ease-out;
         }
 
         .nav-bar a:hover {
             color: var(--green);
+            text-shadow: 0 0 6px rgba(102, 217, 160, 0.3);
         }
 
         .status {
@@ -172,16 +180,77 @@
             padding: 4px 15px;
             display: flex;
             justify-content: space-between;
-            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(8px);
+            background: rgba(10, 10, 10, 0.85);
             border-top: 1px solid rgba(102, 217, 160, 0.1);
             z-index: 50;
         }
 
         #counter { color: var(--green-dim); }
 
+        /* Side scanners */
+        @keyframes sideScan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        .side-scanner {
+            position: fixed;
+            top: 0;
+            width: 2px;
+            height: 80px;
+            pointer-events: none;
+            z-index: 998;
+            animation: sideScan 10s linear infinite;
+            opacity: 0.3;
+        }
+
+        .side-scanner--left {
+            left: 0;
+            background: linear-gradient(to bottom, transparent 0%, var(--green) 50%, transparent 100%);
+            box-shadow: 0 0 4px var(--green-dark);
+        }
+
+        .side-scanner--right {
+            right: 0;
+            background: linear-gradient(to bottom, transparent 0%, var(--green) 50%, transparent 100%);
+            box-shadow: 0 0 4px var(--green-dark);
+            animation-delay: -5s;
+        }
+
+        .side-glow {
+            position: fixed;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            pointer-events: none;
+            z-index: 997;
+            background: var(--green-dark);
+            opacity: 0.15;
+        }
+
+        .side-glow--left {
+            left: 0;
+            box-shadow: 0 0 3px var(--green-dark);
+        }
+
+        .side-glow--right {
+            right: 0;
+            box-shadow: 0 0 3px var(--green-dark);
+        }
+
         @media (max-width: 768px) {
             #oracle { font-size: 24px; }
             .container { padding: 30px 20px; }
+            .nav-bar a {
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                font-size: 14px;
+            }
+            .nav-bar {
+                padding: 4px 10px;
+            }
         }
 
         @media (max-width: 480px) {
