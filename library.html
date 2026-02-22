@@ -127,6 +127,25 @@
             margin-bottom: 20px;
         }
 
+        .epigraph {
+            border-left: 2px solid var(--amber);
+            padding: 12px 18px;
+            margin-bottom: 22px;
+            background: rgba(212, 168, 83, 0.04);
+            font-family: var(--mono-alt);
+            font-size: 15px;
+            color: var(--green-dim);
+            line-height: 1.7;
+        }
+
+        .epigraph-attr {
+            display: block;
+            margin-top: 8px;
+            color: var(--amber);
+            font-family: var(--mono);
+            font-size: 13px;
+        }
+
         .controls {
             display: flex;
             gap: 12px;
@@ -419,6 +438,11 @@
         <div class="terminal-content">
             <h1>$ cat /shelf/*</h1>
             <div class="subtitle">Personal library — 453 volumes</div>
+
+            <blockquote class="epigraph">
+                The library should contain as much of what you do not know as your financial means&nbsp;&hellip; allow you to put there. You will accumulate more knowledge and more books as you grow older, and the growing number of unread books on the shelves will look at you menacingly. Indeed, the more you know, the larger the rows of unread books. Let us call this collection of unread books an antilibrary.
+                <cite class="epigraph-attr">&mdash; Nassim Nicholas Taleb, The Black Swan</cite>
+            </blockquote>
 
             <div class="controls">
                 <input type="text" class="search-box" id="search" placeholder="search by title or author..." autocomplete="off">
