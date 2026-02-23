@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentinel MCP Gateway :: Secure Your AI Agents</title>
+    <link rel="preload" href="fonts/VT323-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <meta name="description" content="Sentinel MCP Gateway — single-binary Rust gateway securing AI agent tool calls. JWT auth, RBAC, rate limiting, audit logging, circuit breakers. Protect OpenClaw, Claude Code, and any MCP-connected agent.">
+    <meta property="og:title" content="Sentinel MCP Gateway — Secure Your AI Agents">
+    <meta property="og:description" content="Single-binary Rust MCP gateway. JWT auth, RBAC, rate limiting, audit logging. Protect OpenClaw and Claude Code.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wallyblanchard.com/sentinel.html">
+    <link rel="canonical" href="https://wallyblanchard.com/sentinel.html">
+    <style>
+        @font-face {
+            font-family: 'VT323';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(fonts/VT323-Regular.woff2) format('woff2');
+        }
+        @font-face {
+            font-family: 'Courier Prime';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(fonts/CourierPrime-Regular.woff2) format('woff2');
+        }
+        @font-face {
+            font-family: 'Courier Prime';
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url(fonts/CourierPrime-Bold.woff2) format('woff2');
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 20px;
+        }
+
+        :root {
+            --bg: #0a0a1a;
+            --terminal-bg: #06060f;
+            --primary: #ff3333;
+            --primary-dim: #cc2828;
+            --primary-dark: #991e1e;
+            --text: #e0e0e0;
+            --text-dim: #999;
+            --cursor: #ff3333;
+            --accent: #00ccff;
+            --accent-dim: #0099bb;
+            --green: #66d9a0;
+            --green-dim: #4d9968;
+            --amber: #ffaa00;
+            --amber-dim: #cc8800;
+            --mono: 'VT323', monospace;
+            --mono-alt: 'Courier Prime', monospace;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.95; }
+            10% { opacity: 0.98; }
+            15% { opacity: 0.96; }
+            20% { opacity: 0.97; }
+            100% { opacity: 0.97; }
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary-dark); }
+            50% { text-shadow: 0 0 7px var(--primary), 0 0 15px var(--primary-dark); }
+        }
+
+        @keyframes pulseRing {
+            0% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(255, 51, 51, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0); }
+        }
+
+        @keyframes typeIn {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes dataFlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 0% 100%; }
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 20px;
+            line-height: 1.6;
+            overflow-x: hidden;
+            animation: flicker 0.15s infinite;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 51, 51, 0.02) 50%,
+                rgba(0, 0, 0, 0.3) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(
+                to bottom,
+                transparent 0%,
+                rgba(255, 51, 51, 0.08) 50%,
+                transparent 100%
+            );
+            pointer-events: none;
+            z-index: 99;
+            animation: scanline 8s linear infinite;
+            opacity: 0.3;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        @keyframes section-appear {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .terminal-window {
+            background: var(--terminal-bg);
+            border: 2px solid var(--primary-dark);
+            box-shadow: 0 0 20px rgba(255, 51, 51, 0.15), inset 0 0 100px rgba(255, 51, 51, 0.02);
+            margin: 20px 0;
+            position: relative;
+            animation: section-appear linear;
+            animation-timeline: view();
+            animation-range: entry 0% entry 25%;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .terminal-window { animation: none; }
+            body { animation: none; }
+            body::after { animation: none; }
+            .side-scanner { animation: none; display: none; }
+        }
+
+        .terminal-header {
+            background: rgba(153, 30, 30, 0.3);
+            padding: 8px 15px;
+            border-bottom: 2px solid var(--primary-dark);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .terminal-title {
+            font-size: 18px;
+            letter-spacing: 2px;
+            color: var(--primary);
+            text-shadow: 0 0 5px var(--primary-dark);
+        }
+
+        .terminal-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border: 1px solid var(--primary-dark);
+            background: transparent;
+        }
+
+        .terminal-content {
+            padding: 30px;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 12px;
+            height: 24px;
+            background: var(--cursor);
+            animation: blink 1s step-end infinite;
+            margin-left: 4px;
+            vertical-align: text-bottom;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 50px 0 30px;
+        }
+
+        .hero-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: pulseRing 2s ease-out infinite;
+            border: 2px solid var(--primary);
+            width: 100px;
+            height: 100px;
+            line-height: 96px;
+            text-align: center;
+        }
+
+        .hero-name {
+            font-size: 52px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--primary);
+            text-shadow: 0 0 20px var(--primary-dark), 0 0 40px rgba(255, 51, 51, 0.2);
+            animation: textGlow 3s ease-in-out infinite;
+            margin-bottom: 10px;
+        }
+
+        .hero-sub {
+            font-size: 22px;
+            color: var(--accent);
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+        }
+
+        .hero-tagline {
+            font-family: var(--mono-alt);
+            font-size: 17px;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary-dark);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Nav */
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            color: var(--primary);
+            text-decoration: none;
+            border: 1px solid var(--primary-dark);
+            padding: 8px 20px;
+            font-family: var(--mono);
+            font-size: 18px;
+            letter-spacing: 2px;
+            transition: all 0.15s ease-out;
+        }
+
+        .nav-link:hover {
+            background: var(--primary);
+            color: var(--terminal-bg);
+            text-shadow: none;
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .nav-link:active {
+            transform: translateY(1px);
+        }
+
+        .nav-link.accent {
+            border-color: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        .nav-link.accent:hover {
+            background: var(--accent);
+            color: var(--terminal-bg);
+            box-shadow: 0 0 15px rgba(0, 204, 255, 0.4);
+        }
+
+        /* Section titles */
+        .section-title {
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary-dark);
+            border-bottom: 2px solid var(--primary-dark);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .section-title::before {
+            content: '/// ';
+            color: var(--primary-dim);
+        }
+
+        .section-title.accent {
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-dim);
+            border-bottom-color: var(--accent-dim);
+        }
+
+        .section-title.accent::before {
+            color: var(--accent-dim);
+        }
+
+        .section-title.green {
+            color: var(--green);
+            text-shadow: 0 0 10px var(--green-dim);
+            border-bottom-color: var(--green-dim);
+        }
+
+        .section-title.green::before {
+            color: var(--green-dim);
+        }
+
+        .section-title.amber {
+            color: var(--amber);
+            text-shadow: 0 0 10px var(--amber-dim);
+            border-bottom-color: var(--amber-dim);
+        }
+
+        .section-title.amber::before {
+            color: var(--amber-dim);
+        }
+
+        /* Body text */
+        .bio {
+            font-family: var(--mono-alt);
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text-dim);
+            margin-bottom: 20px;
+        }
+
+        .highlight { color: var(--green); }
+        .highlight-red { color: var(--primary); }
+        .highlight-accent { color: var(--accent); }
+        .highlight-amber { color: var(--amber); }
+
+        /* Feature grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card {
+            border: 1px solid var(--primary-dark);
+            padding: 18px;
+            transition: all 0.15s ease-out;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.15);
+            transform: translateX(4px);
+        }
+
+        .feature-card.accent {
+            border-color: var(--accent-dim);
+        }
+
+        .feature-card.accent:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(0, 204, 255, 0.15);
+        }
+
+        .feature-name {
+            font-size: 20px;
+            letter-spacing: 2px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .feature-name::before {
+            content: '> ';
+            color: var(--primary-dim);
+        }
+
+        .feature-card.accent .feature-name {
+            color: var(--accent);
+        }
+
+        .feature-card.accent .feature-name::before {
+            color: var(--accent-dim);
+        }
+
+        .feature-desc {
+            font-family: var(--mono-alt);
+            font-size: 15px;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        /* Architecture diagram */
+        .arch-diagram {
+            font-family: var(--mono);
+            font-size: 16px;
+            color: var(--green);
+            line-height: 1.4;
+            padding: 20px;
+            border: 1px solid var(--green-dim);
+            background: rgba(102, 217, 160, 0.03);
+            overflow-x: auto;
+            white-space: pre;
+            margin: 20px 0;
+        }
+
+        .arch-label {
+            color: var(--accent);
+        }
+
+        .arch-security {
+            color: var(--primary);
+        }
+
+        /* Threat table */
+        .threat-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0 25px;
+            font-family: var(--mono-alt);
+            font-size: 15px;
+        }
+
+        .threat-table th {
+            text-align: left;
+            padding: 10px 12px;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary-dark);
+            letter-spacing: 1px;
+            font-family: var(--mono);
+            font-weight: normal;
+        }
+
+        .threat-table td {
+            padding: 10px 12px;
+            color: var(--text-dim);
+            border-bottom: 1px solid rgba(153, 30, 30, 0.2);
+        }
+
+        .threat-table tr:hover td {
+            color: var(--text);
+            background: rgba(255, 51, 51, 0.03);
+        }
+
+        .severity-crit {
+            color: var(--primary);
+            font-family: var(--mono);
+            font-weight: normal;
+        }
+
+        .severity-high {
+            color: var(--amber);
+            font-family: var(--mono);
+        }
+
+        /* Code block */
+        .code-block {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(102, 217, 160, 0.2);
+            padding: 18px;
+            font-family: var(--mono);
+            font-size: 16px;
+            color: var(--green);
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .code-comment { color: var(--text-dim); }
+        .code-cmd { color: var(--accent); }
+        .code-output { color: var(--green-dim); }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            font-size: 13px;
+            color: var(--primary-dim);
+            border: 1px solid rgba(255, 51, 51, 0.2);
+            padding: 2px 8px;
+            letter-spacing: 1px;
+        }
+
+        .tag.accent {
+            color: var(--accent-dim);
+            border-color: rgba(0, 204, 255, 0.2);
+        }
+
+        /* Prompt */
+        .prompt-line {
+            color: var(--text-dim);
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .prompt-line .cmd { color: var(--green); }
+
+        .prompt-line::before {
+            content: '$ ';
+            color: var(--primary-dark);
+        }
+
+        /* Status bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--primary-dark);
+            letter-spacing: 1px;
+            padding: 6px 15px;
+            border-top: 1px solid var(--primary-dark);
+            backdrop-filter: blur(8px);
+            background: rgba(153, 30, 30, 0.08);
+        }
+
+        /* Side effects */
+        @keyframes sideScan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        .side-scanner {
+            position: fixed;
+            top: 0;
+            width: 2px;
+            height: 80px;
+            pointer-events: none;
+            z-index: 998;
+            animation: sideScan 10s linear infinite;
+            opacity: 0.3;
+        }
+
+        .side-scanner--left {
+            left: 0;
+            background: linear-gradient(to bottom, transparent 0%, var(--primary) 50%, transparent 100%);
+            box-shadow: 0 0 4px var(--primary-dark);
+        }
+
+        .side-scanner--right {
+            right: 0;
+            background: linear-gradient(to bottom, transparent 0%, var(--primary) 50%, transparent 100%);
+            box-shadow: 0 0 4px var(--primary-dark);
+            animation-delay: -5s;
+        }
+
+        .side-glow {
+            position: fixed;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            pointer-events: none;
+            z-index: 997;
+            background: var(--primary-dark);
+            opacity: 0.15;
+        }
+
+        .side-glow--left { left: 0; box-shadow: 0 0 3px var(--primary-dark); }
+        .side-glow--right { right: 0; box-shadow: 0 0 3px var(--primary-dark); }
+
+        /* Links */
+        a.link {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--accent-dim);
+            transition: all 0.2s;
+        }
+
+        a.link:hover {
+            text-shadow: 0 0 8px var(--accent);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px 0 40px;
+            font-size: 14px;
+            color: var(--primary-dark);
+            letter-spacing: 2px;
+        }
+
+        .footer a {
+            color: var(--primary-dim);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--primary-dark);
+        }
+
+        .footer a:hover {
+            color: var(--primary);
+        }
+
+        /* Comparison check/cross */
+        .check { color: var(--green); }
+        .cross { color: var(--primary-dark); }
+
+        @media (max-width: 700px) {
+            .hero-name {
+                font-size: 32px;
+                letter-spacing: 3px;
+            }
+            .hero-sub {
+                font-size: 17px;
+            }
+            .terminal-content {
+                padding: 20px;
+            }
+            .terminal-buttons {
+                display: none;
+            }
+            .nav-link {
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                font-size: 16px;
+            }
+            .hero-stats {
+                gap: 15px;
+            }
+            .stat-value {
+                font-size: 28px;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            .arch-diagram {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="side-scanner side-scanner--left"></div>
+    <div class="side-scanner side-scanner--right"></div>
+    <div class="side-glow side-glow--left"></div>
+    <div class="side-glow side-glow--right"></div>
+
+    <div class="container">
+
+        <!-- NAV BAR -->
+        <div class="terminal-window" style="margin-top: 10px;">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                </div>
+                <span class="terminal-title">SENTINEL</span>
+                <div style="margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
+                    <a href="/" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px; color: var(--green); border-color: var(--green-dim);">[home]</a>
+                    <a href="#threat" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[threat]</a>
+                    <a href="#features" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[features]</a>
+                    <a href="#quickstart" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[install]</a>
+                    <a href="https://github.com/wallybrain/sentinel-mcp-gateway" class="nav-link accent" style="font-size: 14px; padding: 2px 10px; border-width: 1px;" target="_blank">[github]</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- HERO -->
+        <div class="terminal-window">
+            <div class="terminal-content">
+                <div class="hero">
+                    <div class="hero-icon">&#x1f6e1;</div>
+                    <div class="hero-name">Sentinel</div>
+                    <div class="hero-sub">MCP GATEWAY</div>
+                    <p class="hero-tagline">
+                        A single-binary Rust gateway that secures AI agent tool calls with
+                        JWT authentication, RBAC, rate limiting, and audit logging.
+                        Protect <span class="highlight-red">OpenClaw</span>,
+                        <span class="highlight-accent">Claude Code</span>, and any
+                        MCP-connected agent.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <div class="stat-value">~14</div>
+                            <div class="stat-label">MB binary</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">&lt;50</div>
+                            <div class="stat-label">MB RAM</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">145</div>
+                            <div class="stat-label">Tests</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">&lt;1ms</div>
+                            <div class="stat-label">Overhead</div>
+                        </div>
+                    </div>
+                    <div class="nav-links" style="margin-top: 30px;">
+                        <a href="https://github.com/wallybrain/sentinel-mcp-gateway" class="nav-link" target="_blank">VIEW SOURCE</a>
+                        <a href="https://github.com/wallybrain/sentinel-mcp-gateway/blob/main/docs/DEPLOYMENT.md" class="nav-link accent" target="_blank">DEPLOY NOW</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- THREAT LANDSCAPE -->
+        <div class="terminal-window" id="threat">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                </div>
+                <span class="terminal-title">THREAT ANALYSIS</span>
+            </div>
+            <div class="terminal-content">
+                <h2 class="section-title">The Problem</h2>
+
+                <p class="bio">
+                    AI agents connect directly to MCP servers with
+                    <span class="highlight-red">no security layer</span> &mdash;
+                    no auth, no access control, no audit trail. Any process on the
+                    same host can call any tool. This isn't theoretical.
+                </p>
+
+                <table class="threat-table">
+                    <tr>
+                        <th>THREAT</th>
+                        <th>SEVERITY</th>
+                        <th>DETAIL</th>
+                    </tr>
+                    <tr>
+                        <td>CVE-2026-25253</td>
+                        <td><span class="severity-crit">CVSS 8.8</span></td>
+                        <td>One-click RCE via stolen auth tokens in OpenClaw Control UI</td>
+                    </tr>
+                    <tr>
+                        <td>Exposed Instances</td>
+                        <td><span class="severity-crit">CRITICAL</span></td>
+                        <td>1,800+ OpenClaw instances found leaking API keys and credentials</td>
+                    </tr>
+                    <tr>
+                        <td>Plugin Attack Surface</td>
+                        <td><span class="severity-high">HIGH</span></td>
+                        <td>92% exploitation probability with just 10 MCP plugins (Pynt)</td>
+                    </tr>
+                    <tr>
+                        <td>Microsoft Advisory</td>
+                        <td><span class="severity-high">HIGH</span></td>
+                        <td>"Treat as untrusted code execution. Not for standard workstations."</td>
+                    </tr>
+                    <tr>
+                        <td>No MCP Auth</td>
+                        <td><span class="severity-crit">CRITICAL</span></td>
+                        <td>Any local process can call MCP servers directly &mdash; no authentication</td>
+                    </tr>
+                    <tr>
+                        <td>No Audit Trail</td>
+                        <td><span class="severity-high">HIGH</span></td>
+                        <td>Zero visibility into which tools were called, by whom, with what data</td>
+                    </tr>
+                </table>
+
+                <p class="bio" style="margin-bottom: 0;">
+                    Sentinel sits between your agent and its MCP servers. Every tool call
+                    passes through <span class="highlight-red">authentication</span>,
+                    <span class="highlight-accent">authorization</span>,
+                    <span class="highlight-amber">rate limiting</span>, and
+                    <span class="highlight">audit logging</span> before reaching any backend.
+                </p>
+            </div>
+        </div>
+
+        <!-- ARCHITECTURE -->
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                </div>
+                <span class="terminal-title">ARCHITECTURE</span>
+            </div>
+            <div class="terminal-content">
+                <h2 class="section-title accent">How It Works</h2>
+
+                <div class="arch-diagram"><span class="arch-label">  AI Agent</span> (OpenClaw, Claude Code, Cursor, ...)
+      |
+      v
+  <span class="arch-security">[ SENTINEL GATEWAY ]</span> ─── single Rust binary
+      |
+      |── <span class="arch-security">JWT Auth</span>        validate every session
+      |── <span class="arch-security">RBAC</span>            per-role tool permissions
+      |── <span class="arch-security">Rate Limiting</span>   sliding window per tool
+      |── <span class="arch-security">Audit Log</span>       PostgreSQL request trail
+      |── <span class="arch-security">Circuit Breaker</span>  isolate failing backends
+      |── <span class="arch-security">Kill Switch</span>     emergency disable, no restart
+      |── <span class="arch-security">Metrics</span>         Prometheus endpoint
+      |
+      +───> <span class="arch-label">MCP Server A</span> (stdio or HTTP)
+      +───> <span class="arch-label">MCP Server B</span>
+      +───> <span class="arch-label">MCP Server N</span></div>
+
+                <p class="bio" style="margin-bottom: 0;">
+                    All backends are <span class="highlight">optional and configurable</span>.
+                    Use any combination of HTTP and stdio MCP servers. The gateway doesn't care
+                    what's behind it &mdash; only that it's secured.
+                </p>
+            </div>
+        </div>
+
+        <!-- FEATURES -->
+        <div class="terminal-window" id="features">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                </div>
+                <span class="terminal-title">CAPABILITIES</span>
+            </div>
+            <div class="terminal-content">
+                <h2 class="section-title green">Features</h2>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-name">JWT Auth</div>
+                        <div class="feature-desc">Session-level token validation. Every request authenticated before reaching any backend.</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-name">RBAC</div>
+                        <div class="feature-desc">Role-based access control with per-tool deny lists. Admin, developer, viewer &mdash; or define your own.</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-name">Rate Limiting</div>
+                        <div class="feature-desc">Per-tool configurable limits with sliding window. Prevent runaway agents from burning API credits.</div>
+                    </div>
+                    <div class="feature-card accent">
+                        <div class="feature-name">Audit Logging</div>
+                        <div class="feature-desc">PostgreSQL-backed request/response trail. Who called what, when, and what came back.</div>
+                    </div>
+                    <div class="feature-card accent">
+                        <div class="feature-name">Circuit Breakers</div>
+                        <div class="feature-desc">Automatic backend isolation on failure. One bad server doesn't take down the rest.</div>
+                    </div>
+                    <div class="feature-card accent">
+                        <div class="feature-name">Kill Switch</div>
+                        <div class="feature-desc">Emergency disable for individual tools or entire backends. No restart required.</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-name">Process Manager</div>
+                        <div class="feature-desc">stdio backends spawned and managed as child processes. Auto-restart on crash.</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-name">Hot Reload</div>
+                        <div class="feature-desc">SIGHUP reloads kill switch and rate limits without restarting. Zero downtime config changes.</div>
+                    </div>
+                    <div class="feature-card accent">
+                        <div class="feature-name">Prometheus</div>
+                        <div class="feature-desc">Metrics endpoint with request counts, latencies, error rates, and backend health.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUICK START -->
+        <div class="terminal-window" id="quickstart">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                </div>
+                <span class="terminal-title">INSTALL</span>
+            </div>
+            <div class="terminal-content">
+                <h2 class="section-title amber">Quick Start</h2>
+
+                <div class="code-block"><span class="code-comment"># Clone and setup</span>
+<span class="code-cmd">git clone</span> https://github.com/wallybrain/sentinel-mcp-gateway.git
+<span class="code-cmd">cd</span> sentinel-mcp-gateway
+<span class="code-cmd">./scripts/setup.sh</span>
+
+<span class="code-comment"># Build (~14 MB binary)</span>
+<span class="code-cmd">cargo build --release</span>
+
+<span class="code-comment"># Start PostgreSQL (audit logs)</span>
+<span class="code-cmd">docker compose up -d postgres</span>
+
+<span class="code-comment"># Register with Claude Code</span>
+<span class="code-cmd">./add-mcp.sh</span></div>
+
+                <p class="bio">
+                    The setup script generates secrets and config automatically.
+                    Edit <span class="highlight">sentinel.toml</span> to uncomment the
+                    backends you need. Full deployment guide in the
+                    <a href="https://github.com/wallybrain/sentinel-mcp-gateway/blob/main/docs/DEPLOYMENT.md" class="link" target="_blank">docs</a>.
+                </p>
+
+                <p class="bio" style="margin-bottom: 0;">
+                    <span class="highlight-red">Using OpenClaw?</span> &nbsp;See the
+                    <a href="https://github.com/wallybrain/sentinel-mcp-gateway/blob/main/docs/OPENCLAW.md" class="link" target="_blank">dedicated integration guide</a>
+                    for step-by-step setup, recommended RBAC policies, and security hardening.
+                </p>
+            </div>
+        </div>
+
+        <!-- COMPARISON -->
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                </div>
+                <span class="terminal-title">COMPARISON</span>
+            </div>
+            <div class="terminal-content">
+                <h2 class="section-title accent">vs Alternatives</h2>
+
+                <table class="threat-table">
+                    <tr>
+                        <th></th>
+                        <th style="color: var(--primary);">SENTINEL</th>
+                        <th>RUNLAYER</th>
+                        <th>NO GATEWAY</th>
+                    </tr>
+                    <tr>
+                        <td>Self-hosted</td>
+                        <td><span class="check">YES</span></td>
+                        <td>No (SaaS)</td>
+                        <td>&mdash;</td>
+                    </tr>
+                    <tr>
+                        <td>Open source</td>
+                        <td><span class="check">BSL 1.1</span></td>
+                        <td>Proprietary</td>
+                        <td>&mdash;</td>
+                    </tr>
+                    <tr>
+                        <td>JWT + RBAC</td>
+                        <td><span class="check">YES</span></td>
+                        <td>Limited</td>
+                        <td><span class="cross">NO</span></td>
+                    </tr>
+                    <tr>
+                        <td>Audit logging</td>
+                        <td><span class="check">PostgreSQL</span></td>
+                        <td>Yes</td>
+                        <td><span class="cross">NO</span></td>
+                    </tr>
+                    <tr>
+                        <td>Circuit breakers</td>
+                        <td><span class="check">YES</span></td>
+                        <td><span class="cross">NO</span></td>
+                        <td><span class="cross">NO</span></td>
+                    </tr>
+                    <tr>
+                        <td>Kill switch</td>
+                        <td><span class="check">YES</span></td>
+                        <td><span class="cross">NO</span></td>
+                        <td><span class="cross">NO</span></td>
+                    </tr>
+                    <tr>
+                        <td>Single binary</td>
+                        <td><span class="check">~14 MB Rust</span></td>
+                        <td>No</td>
+                        <td>&mdash;</td>
+                    </tr>
+                    <tr>
+                        <td>Offline capable</td>
+                        <td><span class="check">YES</span></td>
+                        <td><span class="cross">NO</span></td>
+                        <td>Yes</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- STATUS -->
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                    <div class="terminal-button"></div>
+                </div>
+                <span class="terminal-title">STATUS</span>
+            </div>
+            <div class="terminal-content">
+                <h2 class="section-title green">Project Status</h2>
+
+                <p class="bio">
+                    <span class="highlight">v1.0 shipped</span> &mdash; 47/47 requirements from the
+                    <a href="https://www.ibm.com/think/insights/architecting-secure-enterprise-ai-agents-mcp" class="link" target="_blank">IBM/Anthropic MCP Gateway whitepaper</a>,
+                    145 tests, 3,776 LOC Rust.
+                </p>
+                <p class="bio">
+                    Production-tested with <span class="highlight-accent">Claude Code</span>.
+                    OpenClaw integration uses the same standard MCP protocol and
+                    <span class="highlight">mcpServers</span> configuration format.
+                </p>
+                <p class="bio">
+                    Licensed under <span class="highlight-amber">BSL 1.1</span> &mdash;
+                    free to use, modify, and deploy. Converts to Apache 2.0 in 2030.
+                    The only restriction: you can't resell it as a hosted gateway service.
+                </p>
+                <p class="bio" style="margin-bottom: 0;">
+                    Tested it with OpenClaw?
+                    <a href="https://github.com/wallybrain/sentinel-mcp-gateway/issues" class="link" target="_blank">Open an issue</a>
+                    &mdash; we want to hear about your experience.
+                </p>
+            </div>
+            <div class="status-bar">
+                <span>SENTINEL GATEWAY ACTIVE</span>
+                <span>2026-02-23</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            &copy; 2026 Wally Blanchard &middot;
+            <a href="https://github.com/wallybrain/sentinel-mcp-gateway">GitHub</a> &middot;
+            <a href="/">wallyblanchard.com</a>
+        </div>
+
+    </div>
+
+</body>
+</html>
