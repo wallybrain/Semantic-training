@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wally Blanchard :: Electronic Music</title>
-    <link rel="preload" href="fonts/VT323-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/CourierPrime-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <meta name="description" content="Wally Blanchard — electronic music producer based in Columbus, GA. IDM, noise, techno, and experimental sound design as wallybrain.">
     <meta property="og:title" content="Wally Blanchard — Electronic Music">
     <meta property="og:description" content="Electronic music producer. IDM, noise, techno, and experimental sound design as wallybrain.">
@@ -13,11 +14,25 @@
     <link rel="canonical" href="https://wallyblanchard.com/">
     <style>
         @font-face {
-            font-family: 'VT323';
+            font-family: 'Inter';
             font-style: normal;
             font-weight: 400;
             font-display: swap;
-            src: url(fonts/VT323-Regular.woff2) format('woff2');
+            src: url(fonts/Inter-Regular.woff2) format('woff2');
+        }
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 500;
+            font-display: swap;
+            src: url(fonts/Inter-Medium.woff2) format('woff2');
+        }
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url(fonts/Inter-Bold.woff2) format('woff2');
         }
         @font-face {
             font-family: 'Courier Prime';
@@ -33,531 +48,221 @@
             font-display: swap;
             src: url(fonts/CourierPrime-Bold.woff2) format('woff2');
         }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --bg: #0a0a0a;
+            --surface: #111111;
+            --text: #e8e4df;
+            --text-dim: #8a8580;
+            --accent: #c4a882;
+            --accent-hover: #d4b892;
+            --rule: #1f1f1f;
+        }
+
         html {
             scroll-behavior: smooth;
-            scroll-padding-top: 20px;
-        }
-
-        :root {
-            --bg: #0e0a1e;
-            --terminal-bg: #06060f;
-            --primary: #66d9a0;
-            --primary-dim: #5cb88a;
-            --primary-dark: #4d9968;
-            --text: #66d9a0;
-            --text-dim: #5cb88a;
-            --cursor: #66d9a0;
-            --accent: #00ccff;
-            --accent-dim: #0099bb;
-            --mono: 'VT323', monospace;
-            --mono-alt: 'Courier Prime', monospace;
-        }
-
-        @keyframes flicker {
-            0% { opacity: 0.97; }
-            5% { opacity: 0.95; }
-            10% { opacity: 0.98; }
-            15% { opacity: 0.96; }
-            20% { opacity: 0.97; }
-            100% { opacity: 0.97; }
-        }
-
-        @keyframes scanline {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
-
-        @keyframes blink {
-            0%, 49% { opacity: 1; }
-            50%, 100% { opacity: 0; }
-        }
-
-        @keyframes textGlow {
-            0%, 100% { text-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary-dark); }
-            50% { text-shadow: 0 0 7px var(--primary), 0 0 15px var(--primary-dark); }
         }
 
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: var(--mono);
-            font-size: 20px;
-            line-height: 1.6;
-            overflow-x: hidden;
-            animation: flicker 0.15s infinite;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                rgba(0, 255, 65, 0.03) 50%,
-                rgba(0, 0, 0, 0.3) 50%
-            );
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 100;
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(
-                to bottom,
-                transparent 0%,
-                rgba(0, 255, 65, 0.1) 50%,
-                transparent 100%
-            );
-            pointer-events: none;
-            z-index: 99;
-            animation: scanline 8s linear infinite;
-            opacity: 0.3;
+            font-family: 'Courier Prime', monospace;
+            font-size: 17px;
+            line-height: 1.7;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 720px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px 24px;
         }
 
-        @keyframes section-appear {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .terminal-window {
-            background: var(--terminal-bg);
-            border: 2px solid var(--primary-dark);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3), inset 0 0 100px rgba(0, 255, 65, 0.05);
-            margin: 20px 0;
-            position: relative;
-            animation: section-appear linear;
-            animation-timeline: view();
-            animation-range: entry 0% entry 25%;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .terminal-window { animation: none; }
-        }
-
-        .terminal-header {
-            background: var(--primary-dark);
-            padding: 8px 15px;
-            border-bottom: 2px solid var(--primary);
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .terminal-title {
-            font-size: 18px;
-            letter-spacing: 2px;
-            text-shadow: 0 0 5px var(--primary);
-        }
-
-        .terminal-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .terminal-button {
-            width: 12px;
-            height: 12px;
-            border: 1px solid var(--primary);
-            background: transparent;
-        }
-
-        .terminal-content {
-            padding: 30px;
-        }
-
-        .cursor {
-            display: inline-block;
-            width: 12px;
-            height: 24px;
-            background: var(--cursor);
-            animation: blink 1s step-end infinite;
-            margin-left: 4px;
-            vertical-align: text-bottom;
-        }
-
-        /* Hero */
-        .hero {
-            text-align: center;
-            padding: 40px 0 20px;
-        }
-
-        .hero-name {
-            font-size: 48px;
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            color: var(--primary);
-            text-shadow: 0 0 20px var(--primary-dark), 0 0 40px rgba(0, 255, 65, 0.2);
-            animation: textGlow 3s ease-in-out infinite;
-            margin-bottom: 10px;
-        }
-
-        .hero-tagline {
-            font-family: var(--mono-alt);
-            font-size: 18px;
-            color: var(--text-dim);
-            letter-spacing: 1px;
-        }
-
-        .hero-location {
-            font-size: 14px;
-            color: var(--primary-dark);
-            margin-top: 8px;
-            letter-spacing: 2px;
-        }
-
-        /* Nav links */
-        .nav-links {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin: 25px 0;
-            flex-wrap: wrap;
-        }
-
-        .nav-link {
-            color: var(--primary);
+        a {
+            color: var(--accent);
             text-decoration: none;
-            border: 1px solid var(--primary-dark);
-            padding: 6px 16px;
-            font-family: var(--mono);
-            font-size: 16px;
-            letter-spacing: 1px;
-            transition: all 0.15s ease-out;
+            transition: color 0.15s;
         }
 
-        .nav-link:hover {
-            background: var(--primary);
-            color: var(--terminal-bg);
-            text-shadow: none;
-            box-shadow: 0 0 10px rgba(0, 255, 65, 0.4);
-            transform: translateY(-1px);
+        a:hover {
+            color: var(--accent-hover);
         }
 
-        .nav-link:active {
-            transform: translateY(1px);
+        /* Nav */
+        .site-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 16px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--rule);
+            margin-bottom: 60px;
         }
 
-        .nav-link.accent {
-            border-color: var(--accent-dim);
+        .site-nav a {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: var(--text-dim);
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            transition: color 0.15s;
+        }
+
+        .site-nav a:hover {
             color: var(--accent);
         }
 
-        .nav-link.accent:hover {
-            background: var(--accent);
-            color: var(--terminal-bg);
-            box-shadow: 0 0 10px rgba(0, 204, 255, 0.4);
+        /* Header */
+        .header {
+            margin-bottom: 80px;
+        }
+
+        .header-photo {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+            margin-bottom: 28px;
+        }
+
+        .header-name {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 40px;
+            line-height: 1.1;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .header-tagline {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--text-dim);
+            letter-spacing: 0.02em;
         }
 
         /* Sections */
+        .section {
+            margin-bottom: 80px;
+        }
+
         .section-title {
-            font-size: 28px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--accent);
-            text-shadow: 0 0 10px var(--accent-dim);
-            border-bottom: 2px solid var(--accent-dim);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .section-title::before {
-            content: '/// ';
-            color: var(--accent-dim);
-        }
-
-        .section-title.green {
-            color: var(--primary);
-            text-shadow: 0 0 10px var(--primary-dark);
-            border-bottom-color: var(--primary-dark);
-        }
-
-        .section-title.green::before {
-            color: var(--primary-dim);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 22px;
+            color: var(--text);
+            border-bottom: 1px solid var(--rule);
+            padding-bottom: 12px;
+            margin-bottom: 28px;
         }
 
         /* Bio */
-        .bio {
-            font-family: var(--mono-alt);
-            font-size: 17px;
-            line-height: 1.8;
-            color: var(--text-dim);
+        .bio p {
             margin-bottom: 20px;
         }
 
-        .bio .highlight {
-            color: var(--primary);
+        .bio p:last-child {
+            margin-bottom: 0;
         }
 
-        .bio .highlight-accent {
+        .bio strong {
+            font-weight: 700;
+        }
+
+        .bio a {
             color: var(--accent);
         }
 
-        /* Project cards */
-        .project {
-            border: 1px solid var(--accent-dim);
-            padding: 18px;
-            margin-bottom: 15px;
-            transition: all 0.15s ease-out;
+        .bio a:hover {
+            color: var(--accent-hover);
         }
 
-        .project:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 15px rgba(0, 204, 255, 0.15);
-            transform: translateX(4px);
+        /* Subsections */
+        .subsection {
+            margin-bottom: 28px;
         }
 
-        .project.green {
-            border-color: var(--primary-dark);
+        .subsection:last-child {
+            margin-bottom: 0;
         }
 
-        .project.green:hover {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.15);
-            transform: translateX(4px);
-        }
-
-        .project-name {
-            font-size: 22px;
-            letter-spacing: 2px;
-            margin-bottom: 6px;
-            color: var(--accent);
-        }
-
-        .project-name::before {
-            content: '> ';
-            color: var(--accent-dim);
-        }
-
-        .project.green .project-name {
-            color: var(--primary);
-        }
-
-        .project.green .project-name::before {
-            color: var(--primary-dim);
-        }
-
-        .project-desc {
-            font-family: var(--mono-alt);
-            font-size: 15px;
-            color: var(--text-dim);
-            line-height: 1.6;
-            margin-bottom: 8px;
-        }
-
-        .project-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .tag {
-            font-size: 13px;
-            color: var(--accent-dim);
-            border: 1px solid rgba(0, 204, 255, 0.15);
-            padding: 2px 8px;
-            letter-spacing: 1px;
-        }
-
-        .tag.green {
-            color: var(--primary-dark);
-            border-color: rgba(0, 255, 65, 0.15);
-        }
-
-        .project-link {
-            color: var(--accent);
-            text-decoration: none;
-            border-bottom: 1px dotted var(--accent-dim);
-            transition: all 0.2s;
-        }
-
-        .project-link:hover {
-            text-shadow: 0 0 8px var(--accent);
-        }
-
-        /* Skills grid */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .skill-category {
-            border: 1px solid var(--accent-dim);
-            padding: 15px;
-        }
-
-        .skill-category.green {
-            border-color: var(--primary-dark);
-        }
-
-        .skill-label {
+        .subsection-title {
+            font-family: 'Inter', sans-serif;
             font-size: 14px;
-            color: var(--accent-dim);
-            letter-spacing: 2px;
+            font-weight: 400;
             text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
-        .skill-category.green .skill-label {
-            color: var(--primary-dark);
-        }
-
-        .skill-list {
-            font-family: var(--mono-alt);
-            font-size: 15px;
+            letter-spacing: 0.08em;
             color: var(--text-dim);
-            line-height: 1.8;
+            margin-bottom: 10px;
         }
 
-        /* Divider */
-        .divider {
-            border: none;
-            border-top: 1px solid var(--primary-dark);
-            margin: 40px 0;
-            opacity: 0.5;
+        /* Links row */
+        .links-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+        }
+
+        .links-row a {
+            color: var(--accent);
+        }
+
+        .links-row a:hover {
+            color: var(--accent-hover);
+        }
+
+        /* Genres */
+        .genres {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-top: 16px;
         }
 
         /* Footer */
         .footer {
-            text-align: center;
-            padding: 20px 0 40px;
-            font-size: 14px;
-            color: var(--primary-dark);
-            letter-spacing: 2px;
+            border-top: 1px solid var(--rule);
+            padding-top: 24px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: var(--text-dim);
         }
 
         .footer a {
-            color: var(--primary-dim);
-            text-decoration: none;
-            border-bottom: 1px dotted var(--primary-dark);
+            color: var(--text-dim);
         }
 
         .footer a:hover {
-            color: var(--primary);
+            color: var(--accent);
         }
 
-        /* Prompt line */
-        .prompt-line {
-            color: var(--primary-dim);
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-
-        .prompt-line .cmd {
-            color: var(--primary);
-        }
-
-        .prompt-line::before {
-            content: '$ ';
-            color: var(--primary-dark);
-        }
-
-        /* Status line */
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            color: var(--primary-dark);
-            letter-spacing: 1px;
-            padding: 6px 15px;
-            border-top: 1px solid var(--primary-dark);
-            backdrop-filter: blur(8px);
-            background: rgba(0, 122, 31, 0.08);
-        }
-
-        /* Side scanners */
-        @keyframes sideScan {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100vh); }
-        }
-
-        .side-scanner {
-            position: fixed;
-            top: 0;
-            width: 2px;
-            height: 80px;
-            pointer-events: none;
-            z-index: 998;
-            animation: sideScan 10s linear infinite;
-            opacity: 0.3;
-        }
-
-        .side-scanner--left {
-            left: 0;
-            background: linear-gradient(to bottom, transparent 0%, var(--primary) 50%, transparent 100%);
-            box-shadow: 0 0 4px var(--primary-dark);
-        }
-
-        .side-scanner--right {
-            right: 0;
-            background: linear-gradient(to bottom, transparent 0%, var(--primary) 50%, transparent 100%);
-            box-shadow: 0 0 4px var(--primary-dark);
-            animation-delay: -5s;
-        }
-
-        .side-glow {
-            position: fixed;
-            top: 0;
-            width: 1px;
-            height: 100%;
-            pointer-events: none;
-            z-index: 997;
-            background: var(--primary-dark);
-            opacity: 0.15;
-        }
-
-        .side-glow--left {
-            left: 0;
-            box-shadow: 0 0 3px var(--primary-dark);
-        }
-
-        .side-glow--right {
-            right: 0;
-            box-shadow: 0 0 3px var(--primary-dark);
-        }
-
-        @media (max-width: 700px) {
-            .hero-name {
-                font-size: 32px;
-                letter-spacing: 3px;
+        /* Responsive */
+        @media (max-width: 600px) {
+            .header-name {
+                font-size: 28px;
             }
-            .hero-tagline {
-                font-size: 15px;
+
+            .section-title {
+                font-size: 20px;
             }
-            .terminal-content {
-                padding: 20px;
+
+            .section {
+                margin-bottom: 60px;
             }
-            .terminal-buttons {
-                display: none;
+
+            .header {
+                margin-bottom: 60px;
             }
-            .nav-link {
-                min-height: 44px;
-                display: inline-flex;
-                align-items: center;
-                font-size: 16px;
+
+            .header-photo {
+                width: 140px;
+                height: 140px;
             }
         }
     </style>
@@ -565,289 +270,98 @@
 <body>
     <div class="container">
 
-        <!-- HERO -->
-        <div class="terminal-window" style="overflow: hidden;">
-            <div class="terminal-header">
-                <div class="terminal-buttons">
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                </div>
-                <span class="terminal-title">WALLYBLANCHARD.COM</span>
-                <div style="margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
-                    <a href="/" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[home]</a>
-                    <a href="https://wallybrain.net" class="nav-link accent" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[wallybrain]</a>
-                    <a href="semantic-training.html" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[fnord]</a>
-                    <a href="library.html" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[antilibrary]</a>
-                    <a href="synth.html" class="nav-link accent" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[synth]</a>
-                    <a href="https://solitaire.wallybrain.icu" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[solitaire]</a>
-                    <a href="zork.html" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[zork]</a>
-                    <a href="sentinel.html" class="nav-link accent" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[sentinel]</a>
-                    <a href="https://code.wallyblanchard.com" class="nav-link" style="font-size: 14px; padding: 2px 10px; border-width: 1px;">[IDE]</a>
-                </div>
+        <nav class="site-nav">
+            <a href="/">home</a>
+            <a href="https://wallybrain.net">wallybrain</a>
+            <a href="fnord.html">fnord</a>
+            <a href="library.html">antilibrary</a>
+            <a href="synth.html">synth</a>
+            <a href="https://solitaire.wallybrain.icu">solitaire</a>
+            <a href="zork.html">zork</a>
+            <a href="sentinel.html">sentinel</a>
+            <a href="https://code.wallyblanchard.com">IDE</a>
+        </nav>
+
+        <header class="header">
+            <img class="header-photo" src="fading-self.jpg" alt="Wally Blanchard">
+            <h1 class="header-name">Wally Blanchard</h1>
+            <p class="header-tagline">Electronic music producer &mdash; Columbus, GA</p>
+        </header>
+
+        <section class="section bio">
+            <h2 class="section-title">Bio</h2>
+
+            <p>Started making electronic music in high school in <strong>1985</strong>. Bought an <strong>Atari 1040ST</strong> and a copy of <strong>Dr T's KCS 4.0</strong>, and started building up hardware one piece at a time: <strong>Roland R-8</strong>, <strong>Yamaha TX81Z</strong>, <strong>Korg DW8000</strong>, <strong>Casio FZ-10M</strong>. Picked up drums around the same time. Forty years later, still at it.</p>
+
+            <p>In <strong>1989</strong>, part of <strong>The Flamies Go To Hagville</strong> on Cape Cod, MA &mdash; one of a constellation of local bands that fed into <a href="https://earshotcapecod.bandcamp.com/">E.A.R.S.H.O.T.</a> (Eschatological Ambivalence Research Synaptic Hologram Orgone Tesseract). EARSHOT was experimental post-hardcore math rock. Played drums and samples in a dual-drummer lineup alongside <strong>David Silver</strong> (drums/tape), with <strong>Chi</strong> on vocals, <strong>Jon Berger</strong> on guitar/bass, <strong>Erik Carter</strong> on bass, <strong>Craig Adams</strong> on guitar. Shared stages with Unsane, Alice Donut, Crash Worship, King Missile, Hammerhead, Glazed Baby, Chumbawamba, Shiv, Iowa Beef Experience, Ed Hall, and others. Played <strong>The Rathskeller</strong> (&ldquo;The Rat&rdquo;) in Boston and shows in Providence with Hammerhead (AmRep Records).</p>
+
+            <p>Three recording sessions: <strong>Look At This World</strong> (1991, engineered by Chris Blood, 23 tracks spanning the psychedelic noise goth prog punk math rock years, remastered by Ken Perry of Rhino Records). <strong>2.22.2022</strong> (March 1992, Wendell Studios, Western MA, engineered by Mark A. Miller, 19 tracks). <strong>DRA1N</strong> (July 25, 1993, six tracks recorded by <strong>Steve Albini</strong> at Chicago Recording Company &mdash; EARSHOT's final studio session, additional recording/remix by Tom Hamilton at Newbury Sound Studio, Boston). All three released digitally for the first time in 2022. In <strong>December 2025</strong>, four new long-form tracks produced by <strong>WALLYBRAIN &amp; DVOID</strong>, with <strong>Stefan Tcherepnin</strong> co-producing track one.</p>
+
+            <p>Around <strong>1994&ndash;96</strong>, started collaborating with <strong>Stefan Tcherepnin</strong> &mdash; drums and guitar, recording musique concrete on 4-track in the basement. That led to <strong>The Kings of Hell</strong> (~1996&ndash;97): dual drums with <strong>Dale Cunningham</strong> (Glazed Baby), <strong>Andy Newman</strong> on bass, Tcherepnin on guitar. A noise mixture of Swans, The Spitters, and Caspar Br&ouml;tzmann Massaker. Glazed Baby had been touring relentlessly, recording with Tim O'Heir and Steve Albini, sharing stages with Helmet, Jon Spencer Blues Explosion, White Zombie, Jawbox, Tool, and Tar.</p>
+
+            <p>Around <strong>2000</strong>, studied drums with <strong>Bob Gullotti</strong> &mdash; the Boston jazz drummer who co-founded The Fringe, taught at Berklee, toured with J.J. Johnson and Joe Lovano, and played with Trey Anastasio's Surrender to the Air. His approach &mdash; jazz discipline reaching into free improvisation &mdash; bridged noise-rock drumming with the exploratory sensibility that would shape the electronic work to come.</p>
+
+            <p>The partnership continued through the <strong>2000s to present</strong> as <strong>Existential Blowfish</strong> (cassette recordings including ESPCP/TEXASHEX and TRAUMAKING) and <strong>rESPetc2.rSonel</strong> (performing duo &mdash; PAN_ACT at ISSUE Project Room, Brooklyn 2013 on a bill with Jutta Koether, New Humans, and C Spencer Yeh; Leland Ballroom, Detroit 2011). In <strong>2018</strong>, their music as Existential Blowfish was exhibited at the <strong>Stedelijk Museum Amsterdam</strong> and <strong>Kunsthalle Z&uuml;rich</strong> as part of Tcherepnin's installation <em>The Mad Masters</em>.</p>
+
+            <p>Returned to electronic music as <a href="https://wallybrain.net">wallybrain</a> around <strong>2001&ndash;02</strong> after a hiatus &mdash; Fruity Loops on a Windows 98 PC. Nine albums so far in IDM, noise, techno, ambient, and experimental sound design. Current workspace is <strong>Ableton Live 12</strong> and <strong>FL Studio</strong>.</p>
+
+            <p>Always had a somewhat obscure online presence &mdash; just quietly making music that refuses to be concerned with whether it's liked or disliked. Creation as self-understanding, experimentation and entertainment without compromise.</p>
+
+            <p>Lately also dabbling in agentic coding &mdash; building tools and sites with AI assistance. Still a noob, but it scratches a similar itch to music: describe something that doesn't exist yet, iterate until it sounds right, and eventually it's a thing.</p>
+        </section>
+
+        <section class="section" id="music">
+            <h2 class="section-title">Music</h2>
+
+            <p>The music site at <a href="https://wallybrain.net">wallybrain.net</a> is a self-hosted project &mdash; one of the things that came out of discovering how accessible agentic coding has become. With somewhat limited knowledge of programming, this is the kind of thing that would have been abandoned in the past. The old way of learning &mdash; googling every question, digging through forums and YouTube videos just to figure out an SSH command or how to configure a server &mdash; was tedious enough to kill the motivation. Tools like Claude Code changed that.</p>
+
+            <p>What's up there is only part of what's been made over the years &mdash; nine albums so far, with a few more currently in the works. The site is slowly evolving alongside the music. Put on headphones and start anywhere.</p>
+
+            <div class="links-row" style="margin-top: 20px;">
+                <a href="https://wallybrain.net">wallybrain.net</a>
+                <a href="https://wallybrain.bandcamp.com/music">Bandcamp</a>
+                <a href="https://soundcloud.com/wallybrain">SoundCloud</a>
+                <a href="https://open.spotify.com/artist/1cH9oEsv4l65i078NolWil">Spotify</a>
             </div>
-            <div class="terminal-content" style="position: relative; background: url('hero-bg.jpg') center center / cover no-repeat;">
-                <div style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.55);"></div>
-                <div class="hero" style="position: relative; z-index: 1;">
-                    <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-                        <img src="fading-self.jpg" alt="Wally Blanchard" style="width: 220px; height: 220px; object-fit: cover; border: 2px solid #ff00ff; box-shadow: 0 0 15px rgba(255, 0, 255, 0.3), 0 0 30px rgba(0, 255, 65, 0.15); filter: grayscale(30%) brightness(0.9);">
-                    </div>
-                    <div class="hero-name">Lewis W Blanchard III</div>
-                    <div style="font-size: 22px; color: var(--primary-dim); letter-spacing: 3px; margin-bottom: 10px;">&ldquo;Wally&rdquo;</div>
-                    <div class="hero-tagline">Electronic Music Producer</div>
-                    <div class="hero-location">Columbus, GA</div>
-                </div>
+
+            <p class="genres">IDM, noise, techno, experimental, ambient</p>
+        </section>
+
+        <section class="section" id="gear">
+            <h2 class="section-title">Process &amp; Gear</h2>
+
+            <p>The process has changed a lot since the Atari days, but the philosophy hasn't. Hands on instruments first &mdash; drum machines programmed by feel, chords voiced on keyboards and a Roli Seaboard, textures shaped in real time. The interesting results usually come from setting up conditions for surprise and reacting to what comes out.</p>
+
+            <p style="margin-bottom: 36px;">These days the main workspace is Ableton Live 12, backed by a deep library of software synths and processors. The tools got better over the decades but the approach is the same: experiment, listen, keep what's honest, throw away what isn't.</p>
+
+            <div class="subsection">
+                <div class="subsection-title">1985 &mdash; The Hardware Years</div>
+                <p>Atari 1040ST running Dr T's KCS 4.0, sequencing external hardware over MIDI cables. Over time a small rack built up: Roland R-8 drum machine, Yamaha TX81Z FM synth, Korg DW8000, and a Casio FZ-10M sampler. Drum kit in the other room. Everything connected by MIDI cables and patience. Ended up selling all of it &mdash; at a considerable loss &mdash; after losing a close friend. That loss took the wind out of it, and electronic music stopped for a long time.</p>
             </div>
-        </div>
 
-        <!-- BIO -->
-        <div class="terminal-window">
-            <div class="terminal-header">
-                <div class="terminal-buttons">
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                </div>
-                <span class="terminal-title">$ whoami</span>
+            <div class="subsection">
+                <div class="subsection-title">2001 &mdash; The Return</div>
+                <p>Somewhere around 2001 or 2002, found a way back in. PC technology had caught up &mdash; Windows 98, a fast enough processor, and a program called Fruity Loops. The shift was enormous. What used to require an Atari sequencing a room full of hardware over MIDI was now happening inside a single computer. VST plugins replaced the rack. The sequencer, the synths, the sampler, the mixer &mdash; all in one box. That technological leap is what brought it back. The barrier to just sitting down and making something had dropped to nearly zero.</p>
             </div>
-            <div class="terminal-content">
-                <p class="bio">
-                    I make <span class="highlight-accent">electronic music</span> under the name
-                    <a href="https://wallybrain.net" class="project-link">wallybrain</a>.
-                    I got the bug in high school back in <span class="highlight-accent">1985</span> &mdash;
-                    bought an <span class="highlight-accent">Atari 1040ST</span> and a copy of
-                    Dr T's KCS 4.0, and started buying hardware one piece at a time:
-                    samplers, drum machines, synths. I picked up drums around the same time.
-                    Forty years later I'm still at it.
-                </p>
-                <p class="bio">
-                    I've always had a somewhat obscure online presence &mdash;
-                    just quietly making music that refuses to be concerned with whether it's
-                    liked or disliked. For me, creation is a process of
-                    <span class="highlight-accent">self-understanding</span>, a pastime of
-                    experimentation and entertainment without compromise to the opinions of others.
-                    Nine albums so far. Probably more coming.
-                </p>
-                <p class="bio">
-                    Lately I've also been dabbling in <span class="highlight">agentic coding</span> &mdash;
-                    building little tools and sites with AI assistance. Still very much a noob at it,
-                    but it scratches a similar itch to music: you describe something that doesn't exist yet,
-                    iterate until it sounds right, and eventually it's a thing.
-                </p>
+
+            <div class="subsection">
+                <div class="subsection-title">Now</div>
+                <p>Ableton Live 12, FL Studio, Roli Seaboard for expressive polyphonic input, MIDI pad and keyboard controllers, and a deep collection of software synthesizers &mdash; subtractive, FM, granular, physical modeling, wavetable. The instruments got virtual but the hands stayed physical.</p>
             </div>
-        </div>
+        </section>
 
-        <!-- MUSIC -->
-        <div class="terminal-window" id="music">
-            <div class="terminal-header">
-                <div class="terminal-buttons">
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                </div>
-                <span class="terminal-title">MUSIC</span>
+        <section class="section" id="contact">
+            <h2 class="section-title">Contact</h2>
+            <div class="links-row">
+                <a href="https://wallybrain.net">Listen</a>
+                <a href="https://github.com/wallybrain">GitHub</a>
+                <a href="mailto:wallybrain@gmail.com">Email</a>
             </div>
-            <div class="terminal-content">
-                <h2 class="section-title">The Music</h2>
+        </section>
 
-                <div class="project">
-                    <div class="project-name"><a href="https://wallybrain.net" class="project-link">wallybrain.net</a></div>
-                    <p class="project-desc">
-                        This is a new self-hosted project &mdash; one of the things that came out of
-                        discovering how accessible agentic coding has become. With my somewhat limited
-                        knowledge of programming, this is the kind of thing I would have given up on
-                        in the past. The old way of learning &mdash; googling every question, digging
-                        through forums and YouTube videos just to figure out an SSH command or how
-                        to configure a server &mdash; was tedious enough to kill the motivation.
-                        Tools like Claude Code changed that. I can actually educate myself now
-                        without the friction that used to make it not worth the trouble.
-                    </p>
-                    <p class="project-desc" style="margin-top: 10px;">
-                        What's up there is only part of what I've made over the years &mdash;
-                        nine albums so far, with a few more currently in the works.
-                        The site is slowly evolving alongside the music.
-                        Put on headphones and start anywhere.
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">IDM</span>
-                        <span class="tag">Noise</span>
-                        <span class="tag">Techno</span>
-                        <span class="tag">Experimental</span>
-                        <span class="tag">Ambient</span>
-                    </div>
-                    <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
-                        <a href="https://wallybrain.bandcamp.com/music" class="project-link" target="_blank" style="font-size: 15px;">Bandcamp</a>
-                        <a href="https://soundcloud.com/wallybrain" class="project-link" target="_blank" style="font-size: 15px;">SoundCloud</a>
-                        <a href="https://open.spotify.com/artist/1cH9oEsv4l65i078NolWil" class="project-link" target="_blank" style="font-size: 15px;">Spotify</a>
-                    </div>
-                </div>
-
-                <h2 class="section-title" style="margin-top: 30px;">How It Gets Made</h2>
-                <p class="bio">
-                    The process has changed a lot since the Atari days, but the philosophy hasn't.
-                    Hands on instruments first &mdash; drum machines programmed by feel,
-                    chords voiced on keyboards and a <span class="highlight-accent">Roli Seaboard</span>,
-                    textures shaped in real time. The interesting results usually come from
-                    setting up conditions for surprise and reacting to what comes out.
-                </p>
-                <p class="bio">
-                    These days the main workspace is <span class="highlight-accent">Ableton Live 12</span>,
-                    backed by a deep library of software synths and processors. The tools got
-                    better over the decades but the approach is the same: experiment, listen,
-                    keep what's honest, throw away what isn't.
-                </p>
-
-                <h2 class="section-title" style="margin-top: 30px;">The Gear Over the Years</h2>
-
-                <div class="project">
-                    <div class="project-name">The Hardware Years (1985&ndash;mid 90s)</div>
-                    <p class="project-desc">
-                        Atari 1040ST running Dr T's KCS 4.0, sequencing external hardware
-                        over MIDI cables. Over time I built up a small rack: a
-                        <span style="color: var(--accent)">Roland R-8</span> drum machine,
-                        <span style="color: var(--accent)">Yamaha TX81Z</span> FM synth,
-                        <span style="color: var(--accent)">Korg DW8000</span>, and a
-                        <span style="color: var(--accent)">Casio FZ-10M</span> sampler.
-                        Drum kit in the other room. Everything connected by MIDI cables and
-                        patience.
-                    </p>
-                    <p class="project-desc" style="margin-top: 10px;">
-                        I ended up selling all of it &mdash; at a considerable loss &mdash;
-                        after losing a close friend I'd been writing music with.
-                        That loss took the wind out of it, and I stopped making
-                        electronic music for a long time.
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">Atari 1040ST</span>
-                        <span class="tag">Dr T's KCS</span>
-                        <span class="tag">Roland R-8</span>
-                        <span class="tag">Yamaha TX81Z</span>
-                        <span class="tag">Korg DW8000</span>
-                        <span class="tag">Casio FZ-10M</span>
-                        <span class="tag">Drums</span>
-                    </div>
-                </div>
-
-                <div class="project">
-                    <div class="project-name">The Return (2001&ndash;2002)</div>
-                    <p class="project-desc">
-                        Somewhere around 2001 or 2002 I found my way back in. PC technology
-                        had caught up &mdash; Windows 98, a fast enough processor, and a
-                        program called <span style="color: var(--accent)">Fruity Loops</span>.
-                        The shift was enormous. What used to require an Atari sequencing a room
-                        full of hardware over MIDI was now happening inside a single computer.
-                        VST plugins replaced the rack. The sequencer, the synths, the sampler,
-                        the mixer &mdash; all in one box. That technological leap is what
-                        brought me back. The barrier to just sitting down and making something
-                        had dropped to nearly zero.
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">Windows 98</span>
-                        <span class="tag">Fruity Loops</span>
-                        <span class="tag">VST Plugins</span>
-                    </div>
-                </div>
-
-                <div class="project">
-                    <div class="project-name">Now</div>
-                    <p class="project-desc">
-                        Ableton Live 12, FL Studio, Roli Seaboard for expressive polyphonic input,
-                        MIDI pad and keyboard controllers, and a deep collection of software
-                        synthesizers &mdash; subtractive, FM, granular, physical modeling, wavetable.
-                        The instruments got virtual but the hands stayed physical.
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">Ableton Live 12</span>
-                        <span class="tag">FL Studio</span>
-                        <span class="tag">Roli Seaboard</span>
-                        <span class="tag">Arturia</span>
-                        <span class="tag">u-he</span>
-                        <span class="tag">Native Instruments</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SKILLS -->
-        <div class="terminal-window" id="skills">
-            <div class="terminal-header">
-                <div class="terminal-buttons">
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                </div>
-                <span class="terminal-title">SKILLS</span>
-            </div>
-            <div class="terminal-content">
-                <h2 class="section-title">Skills &amp; Tools</h2>
-
-                <div class="skills-grid">
-                    <div class="skill-category">
-                        <div class="skill-label">Making Noise Since</div>
-                        <div class="skill-list">
-                            1985
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <div class="skill-label">DAWs</div>
-                        <div class="skill-list">
-                            Ableton Live 12<br>
-                            FL Studio
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <div class="skill-label">Instruments</div>
-                        <div class="skill-list">
-                            Drums<br>
-                            Roli Seaboard<br>
-                            MIDI Controllers<br>
-                            Too Many Synths
-                        </div>
-                    </div>
-                    <div class="skill-category green">
-                        <div class="skill-label">Also Tinkering With</div>
-                        <div class="skill-list">
-                            Agentic Coding<br>
-                            Self-Hosted Servers<br>
-                            Epistemology
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- CONTACT -->
-        <div class="terminal-window" id="contact">
-            <div class="terminal-header">
-                <div class="terminal-buttons">
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                </div>
-                <span class="terminal-title">CONTACT</span>
-            </div>
-            <div class="terminal-content">
-                <h2 class="section-title green">Contact</h2>
-                <p class="prompt-line"><span class="cmd">echo $LINKS</span></p>
-                <div class="nav-links" style="justify-content: flex-start; margin-top: 15px;">
-                    <a href="https://wallybrain.net" class="nav-link accent" target="_blank">Listen</a>
-                    <a href="https://github.com/wallybrain" class="nav-link" target="_blank">GitHub</a>
-                    <a href="mailto:wallybrain@gmail.com" class="nav-link">Email</a>
-                </div>
-                <div style="margin-top: 25px;">
-                    <span class="prompt-line"><span class="cmd">_</span><span class="cursor"></span></span>
-                </div>
-            </div>
-            <div class="status-bar">
-                <span>SYSTEM ONLINE</span>
-                <span id="timestamp"></span>
-            </div>
-        </div>
-
-        <div class="footer">
-            &copy; <span id="year"></span> Wally Blanchard &middot;
-            <a href="https://wallybrain.net">wallybrain.net</a>
-        </div>
+        <footer class="footer">
+            &copy; <span id="year"></span> Wally Blanchard &middot; <a href="https://wallybrain.net">wallybrain.net</a>
+        </footer>
 
     </div>
 
