@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wally Blanchard :: Electronic Music</title>
+    <link rel="preload" href="fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/CourierPrime-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <meta name="description" content="Wally Blanchard — electronic music producer based in Columbus, GA. IDM, noise, techno, and experimental sound design as wallybrain.">
+    <meta property="og:title" content="Wally Blanchard — Electronic Music">
+    <meta property="og:description" content="Electronic music producer. IDM, noise, techno, and experimental sound design as wallybrain.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wallyblanchard.com/">
+    <meta property="og:image" content="https://wallyblanchard.com/fading-self.jpg">
+    <link rel="canonical" href="https://wallyblanchard.com/">
+    <style>
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(fonts/Inter-Regular.woff2) format('woff2');
+        }
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 500;
+            font-display: swap;
+            src: url(fonts/Inter-Medium.woff2) format('woff2');
+        }
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url(fonts/Inter-Bold.woff2) format('woff2');
+        }
+        @font-face {
+            font-family: 'Courier Prime';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(fonts/CourierPrime-Regular.woff2) format('woff2');
+        }
+        @font-face {
+            font-family: 'Courier Prime';
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url(fonts/CourierPrime-Bold.woff2) format('woff2');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --surface: #111111;
+            --text: #e8e4df;
+            --text-dim: #8a8580;
+            --accent: #c4a882;
+            --accent-hover: #d4b892;
+            --rule: #1f1f1f;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Courier Prime', monospace;
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        a:hover {
+            color: var(--accent-hover);
+        }
+
+        /* Nav */
+        .site-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 16px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--rule);
+            margin-bottom: 60px;
+        }
+
+        .site-nav a {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: var(--text-dim);
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            transition: color 0.15s;
+        }
+
+        .site-nav a:hover {
+            color: var(--accent);
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 80px;
+        }
+
+        .header-photo {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+            margin-bottom: 28px;
+        }
+
+        .header-name {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 40px;
+            line-height: 1.1;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .header-tagline {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--text-dim);
+            letter-spacing: 0.02em;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 22px;
+            color: var(--text);
+            border-bottom: 1px solid var(--rule);
+            padding-bottom: 12px;
+            margin-bottom: 28px;
+        }
+
+        /* Bio */
+        .bio p {
+            margin-bottom: 20px;
+        }
+
+        .bio p:last-child {
+            margin-bottom: 0;
+        }
+
+        .bio strong {
+            font-weight: 700;
+        }
+
+        .bio a {
+            color: var(--accent);
+        }
+
+        .bio a:hover {
+            color: var(--accent-hover);
+        }
+
+        /* Subsections */
+        .gear-intro {
+            margin-bottom: 36px;
+        }
+
+        .subsection {
+            margin-bottom: 28px;
+        }
+
+        .subsection:last-child {
+            margin-bottom: 0;
+        }
+
+        .subsection-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+        }
+
+        /* Links row */
+        .links-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+        }
+
+        .links-row a {
+            color: var(--accent);
+        }
+
+        .links-row a:hover {
+            color: var(--accent-hover);
+        }
+
+        /* Genres */
+        .genres {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-top: 16px;
+        }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid var(--rule);
+            padding-top: 24px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        .footer a {
+            color: var(--text-dim);
+        }
+
+        .footer a:hover {
+            color: var(--accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .header-name {
+                font-size: 28px;
+            }
+
+            .section-title {
+                font-size: 20px;
+            }
+
+            .section {
+                margin-bottom: 60px;
+            }
+
+            .header {
+                margin-bottom: 60px;
+            }
+
+            .header-photo {
+                width: 140px;
+                height: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <nav class="site-nav">
+            <a href="/">home</a>
+            <a href="https://wallybrain.net">wallybrain</a>
+            <a href="fnord.html">fnord</a>
+            <a href="library.html">antilibrary</a>
+            <a href="synth.html">synth</a>
+            <a href="https://solitaire.wallybrain.icu">solitaire</a>
+            <a href="zork.html">zork</a>
+            <a href="sentinel.html">sentinel</a>
+            <a href="https://code.wallyblanchard.com">IDE</a>
+        </nav>
+
+        <header class="header">
+            <img class="header-photo" src="fading-self.jpg" alt="Wally Blanchard">
+            <h1 class="header-name">Wally Blanchard</h1>
+            <p class="header-tagline">Electronic music producer &mdash; Columbus, GA</p>
+        </header>
+
+        <section class="section bio">
+            <h2 class="section-title">Bio</h2>
+
+            <p>Started making electronic music in high school in <strong>1985</strong>. Bought an <strong>Atari 1040ST</strong> and a copy of <strong>Dr T's KCS 4.0</strong>, and started building up hardware one piece at a time: <strong>Roland R-8</strong>, <strong>Yamaha TX81Z</strong>, <strong>Korg DW8000</strong>, <strong>Casio FZ-10M</strong>. Picked up drums around the same time. Forty years later, still at it.</p>
+
+            <p>In <strong>1989</strong>, part of <strong>The Flamies Go To Hagville</strong> on Cape Cod, MA &mdash; one of a constellation of local bands that fed into <a href="https://earshotcapecod.bandcamp.com/">E.A.R.S.H.O.T.</a> (Eschatological Ambivalence Research Synaptic Hologram Orgone Tesseract). EARSHOT was experimental post-hardcore math rock. Played drums and samples in a dual-drummer lineup alongside <strong>David Silver</strong> (drums/tape), with <strong>Chi</strong> on vocals, <strong>Jon Berger</strong> on guitar/bass, <strong>Erik Carter</strong> on bass, <strong>Craig Adams</strong> on guitar. Shared stages with Unsane, Alice Donut, Crash Worship, King Missile, Hammerhead, Glazed Baby, Chumbawamba, Shiv, Iowa Beef Experience, Ed Hall, and others. Played <strong>The Rathskeller</strong> (&ldquo;The Rat&rdquo;) in Boston and shows in Providence with Hammerhead (AmRep Records).</p>
+
+            <p>Three recording sessions: <strong>Look At This World</strong> (1991, engineered by Chris Blood, 23 tracks spanning the psychedelic noise goth prog punk math rock years, remastered by Ken Perry of Rhino Records). <strong>2.22.2022</strong> (March 1992, Wendell Studios, Western MA, engineered by Mark A. Miller, 19 tracks). <strong>DRA1N</strong> (July 25, 1993, six tracks recorded by <strong>Steve Albini</strong> at Chicago Recording Company &mdash; EARSHOT's final studio session, additional recording/remix by Tom Hamilton at Newbury Sound Studio, Boston). All three released digitally for the first time in 2022. In <strong>December 2025</strong>, four new long-form tracks produced by <strong>WALLYBRAIN &amp; DVOID</strong>, with <strong>Stefan Tcherepnin</strong> co-producing track one.</p>
+
+            <p>Around <strong>1994&ndash;96</strong>, started collaborating with <strong>Stefan Tcherepnin</strong> &mdash; drums and guitar, recording musique concrete on 4-track in the basement. That led to <strong>The Kings of Hell</strong> (~1996&ndash;97): dual drums with <strong>Dale Cunningham</strong> (Glazed Baby), <strong>Andy Newman</strong> on bass, Tcherepnin on guitar. A noise mixture of Swans, The Spitters, and Caspar Br&ouml;tzmann Massaker. Glazed Baby had been touring relentlessly, recording with Tim O'Heir and Steve Albini, sharing stages with Helmet, Jon Spencer Blues Explosion, White Zombie, Jawbox, Tool, and Tar.</p>
+
+            <p>Around <strong>2000</strong>, studied drums with <strong>Bob Gullotti</strong> &mdash; the Boston jazz drummer who co-founded The Fringe, taught at Berklee, toured with J.J. Johnson and Joe Lovano, and played with Trey Anastasio's Surrender to the Air. His approach &mdash; jazz discipline reaching into free improvisation &mdash; bridged noise-rock drumming with the exploratory sensibility that would shape the electronic work to come.</p>
+
+            <p>The partnership continued through the <strong>2000s to present</strong> as <strong>Existential Blowfish</strong> (cassette recordings including ESPCP/TEXASHEX and TRAUMAKING) and <strong>rESPetc2.rSonel</strong> (performing duo &mdash; PAN_ACT at ISSUE Project Room, Brooklyn 2013 on a bill with Jutta Koether, New Humans, and C Spencer Yeh; Leland Ballroom, Detroit 2011). In <strong>2018</strong>, their music as Existential Blowfish was exhibited at the <strong>Stedelijk Museum Amsterdam</strong> and <strong>Kunsthalle Z&uuml;rich</strong> as part of Tcherepnin's installation <em>The Mad Masters</em>.</p>
+
+            <p>Returned to electronic music as <a href="https://wallybrain.net">wallybrain</a> around <strong>2001&ndash;02</strong> after a hiatus &mdash; Fruity Loops on a Windows 98 PC. Nine albums so far in IDM, noise, techno, ambient, and experimental sound design. Current workspace is <strong>Ableton Live 12</strong> and <strong>FL Studio</strong>.</p>
+
+            <p>Always had a somewhat obscure online presence &mdash; just quietly making music that refuses to be concerned with whether it's liked or disliked. Creation as self-understanding, experimentation and entertainment without compromise.</p>
+
+            <p>Lately also dabbling in agentic coding &mdash; building tools and sites with AI assistance. Still a noob, but it scratches a similar itch to music: describe something that doesn't exist yet, iterate until it sounds right, and eventually it's a thing.</p>
+        </section>
+
+        <section class="section" id="music">
+            <h2 class="section-title">Music</h2>
+
+            <p>The music site at <a href="https://wallybrain.net">wallybrain.net</a> is a self-hosted project &mdash; one of the things that came out of discovering how accessible agentic coding has become. With somewhat limited knowledge of programming, this is the kind of thing that would have been abandoned in the past. The old way of learning &mdash; googling every question, digging through forums and YouTube videos just to figure out an SSH command or how to configure a server &mdash; was tedious enough to kill the motivation. Tools like Claude Code changed that.</p>
+
+            <p>What's up there is only part of what's been made over the years &mdash; nine albums so far, with a few more currently in the works. The site is slowly evolving alongside the music. Put on headphones and start anywhere.</p>
+
+            <div class="links-row" style="margin-top: 20px;">
+                <a href="https://wallybrain.net">wallybrain.net</a>
+                <a href="https://wallybrain.bandcamp.com/music">Bandcamp</a>
+                <a href="https://soundcloud.com/wallybrain">SoundCloud</a>
+                <a href="https://open.spotify.com/artist/1cH9oEsv4l65i078NolWil">Spotify</a>
+            </div>
+
+            <p class="genres">IDM, noise, techno, experimental, ambient</p>
+        </section>
+
+        <section class="section" id="gear">
+            <h2 class="section-title">Process &amp; Gear</h2>
+
+            <p>The process has changed a lot since the Atari days, but the philosophy hasn't. Hands on instruments first &mdash; drum machines programmed by feel, chords voiced on keyboards and a Roli Seaboard, textures shaped in real time. The interesting results usually come from setting up conditions for surprise and reacting to what comes out.</p>
+
+            <p class="gear-intro">These days the main workspace is Ableton Live 12, backed by a deep library of software synths and processors. The tools got better over the decades but the approach is the same: experiment, listen, keep what's honest, throw away what isn't.</p>
+
+            <div class="subsection">
+                <div class="subsection-title">1985 &mdash; The Hardware Years</div>
+                <p>Atari 1040ST running Dr T's KCS 4.0, sequencing external hardware over MIDI cables. Over time a small rack built up: Roland R-8 drum machine, Yamaha TX81Z FM synth, Korg DW8000, and a Casio FZ-10M sampler. Drum kit in the other room. Everything connected by MIDI cables and patience. Ended up selling all of it &mdash; at a considerable loss &mdash; after losing a close friend. That loss took the wind out of it, and electronic music stopped for a long time.</p>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">2001 &mdash; The Return</div>
+                <p>Somewhere around 2001 or 2002, found a way back in. PC technology had caught up &mdash; Windows 98, a fast enough processor, and a program called Fruity Loops. The shift was enormous. What used to require an Atari sequencing a room full of hardware over MIDI was now happening inside a single computer. VST plugins replaced the rack. The sequencer, the synths, the sampler, the mixer &mdash; all in one box. That technological leap is what brought it back. The barrier to just sitting down and making something had dropped to nearly zero.</p>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Now</div>
+                <p>Ableton Live 12, FL Studio, Roli Seaboard for expressive polyphonic input, MIDI pad and keyboard controllers, and a deep collection of software synthesizers &mdash; subtractive, FM, granular, physical modeling, wavetable. The instruments got virtual but the hands stayed physical.</p>
+            </div>
+        </section>
+
+        <section class="section" id="contact">
+            <h2 class="section-title">Contact</h2>
+            <div class="links-row">
+                <a href="https://wallybrain.net">Listen</a>
+                <a href="https://github.com/wallybrain">GitHub</a>
+                <a href="mailto:wallybrain@gmail.com">Email</a>
+            </div>
+        </section>
+
+        <footer class="footer">
+            &copy; <span id="year"></span> Wally Blanchard &middot; <a href="https://wallybrain.net">wallybrain.net</a>
+        </footer>
+
+    </div>
+
+    <script src="/js/index.js"></script>
+</body>
+</html>
