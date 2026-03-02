@@ -183,7 +183,7 @@
 
     function showWelcome() {
         renderMessage('system',
-            'DASEIN — Baudrillard navigation system\n' +
+            'DASEIN — Hegel navigation system\n' +
             'Type to begin. The guide will meet you where you are.\n' +
             '/clear to reset  /help for commands'
         );
