@@ -132,9 +132,8 @@
                 body: JSON.stringify({ messages: messages, state: state })
             });
 
-            if (!resp.ok) throw new Error('API error: ' + resp.status);
-
             var data = await resp.json();
+            if (!resp.ok) throw new Error(data.error || 'API error: ' + resp.status);
 
             conversationEl.removeChild(thinkingEl);
 
@@ -150,7 +149,8 @@
             saveSession();
         } catch (err) {
             conversationEl.removeChild(thinkingEl);
-            renderMessage('error', 'connection lost: ' + err.message);
+            messages.pop();
+            renderMessage('error', err.message);
         }
 
         isBusy = false;
@@ -170,6 +170,14 @@
             showWelcome();
             return true;
         }
+        if (cmd === '/help') {
+            renderMessage('system',
+                'COMMANDS\n────────\n' +
+                '/clear       reset conversation\n' +
+                '/help        show this message'
+            );
+            return true;
+        }
         return false;
     }
 
@@ -177,7 +185,7 @@
         renderMessage('system',
             'DASEIN — Baudrillard navigation system\n' +
             'Type to begin. The guide will meet you where you are.\n' +
-            '/clear to reset session'
+            '/clear to reset  /help for commands'
         );
     }
 
